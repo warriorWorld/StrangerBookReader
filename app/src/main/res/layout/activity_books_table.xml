@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/table_bg"
+    tools:context=".mangalist.MainActivity">
+
+
+    <GridView
+        android:id="@+id/manga_gv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar"
+        android:columnWidth="120dp"
+        android:horizontalSpacing="15dp"
+        android:numColumns="3"
+        android:padding="10dp"
+        android:verticalSpacing="12dp">
+
+    </GridView>
+
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/books_table_emptyview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

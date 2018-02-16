@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="120dp"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:padding="2dp"
+    tools:context=".mangalist.MainActivity">
+
+    <TextView
+        android:id="@+id/book_txt_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@drawable/book1"
+        android:paddingLeft="22dp"
+        android:paddingRight="15dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="25dp"
+        android:scaleType="centerCrop"
+        android:text="Kritik_der_reinen"
+        android:textSize="16sp"
+        android:textStyle="italic|bold"
+        android:typeface="serif"
+        android:visibility="visible">
+
+    </TextView>
+
+    <ImageView
+        android:id="@+id/book_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:scaleType="centerCrop"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="gone">
+
+    </ImageView>
+
+
+    <TextView
+        android:id="@+id/book_name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="XXX"
+        android:textSize="16sp" />
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="top_bar">#165fa7</color>
+    <color name="user_bg">#6bb5bcbc</color>
+    <color name="read_bg">#b6dab2</color>
+    <color name="read_night_bg">#202120</color>
+    <color name="read_night_text">#acc9a9</color>
+    <color name="kill">#fab62d</color>
+    <color name="killed">#fa372d</color>
+    <color name="table_bg">#3fcacece</color>
+    <!--章节标题日间颜色-->
+    <color name="chapter_title_day">#837B63</color>
+    <color name="read_theme_white">#ffffff</color>
+    <color name="read_theme_green">#bed0cf</color>
+    <color name="read_theme_yellow">#e6dbbf</color>
+    <color name="read_theme_gray">#AAAAAA</color>
+    <color name="read_theme_night">#000000</color>
+</resources>

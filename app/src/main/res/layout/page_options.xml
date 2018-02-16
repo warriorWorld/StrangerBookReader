@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/top_bar"
+    android:orientation="vertical"
+    android:padding="6dp"
+    tools:context=".mangalist.MainActivity">
+
+    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:dsb_max="100"
+        app:dsb_min="0" />
+
+    <View
+        android:id="@+id/view_holder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"></View>
+
+    <ImageView
+        android:id="@+id/typeface"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/seekbar"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/typeface"></ImageView>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/seekbar"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/view_holder">
+
+        <ImageView
+            android:id="@+id/click_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/click"></ImageView>
+
+        <TextView
+            android:id="@+id/click_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/word_size"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/seekbar"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/view_holder"
+        android:src="@drawable/word_size"></ImageView>
+
+    <ImageView
+        android:id="@+id/night"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/seekbar"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/night"></ImageView>
+</RelativeLayout>
