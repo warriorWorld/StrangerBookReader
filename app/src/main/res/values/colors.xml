@@ -20,4 +20,8 @@
     <color name="read_theme_yellow">#e6dbbf</color>
     <color name="read_theme_gray">#AAAAAA</color>
     <color name="read_theme_night">#000000</color>
+    <!--章节内容夜间颜色-->
+    <color name="chapter_content_night">#444444</color>
+    <!--章节标题夜间颜色-->
+    <color name="chapter_title_night">#292929</color>
 </resources>

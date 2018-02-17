@@ -6,4 +6,5 @@ package com.warrior.hangsu.administrator.strangerbookreader.configure;
 
 public class ShareKeys {
     public static final String ISNIGHT = "isNight";
+    public static final String FLIP_STYLE = "flipStyle";
 }
