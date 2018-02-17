@@ -164,6 +164,9 @@ public class PageFactory {
         //TODO
         try {
             File file = new File(path);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
             long length = file.length();
             if (length > 10) {
                 mbBufferLen = (int) length;

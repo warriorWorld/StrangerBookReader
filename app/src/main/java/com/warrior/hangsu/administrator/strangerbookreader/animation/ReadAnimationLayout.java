@@ -110,7 +110,7 @@ public class ReadAnimationLayout extends RelativeLayout {
         nowPosition = Globle.nowBookPosition;
         //初始化分页器 给他个文件地址
         if (Globle.nowBookPath.contains(".txt") || Globle.nowBookPath.contains(".TXT")) {
-            ab = new AnalysisTXTBook( Globle.nowBookPath);
+            ab = new AnalysisTXTBook(Globle.nowBookPath);
         }
         calculatorPercent();
         //获取屏幕宽度
