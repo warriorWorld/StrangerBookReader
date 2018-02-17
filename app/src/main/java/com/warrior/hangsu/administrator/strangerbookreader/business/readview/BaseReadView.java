@@ -82,7 +82,7 @@ public abstract class BaseReadView extends View {
                 // 自动跳转到上次阅读位置
                 int pos[] = SettingManager.getInstance().getReadProgress(bookId);
                 int ret = pagefactory.openBook(bookId, new int[]{pos[0], pos[1]});
-                LogUtils.i("上次阅读位置：chapter=" + pos[0] + " startPos=" + pos[1] + " endPos=" + pos[2]);
+                LogUtils.i(" startPos=" + pos[0] + " endPos=" + pos[1]);
                 if (ret == 0) {
                     listener.onLoadFailure(bookId);
                     return;

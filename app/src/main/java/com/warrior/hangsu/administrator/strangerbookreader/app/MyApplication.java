@@ -2,6 +2,8 @@ package com.warrior.hangsu.administrator.strangerbookreader.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,6 +36,15 @@ public class MyApplication extends Application {
 
         AppUtils.init(this);
         initPrefs();
+
+        dealFileUriExposedException();
+    }
+
+    private void dealFileUriExposedException() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
     }
 
     public static MyApplication getsInstance() {

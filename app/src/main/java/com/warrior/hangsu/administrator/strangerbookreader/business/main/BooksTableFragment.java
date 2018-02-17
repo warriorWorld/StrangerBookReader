@@ -89,7 +89,7 @@ public class BooksTableFragment extends Fragment implements AdapterView.OnItemCl
         Globle.nowBookName = item.getName();
         Globle.nowBookPath = item.getPath();
         Globle.nowBookPosition = item.getProgress();
-        Intent intent = new Intent(getActivity(), TestActivity.class);
+        Intent intent = new Intent(getActivity(), ReadActivity.class);
         startActivity(intent);
     }
 

@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.warrior.hangsu.administrator.strangerbookreader"
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 19
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -25,7 +25,7 @@ dependencies {
      * 引用 support v4
      * 21.0.3这个版本可以根据你电脑sdk的配置略作修改
      */
-    compile 'com.android.support:support-v4:23.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
 
     /**
      * 引用WandoujiaSDK.aar
@@ -43,8 +43,8 @@ dependencies {
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
 //    compile files('libs/gson-2.1.jar')
 }

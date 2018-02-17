@@ -1,6 +1,7 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.test;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.FrameLayout;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
@@ -9,6 +10,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.readview.Ove
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
@@ -42,6 +44,19 @@ public class TestActivity extends BaseActivity {
         }
         readWidgetFl.removeAllViews();
         readWidgetFl.addView(mPageWidget);
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                /**
+                 *要执行的操作
+                 */
+                mPageWidget.init(ThemeManager.NORMAL);
+            }
+        }, 1500);//n秒后执行Runnable中的run方法
+
     }
 
     private class ReadListener implements OnReadStateChangeListener {
