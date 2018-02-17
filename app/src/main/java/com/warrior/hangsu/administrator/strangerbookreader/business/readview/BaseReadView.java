@@ -98,7 +98,7 @@ public abstract class BaseReadView extends View {
     private int dx, dy;
     private long et = 0;
     private boolean cancel = false;
-    private boolean center = false;
+    private boolean center = false;//TODO delete
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
