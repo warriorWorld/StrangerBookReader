@@ -53,7 +53,7 @@ public class BooksTableFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     public void addBooks(String path, String bpPath) {
-        db.insertBooksTableTb(path.substring(7), StringUtil.cutString(path, '/', '.'), 0, bpPath);
+        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, bpPath);
         refreshBooks();
     }
 

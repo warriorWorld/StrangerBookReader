@@ -24,10 +24,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.animation.DepthPageTransformer;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.Logger;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SHTopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,11 +225,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
-            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
-            Logger.d("地址:" + uri.toString());
-            String path = data.getDataString();
-            //得解码下 不然中文乱码
-            path = Uri.decode(path);
+//            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
+//            Logger.d("地址:" + uri.toString());
+//            String path = data.getDataString();
+//            //得解码下 不然中文乱码
+//            path = Uri.decode(path);
+
+            // Get the Uri of the selected file
+            Uri uri = data.getData();
+            // Get the path
+            String path = null;
+            try {
+                path = FileUtils.getPath(this, uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            ToastUtils.showSingleToast(path);
             booksTableFragment.addBooks(path, null);
         }
     }
