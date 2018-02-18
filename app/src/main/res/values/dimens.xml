@@ -7,4 +7,5 @@
     <dimen name="size90">90dp</dimen>
     <dimen name="list_title_size">16sp</dimen>
     <dimen name="list_message_size">14sp</dimen>
+    <dimen name="main_text_size">14sp</dimen>
 </resources>

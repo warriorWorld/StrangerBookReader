@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:paddingBottom="32dp">
+
+    <RelativeLayout
+        android:id="@+id/drawer_head_rl"
+        android:layout_width="match_parent"
+        android:layout_height="193dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/side_nav_bar">
+
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="92dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/round_btn_bg"
+            android:text="登录/注册"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:id="@+id/logged_rl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <com.warrior.hangsu.administrator.strangerbookreader.widget.imageview.CircleImage
+                android:id="@+id/user_head_iv"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/head_icon" />
+
+            <TextView
+                android:id="@+id/user_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="21dp"
+                android:layout_toRightOf="@+id/user_head_iv"
+                android:text="你好"
+                android:textColor="@color/white"
+                android:textSize="32sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/drawer_head_rl"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/new_word_ll"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/drawer_head_rl"
+                android:layout_marginTop="17dp"
+                android:background="@drawable/seven_fourteen_default_click"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="31dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/new_word_list_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="生词本"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/statistics_ll"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/drawer_head_rl"
+                android:background="@drawable/seven_fourteen_default_click"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="31dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/statistics_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="数据统计"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_app_ll"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/drawer_head_rl"
+                android:background="@drawable/seven_fourteen_default_click"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="31dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/qr_code_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="分享App"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/english_ad_ll"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/drawer_head_rl"
+                android:background="@drawable/seven_fourteen_default_click"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="31dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/english_ad_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="更多英语学习App"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/settings_ll"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/drawer_head_rl"
+                android:background="@drawable/seven_fourteen_default_click"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="31dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/settings_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="设置"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

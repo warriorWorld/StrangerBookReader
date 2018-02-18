@@ -25,7 +25,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.animation.DepthPageTr
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.SHTopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
-    private SHTopBar topBar;
     private List<Fragment> fragList;
     private ViewPager pager;
     private UserFragment usrFragment = new UserFragment();
@@ -154,17 +152,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onPageSelected(int position) {
                 nowPosition = position;
-                switch (position) {
-                    case 0:
-                        topBar.cutNowLeftView(1);
-                        break;
-                    case 1:
-                        topBar.cutNowLeftView(2);
-                        break;
-                    case 2:
-                        topBar.cutNowLeftView(3);
-                        break;
-                }
             }
 
             @Override
@@ -179,35 +166,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         pager = (ViewPager) findViewById(R.id.view_pager);
 
 
-        topBar = (SHTopBar) findViewById(R.id.top_bar);
-        topBar.setOnTopBarClickListener(new SHTopBar.OnTopBarClickListener() {
-
-            @Override
-            public void onLeft1Click() {
-                pager.setCurrentItem(0);
-            }
-
-            @Override
-            public void onLeft2Click() {
-                pager.setCurrentItem(1);
-            }
-
-            @Override
-            public void onLeft3Click() {
-                pager.setCurrentItem(2);
-            }
-
-            @Override
-            public void onRight1Click() {
-                showFileChooser();
-            }
-
-            @Override
-            public void onRight2Click() {
-
-            }
-        });
-        topBar.cutNowLeftView(nowPosition + 1);
+//        topBar = (SHTopBar) findViewById(R.id.top_bar);
+//        topBar.setOnTopBarClickListener(new SHTopBar.OnTopBarClickListener() {
+//
+//            @Override
+//            public void onLeft1Click() {
+//                pager.setCurrentItem(0);
+//            }
+//
+//            @Override
+//            public void onLeft2Click() {
+//                pager.setCurrentItem(1);
+//            }
+//
+//            @Override
+//            public void onLeft3Click() {
+//                pager.setCurrentItem(2);
+//            }
+//
+//            @Override
+//            public void onRight1Click() {
+//                showFileChooser();
+//            }
+//
+//            @Override
+//            public void onRight2Click() {
+//
+//            }
+//        });
+//        topBar.cutNowLeftView(nowPosition + 1);
     }
 
     /**

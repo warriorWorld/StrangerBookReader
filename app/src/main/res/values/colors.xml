@@ -24,4 +24,12 @@
     <color name="chapter_content_night">#444444</color>
     <!--章节标题夜间颜色-->
     <color name="chapter_title_night">#292929</color>
+    <color name="english_book_reader_shallow">#efee95</color>
+    <color name="english_book_reader">#eae723</color>
+    <color name="english_book_reader_deep">#ffd500</color>
+    <color name="main_text_color">#444444</color>
+    <color name="main_text_color_gray">#c2c2c2</color>
+    <color name="divide">#f6f6f6</color>
+    <color name="divide_line">#e1e1e1</color>
+    <color name="transparency">#00FF4081</color>
 </resources>

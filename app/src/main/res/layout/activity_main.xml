@@ -3,20 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".mangalist.MainActivity">
-
-    <com.warrior.hangsu.administrator.strangerbookreader.utils.SHTopBar
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        app:left1_background="@drawable/user"
-        app:left2_background="@drawable/books_table"
-        app:right1_background="@drawable/add"
-        app:topbar_background="@color/top_bar">
-
-    </com.warrior.hangsu.administrator.strangerbookreader.utils.SHTopBar>
+    android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
