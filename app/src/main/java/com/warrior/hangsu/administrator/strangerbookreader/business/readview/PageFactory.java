@@ -626,13 +626,13 @@ public class PageFactory {
 
     public String getClickWord(int touchX, int touchY) {
         String res = "";
-        int contentStartY = marginHeight + (mLineSpace << 1);//
-        contentStartY += mLineSpace + mNumFontSize;//内容起始y
+        int contentStartY = marginHeight + mLineSpace + mNumFontSize;//内容起始y
         int y = contentStartY;
         int absoluteY = touchY - contentStartY;
         if (absoluteY < 0) {
             return "这是标题";
         }
+        int linePosition = 0;
         String lineString = "";
         for (int i = 0; i < mLines.size(); i++) {
             y += mLineSpace;
@@ -642,7 +642,8 @@ public class PageFactory {
             }
             y += mFontSize;
             if (y >= touchY) {
-                lineString = mLines.get(i);
+                linePosition = i;
+                lineString = mLines.get(linePosition);
                 break;
             }
         }
@@ -656,17 +657,23 @@ public class PageFactory {
         int end = 0;
         // to cater last/only word loop will run equal to the length of
         // indices.length
-        //
+        //因为末尾不一定有特殊字符 所以一直循环到超出数组1然后把最后一个加上
         for (int i = 0; i <= indices.length; i++) {
             // 末尾不能超出文本
             end = (i < indices.length ? indices[i] : lineString.length());
             if (end >= touchCharacterPosition) {
                 res = lineString.substring(start, end);
+                if (i == indices.length && !lineString.endsWith("@")) {
+                    //处理当最后一个单词被行断开的情况
+                    String nextLineString = mLines.get(linePosition + 1);
+                    int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
+                    res += nextLineString.substring(0, firstUnLetterPosition);
+                }
                 break;
             }
             start = end + 1;//+1表示只允许有一个非字母间隔 否则就会把别的东西加进去
         }
-        res=getWordAgain(res);
+        res = getWordAgain(res);
         return res;
     }
 

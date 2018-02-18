@@ -27,6 +27,7 @@ import android.widget.Scroller;
 
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
@@ -38,6 +39,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
  * @date 2016/10/18.
  */
 public abstract class BaseReadView extends View {
+    protected Context context;
     protected int mScreenWidth;
     protected int mScreenHeight;
 
@@ -56,10 +58,12 @@ public abstract class BaseReadView extends View {
     Scroller mScroller;
     private int FLIP_THRESHOLD = 30;//滑动到下一页或上一页的阈值
     private boolean is_threshold = false;//是否超越阈值
+    private OnWordClickListener onWordClickListener;
 
     public BaseReadView(Context context, String bookId,
                         OnReadStateChangeListener listener) {
         super(context);
+        this.context = context;
         this.listener = listener;
         this.bookId = bookId;
 
@@ -175,8 +179,9 @@ public abstract class BaseReadView extends View {
                         restoreAnimation();
                     }
                     if ((t - et < 1000)) { // 单击
-                        ToastUtils.showSingleToast(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
+                        onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
                     } else { // 长按
+                        onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
                     }
                     return true;
                 }
@@ -350,5 +355,9 @@ public abstract class BaseReadView extends View {
             mNextPageBitmap = null;
             LogUtils.d("mNextPageBitmap recycle");
         }
+    }
+
+    public void setOnWordClickListener(OnWordClickListener onWordClickListener) {
+        this.onWordClickListener = onWordClickListener;
     }
 }

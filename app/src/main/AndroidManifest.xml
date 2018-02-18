@@ -36,7 +36,7 @@
             android:name=".business.read.ReadActivity"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".business.test.TestActivity"
+            android:name=".business.test.NewReadActivity"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".business.wordsbook.WordsBookActivity"
