@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -43,8 +44,12 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PageFactory {
     private Context mContext;
@@ -628,7 +633,7 @@ public class PageFactory {
         if (absoluteY < 0) {
             return "这是标题";
         }
-        int touchLine = 0;
+        String lineString = "";
         for (int i = 0; i < mLines.size(); i++) {
             y += mLineSpace;
             if (mLines.get(i).endsWith("@")) {
@@ -637,12 +642,65 @@ public class PageFactory {
             }
             y += mFontSize;
             if (y >= touchY) {
-                touchLine = i;
+                lineString = mLines.get(i);
                 break;
             }
         }
 
+        //获取横向位置
+        float touchPercentX = (float) (touchX - marginWidth) / mVisibleWidth;
+        int touchCharacterPosition = (int) (touchPercentX * lineString.length());
 
-        return res+touchLine;
+        Integer[] indices = getUnLetterPosition(lineString);
+        int start = 0;
+        int end = 0;
+        // to cater last/only word loop will run equal to the length of
+        // indices.length
+        //
+        for (int i = 0; i <= indices.length; i++) {
+            // 末尾不能超出文本
+            end = (i < indices.length ? indices[i] : lineString.length());
+            if (end >= touchCharacterPosition) {
+                res = lineString.substring(start, end);
+                break;
+            }
+            start = end + 1;//+1表示只允许有一个非字母间隔 否则就会把别的东西加进去
+        }
+        res=getWordAgain(res);
+        return res;
+    }
+
+    private Integer[] getUnLetterPosition(String s) {
+        List<Integer> indices = new ArrayList<Integer>();
+        Pattern p;
+        Matcher m;
+        p = Pattern.compile("[a-zA-Z]");
+        m = p.matcher(s);
+        // 尝试在目标字符串里查找下一个匹配子串。
+        int lastOnePosition = -1;
+        while (m.find()) {
+            // 获取到匹配字符的结束点
+            if (m.start() - lastOnePosition != 1) {
+                // 获取的m.start是每个符合正则表达式的字符的位置
+                // 而我想要的是不符合的位置 而断掉的位置就必然是不符合的位置
+                indices.add(lastOnePosition + 1);
+            }
+            lastOnePosition = m.start();
+        }
+        return (Integer[]) indices.toArray(new Integer[0]);
+    }
+
+    /**
+     * 因为当单词间的非字母多于1个时会导致后边的单词附加上非字母 用这个方法去掉
+     *
+     * @param s
+     * @return
+     */
+    private String getWordAgain(String s) {
+        String str = s.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&;*（）——+|{}【】\"‘；：”“’。，、？|-]", "");
+        str = str.replaceAll("\n", "");
+        str = str.replaceAll("\r", "");
+        str = str.replaceAll("\\s", "");
+        return str;
     }
 }
