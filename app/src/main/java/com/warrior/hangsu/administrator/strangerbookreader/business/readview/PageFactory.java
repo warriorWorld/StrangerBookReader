@@ -210,7 +210,7 @@ public class PageFactory {
             for (String line : mLines) {
                 y += mLineSpace;
                 if (line.endsWith("@")) {
-                    //@当做换行符
+                    //@当做段落尾换行符 这样段落间距就会比行间距大 这里正好是行间距的两倍
                     canvas.drawText(line.substring(0, line.length() - 1), marginWidth, y, mPaint);
                     y += mLineSpace;
                 } else {
@@ -289,6 +289,7 @@ public class PageFactory {
         Vector<String> lines = new Vector<>();
         int paraSpace = 0;
         mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
+        //这是一段一段的循环添加的 直到填满整页
         while ((lines.size() < mPageLineCount) && (curEndPos < mbBufferLen)) {
             byte[] parabuffer = readParagraphForward(curEndPos);
             curEndPos += parabuffer.length;
@@ -299,7 +300,7 @@ public class PageFactory {
             }
             strParagraph = strParagraph.replaceAll("\r\n", "  ")
                     .replaceAll("\n", " "); // 段落中的换行符去掉，绘制的时候再换行
-
+            //这是一行一行添加的 直到把某一段的内容添加完或者超过整页能容纳的行数
             while (strParagraph.length() > 0) {
                 //通过breakText把段落划分成一行行的字符
                 int paintSize = mPaint.breakText(strParagraph, true, mVisibleWidth, null);
@@ -309,7 +310,7 @@ public class PageFactory {
                     break;
                 }
             }
-            //在每一行的末尾加@作为换行符
+            //在段落的末尾加@作为段落尾换行符
             lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
             //当段落太长 不够地方显示的话 重置curEndPos
             if (strParagraph.length() != 0) {
