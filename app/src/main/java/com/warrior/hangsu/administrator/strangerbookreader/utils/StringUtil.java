@@ -1,5 +1,8 @@
 package com.warrior.hangsu.administrator.strangerbookreader.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringUtil {
     public static boolean checkLength(String str, int length) {
         int valueLength = 0;
@@ -71,5 +74,15 @@ public class StringUtil {
             return false;
         }
         return true;
+    }
+
+    public static boolean isWord(String word) {
+        if (word.isEmpty()) {
+            return false;
+        }
+        Pattern pattern = Pattern
+                .compile("[\\w]+");
+        Matcher matcher = pattern.matcher(word);
+        return matcher.matches();
     }
 }

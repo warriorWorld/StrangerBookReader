@@ -23,6 +23,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
@@ -73,7 +74,9 @@ public class NewReadActivity extends BaseActivity implements
             mPageWidget.setOnWordClickListener(new OnWordClickListener() {
                 @Override
                 public void onWordClick(String word) {
-                    translation(word);
+                    if (StringUtil.isWord(word)) {
+                        translation(word);
+                    }
                 }
             });
             readWidgetFl.removeAllViews();
