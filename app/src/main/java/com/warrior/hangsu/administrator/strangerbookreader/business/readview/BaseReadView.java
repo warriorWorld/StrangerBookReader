@@ -15,6 +15,7 @@
  */
 package com.warrior.hangsu.administrator.strangerbookreader.business.readview;
 
+import android.animation.FloatArrayEvaluator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -53,6 +54,8 @@ public abstract class BaseReadView extends View {
     public boolean isPrepared = false;
 
     Scroller mScroller;
+    private int FLIP_THRESHOLD = 30;
+    private boolean is_threshold = false;
 
     public BaseReadView(Context context, String bookId,
                         OnReadStateChangeListener listener) {
@@ -98,7 +101,6 @@ public abstract class BaseReadView extends View {
     private int dx, dy;
     private long et = 0;
     private boolean cancel = false;
-    private boolean center = false;//TODO delete
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -113,48 +115,50 @@ public abstract class BaseReadView extends View {
                 actiondownY = dy;
                 touch_down = 0;
                 pagefactory.onDraw(mCurrentPageCanvas);
-                if (actiondownX >= mScreenWidth / 3 && actiondownX <= mScreenWidth * 2 / 3
-                        && actiondownY >= mScreenHeight / 3 && actiondownY <= mScreenHeight * 2 / 3) {
-                    center = true;
-                } else {
-                    center = false;
-                    calcCornerXY(actiondownX, actiondownY);
-                    if (actiondownX < mScreenWidth / 2) {// 从左翻
-                        BookStatus status = pagefactory.prePage();
-                        if (status == BookStatus.NO_PRE_PAGE) {
-                            ToastUtils.showSingleToast("没有上一页啦");
-                            return false;
-                        } else if (status == BookStatus.LOAD_SUCCESS) {
-                            abortAnimation();
-                            pagefactory.onDraw(mNextPageCanvas);
-                        } else {
-                            return false;
-                        }
-                    } else if (actiondownX >= mScreenWidth / 2) {// 从右翻
-                        BookStatus status = pagefactory.nextPage();
-                        if (status == BookStatus.NO_NEXT_PAGE) {
-                            ToastUtils.showSingleToast("没有下一页啦");
-                            return false;
-                        } else if (status == BookStatus.LOAD_SUCCESS) {
-                            abortAnimation();
-                            pagefactory.onDraw(mNextPageCanvas);
-                        } else {
-                            return false;
-                        }
-                    }
-                    listener.onFlip();
-                    setBitmaps(mCurPageBitmap, mNextPageBitmap);
-                }
+
+                is_threshold = false;
+                calcCornerXY(actiondownX, actiondownY);
+
+                setBitmaps(mCurPageBitmap, mNextPageBitmap);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (center)
-                    break;
                 int mx = (int) e.getX();
                 int my = (int) e.getY();
                 cancel = (actiondownX < mScreenWidth / 2 && mx < mTouch.x) || (actiondownX > mScreenWidth / 2 && mx > mTouch.x);
                 mTouch.x = mx;
                 mTouch.y = my;
+
+
+                //控制平移动画的
                 touch_down = mTouch.x - actiondownX;
+                if (touch_down < -FLIP_THRESHOLD&& !is_threshold) {
+                    is_threshold = true;
+                    listener.onFlip();
+                    BookStatus status = pagefactory.nextPage();
+                    if (status == BookStatus.NO_NEXT_PAGE) {
+                        ToastUtils.showSingleToast("没有下一页啦");
+                        return false;
+                    } else if (status == BookStatus.LOAD_SUCCESS) {
+                        abortAnimation();
+                        pagefactory.onDraw(mNextPageCanvas);
+                    } else {
+                        return false;
+                    }
+                } else if (touch_down >FLIP_THRESHOLD && !is_threshold) {
+                    is_threshold = true;
+                    listener.onFlip();
+                    BookStatus status = pagefactory.prePage();
+                    if (status == BookStatus.NO_PRE_PAGE) {
+                        ToastUtils.showSingleToast("没有上一页啦");
+                        return false;
+                    } else if (status == BookStatus.LOAD_SUCCESS) {
+                        abortAnimation();
+                        pagefactory.onDraw(mNextPageCanvas);
+                    } else {
+                        return false;
+                    }
+                }
+                //实时绘制
                 this.postInvalidate();
                 break;
             case MotionEvent.ACTION_UP:
@@ -164,27 +168,15 @@ public abstract class BaseReadView extends View {
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
 
-                if (center) { // ACTION_DOWN的位置在中间，则不响应滑动事件
-                    resetTouchPoint();
-                    if (Math.abs(ux - actiondownX) < 5 && Math.abs(uy - actiondownY) < 5) {
-                        listener.onCenterClick();
-                        return false;
-                    }
-                    break;
-                }
 
-                if ((Math.abs(ux - dx) < 10) && (Math.abs(uy - dy) < 10)) {
-                    if ((t - et < 1000)) { // 单击
-                        if (this instanceof NoAimWidget) {
-                            ((NoAimWidget) this).startAnimation(0);
-                        } else {
-                            startAnimation();
-                        }
-                    } else { // 长按
+                if (!is_threshold) {
+                    if ((Math.abs(ux - dx) !=0)){
                         pagefactory.cancelPage();
                         restoreAnimation();
                     }
-                    postInvalidate();
+                    if ((t - et < 1000)) { // 单击
+                    } else { // 长按
+                    }
                     return true;
                 }
                 if (cancel) {
@@ -196,7 +188,6 @@ public abstract class BaseReadView extends View {
                     postInvalidate();
                 }
                 cancel = false;
-                center = false;
                 break;
             default:
                 break;
