@@ -649,8 +649,12 @@ public class PageFactory {
         }
 
         //获取横向位置
-        float touchPercentX = (float) (touchX - marginWidth) / mVisibleWidth;
+        float[] measuredWidth = {(float) mVisibleWidth};
+        //这个方法会返回一个字符串真正的宽度
+        mPaint.breakText(lineString, true, mVisibleWidth, measuredWidth);
+        float touchPercentX = (float) (touchX - marginWidth) / measuredWidth[0];
         int touchCharacterPosition = (int) (touchPercentX * lineString.length());
+
 
         Integer[] indices = getUnLetterPosition(lineString);
         int start = 0;
@@ -663,11 +667,15 @@ public class PageFactory {
             end = (i < indices.length ? indices[i] : lineString.length());
             if (end >= touchCharacterPosition) {
                 res = lineString.substring(start, end);
+                //处理当最后一个单词被行断开的情况
                 if (i == indices.length && !lineString.endsWith("@")) {
-                    //处理当最后一个单词被行断开的情况
-                    String nextLineString = mLines.get(linePosition + 1);
-                    int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
-                    res += nextLineString.substring(0, firstUnLetterPosition);
+                    try {
+                        String nextLineString = mLines.get(linePosition + 1);
+                        int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
+                        res += nextLineString.substring(0, firstUnLetterPosition);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        //当最后一个字符是特殊字符时直接catch就好
+                    }
                 }
                 break;
             }
