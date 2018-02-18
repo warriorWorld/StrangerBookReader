@@ -166,7 +166,6 @@ public class PageFactory {
      * @return 0：文件不存在或打开失败  1：打开成功
      */
     public int openBook(String path, int[] position) {
-        //TODO
         try {
             File file = new File(path);
             if (!file.exists()) {
@@ -209,7 +208,10 @@ public class PageFactory {
                 canvas.drawColor(Color.WHITE);
             }
             // 绘制标题       //TODO
-            canvas.drawText(bookId, marginWidth, y, mTitlePaint);
+            int separatorPosition = bookId.lastIndexOf(File.separator);
+            int dotPosition = bookId.lastIndexOf(".");
+            String title = bookId.substring(separatorPosition + 1, dotPosition);
+            canvas.drawText(title, marginWidth, y, mTitlePaint);
             y += mLineSpace + mNumFontSize;
             // 绘制阅读页面文字
             for (String line : mLines) {
@@ -228,7 +230,6 @@ public class PageFactory {
                 canvas.drawBitmap(batteryBitmap, marginWidth + 2,
                         mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
             }
-            //TODO 绘制百分比
             float percent = (float) curBeginPos * 100 / mbBufferLen;
             canvas.drawText(decimalFormat.format(percent) + "%", (mWidth - percentLen) / 2,
                     mHeight - marginHeight, mTitlePaint);
@@ -236,7 +237,7 @@ public class PageFactory {
             String mTime = dateFormat.format(new Date());
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
 
-            // 保存阅读进度      //TODO
+            // 保存阅读进度
             SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos);
         }
     }
