@@ -618,4 +618,31 @@ public class PageFactory {
             LogUtils.d("batteryBitmap recycle");
         }
     }
+
+    public String getClickWord(int touchX, int touchY) {
+        String res = "";
+        int contentStartY = marginHeight + (mLineSpace << 1);//
+        contentStartY += mLineSpace + mNumFontSize;//内容起始y
+        int y = contentStartY;
+        int absoluteY = touchY - contentStartY;
+        if (absoluteY < 0) {
+            return "这是标题";
+        }
+        int touchLine = 0;
+        for (int i = 0; i < mLines.size(); i++) {
+            y += mLineSpace;
+            if (mLines.get(i).endsWith("@")) {
+                //@当做段落尾换行符 这样段落间距就会比行间距大 这里正好是行间距的两倍
+                y += mLineSpace;
+            }
+            y += mFontSize;
+            if (y >= touchY) {
+                touchLine = i;
+                break;
+            }
+        }
+
+
+        return res+touchLine;
+    }
 }

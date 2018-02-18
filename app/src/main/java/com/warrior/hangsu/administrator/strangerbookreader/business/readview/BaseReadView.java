@@ -175,6 +175,7 @@ public abstract class BaseReadView extends View {
                         restoreAnimation();
                     }
                     if ((t - et < 1000)) { // 单击
+                        ToastUtils.showSingleToast(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
                     } else { // 长按
                     }
                     return true;
