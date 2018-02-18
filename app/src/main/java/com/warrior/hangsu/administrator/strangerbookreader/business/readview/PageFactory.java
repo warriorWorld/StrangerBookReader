@@ -210,6 +210,7 @@ public class PageFactory {
             for (String line : mLines) {
                 y += mLineSpace;
                 if (line.endsWith("@")) {
+                    //@当做换行符
                     canvas.drawText(line.substring(0, line.length() - 1), marginWidth, y, mPaint);
                     y += mLineSpace;
                 } else {
@@ -222,11 +223,11 @@ public class PageFactory {
                 canvas.drawBitmap(batteryBitmap, marginWidth + 2,
                         mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
             }
-            //TODO
+            //TODO 绘制百分比
             float percent = (float) curBeginPos * 100 / mbBufferLen;
             canvas.drawText(decimalFormat.format(percent) + "%", (mWidth - percentLen) / 2,
                     mHeight - marginHeight, mTitlePaint);
-
+            //绘制时间
             String mTime = dateFormat.format(new Date());
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
 
@@ -272,13 +273,14 @@ public class PageFactory {
                 }
             }
             curEndPos = curBeginPos; // 6.最后结束指针指向下一段的开始处
-            paraSpace += mLineSpace;
+            paraSpace += mLineSpace;//段落间的空白高度
+            //因为段落间也有空白 所以需要更新总可以显示的行数
             mPageLineCount = (mVisibleHeight - paraSpace) / (mFontSize + mLineSpace); // 添加段落间距，实时更新容纳行数
         }
     }
 
     /**
-     * 根据起始位置指针，读取一页内容
+     * 根据起始位置指针，读取一页内容 配置mLines
      *
      * @return
      */
@@ -291,7 +293,7 @@ public class PageFactory {
             byte[] parabuffer = readParagraphForward(curEndPos);
             curEndPos += parabuffer.length;
             try {
-                strParagraph = new String(parabuffer, charset);
+                strParagraph = new String(parabuffer, charset);//转成UTF-8
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -299,6 +301,7 @@ public class PageFactory {
                     .replaceAll("\n", " "); // 段落中的换行符去掉，绘制的时候再换行
 
             while (strParagraph.length() > 0) {
+                //通过breakText把段落划分成一行行的字符
                 int paintSize = mPaint.breakText(strParagraph, true, mVisibleWidth, null);
                 lines.add(strParagraph.substring(0, paintSize));
                 strParagraph = strParagraph.substring(paintSize);
@@ -306,7 +309,9 @@ public class PageFactory {
                     break;
                 }
             }
+            //在每一行的末尾加@作为换行符
             lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
+            //当段落太长 不够地方显示的话 重置curEndPos
             if (strParagraph.length() != 0) {
                 try {
                     curEndPos -= (strParagraph).getBytes(charset).length;
@@ -314,7 +319,8 @@ public class PageFactory {
                     e.printStackTrace();
                 }
             }
-            paraSpace += mLineSpace;
+            paraSpace += mLineSpace;//段落间的空白高度
+            //因为段落间也有空白 所以需要更新总可以显示的行数
             mPageLineCount = (mVisibleHeight - paraSpace) / (mFontSize + mLineSpace);
         }
         return lines;
@@ -382,14 +388,16 @@ public class PageFactory {
     private byte[] readParagraphForward(int curEndPos) {
         byte b0;
         int i = curEndPos;
+        //计算段落的长度 遇到回车就停下
         while (i < mbBufferLen) {
             b0 = mbBuff.get(i++);
-            if (b0 == 0x0a) {
+            if (b0 == 0x0a) {//回车
                 break;
             }
         }
         int nParaSize = i - curEndPos;
         byte[] buf = new byte[nParaSize];
+        //根据段落长度 把一个个字符加进段落
         for (i = 0; i < nParaSize; i++) {
             buf[i] = mbBuff.get(curEndPos + i);
         }
