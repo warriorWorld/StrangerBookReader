@@ -1,4 +1,4 @@
-package com.warrior.hangsu.administrator.strangerbookreader.business.test;
+package com.warrior.hangsu.administrator.strangerbookreader.business.read;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -13,12 +13,10 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
-import com.warrior.hangsu.administrator.strangerbookreader.business.read.ReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.BaseReadView;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
-import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;

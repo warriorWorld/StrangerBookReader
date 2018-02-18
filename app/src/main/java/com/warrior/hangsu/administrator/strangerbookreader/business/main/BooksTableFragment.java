@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
-import com.warrior.hangsu.administrator.strangerbookreader.business.test.NewReadActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
