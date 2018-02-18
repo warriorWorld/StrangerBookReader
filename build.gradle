@@ -3,6 +3,10 @@
 buildscript {
     repositories {
         jcenter()
+        //这里是 LeanCloud 的包仓库
+        maven {
+            url "http://mvn.leancloud.cn/nexus/content/repositories/public"
+        }
         maven {
             url 'https://maven.google.com/'
             name 'Google'
@@ -24,6 +28,10 @@ allprojects {
          */
         flatDir {
             dirs 'aar'
+        }
+        //这里是 LeanCloud 的包仓库
+        maven {
+            url "http://mvn.leancloud.cn/nexus/content/repositories/public"
         }
         google()
     }
