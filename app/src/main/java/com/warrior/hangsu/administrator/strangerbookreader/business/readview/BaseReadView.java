@@ -54,8 +54,8 @@ public abstract class BaseReadView extends View {
     public boolean isPrepared = false;
 
     Scroller mScroller;
-    private int FLIP_THRESHOLD = 30;
-    private boolean is_threshold = false;
+    private int FLIP_THRESHOLD = 30;//滑动到下一页或上一页的阈值
+    private boolean is_threshold = false;//是否超越阈值
 
     public BaseReadView(Context context, String bookId,
                         OnReadStateChangeListener listener) {
@@ -131,7 +131,7 @@ public abstract class BaseReadView extends View {
 
                 //控制平移动画的
                 touch_down = mTouch.x - actiondownX;
-                if (touch_down < -FLIP_THRESHOLD&& !is_threshold) {
+                if (touch_down < -FLIP_THRESHOLD && !is_threshold) {
                     is_threshold = true;
                     listener.onFlip();
                     BookStatus status = pagefactory.nextPage();
@@ -144,7 +144,7 @@ public abstract class BaseReadView extends View {
                     } else {
                         return false;
                     }
-                } else if (touch_down >FLIP_THRESHOLD && !is_threshold) {
+                } else if (touch_down > FLIP_THRESHOLD && !is_threshold) {
                     is_threshold = true;
                     listener.onFlip();
                     BookStatus status = pagefactory.prePage();
@@ -170,7 +170,7 @@ public abstract class BaseReadView extends View {
 
 
                 if (!is_threshold) {
-                    if ((Math.abs(ux - dx) !=0)){
+                    if ((Math.abs(ux - dx) != 0)) {
                         pagefactory.cancelPage();
                         restoreAnimation();
                     }
