@@ -25,14 +25,14 @@ public class DbAdapter {
     /**
      * 插入一条书籍信息
      */
-    public void insertBooksTableTb(String path, String bookName, int progress,
+    public void insertBooksTableTb(String path, String bookName, float progress, String format,
                                    String bpPath) {
         if (queryadded(bookName)) {
             return;
         }
         db.execSQL(
-                "insert into BooksTable (path,name,progress,bpPath) values (?,?,?,?)",
-                new Object[]{path, bookName, progress, bpPath});
+                "insert into BooksTable (path,name,progress,format,bpPath) values (?,?,?,?,?)",
+                new Object[]{path, bookName, progress, format, bpPath});
     }
 
     /**
@@ -69,7 +69,7 @@ public class DbAdapter {
      *
      * @param name
      */
-    public void updateProgressTOBooksTb(String name, int progress) {
+    public void updateProgressTOBooksTb(String name, float progress) {
         db.execSQL("update BooksTable set progress=? where name=?",
                 new Object[]{progress, name});
     }
@@ -107,13 +107,16 @@ public class DbAdapter {
                     .getString(cursor.getColumnIndex("bpPath"));
             String path = cursor
                     .getString(cursor.getColumnIndex("path"));
-            int progress = cursor
-                    .getInt(cursor.getColumnIndex("progress"));
+            String format = cursor
+                    .getString(cursor.getColumnIndex("format"));
+            float progress = cursor
+                    .getFloat(cursor.getColumnIndex("progress"));
             BookBean item = new BookBean();
             item.setPath(path);
             item.setBpPath(bpPath);
             item.setName(name);
             item.setProgress(progress);
+            item.setFormat(format);
             resBeans.add(item);
         }
         cursor.close();

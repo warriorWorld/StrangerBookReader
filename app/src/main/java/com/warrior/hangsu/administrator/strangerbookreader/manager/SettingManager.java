@@ -17,8 +17,11 @@ package com.warrior.hangsu.administrator.strangerbookreader.manager;
 
 
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -89,10 +92,13 @@ public class SettingManager {
         return "readLightness";
     }
 
-    public synchronized void saveReadProgress(String bookId, int m_mbBufBeginPos, int m_mbBufEndPos) {
+    public synchronized void saveReadProgress(String bookId, int m_mbBufBeginPos, int m_mbBufEndPos, float percent) {
         SharedPreferencesUtil.getInstance()
                 .putInt(getStartPosKey(bookId), m_mbBufBeginPos)
                 .putInt(getEndPosKey(bookId), m_mbBufEndPos);
+        DbAdapter db = new DbAdapter(AppUtils.getAppContext());
+        db.updateProgressTOBooksTb(StringUtil.cutString(bookId, '/', '.'), percent);
+        db.closeDb();
     }
 
     /**

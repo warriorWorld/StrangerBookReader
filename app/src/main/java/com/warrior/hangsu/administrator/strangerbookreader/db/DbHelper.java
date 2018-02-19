@@ -10,7 +10,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public static final String BOOKS_TABLE = "create table if not exists BooksTable ("
             + "id integer primary key autoincrement,"
-            + "path text," + "name text," + "progress integer,"
+            + "path text," + "name text," + "progress float," + "format text,"
             + "bpPath text)";
     public static final String DATA_STATISTICS = "create table if not exists STATISTICS ("
             + "id integer primary key autoincrement,"

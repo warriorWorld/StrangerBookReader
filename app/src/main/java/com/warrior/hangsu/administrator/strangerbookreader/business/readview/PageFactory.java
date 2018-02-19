@@ -238,7 +238,7 @@ public class PageFactory {
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
 
             // 保存阅读进度
-            SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos);
+            SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos, percent);
         }
     }
 

@@ -16,6 +16,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
 
 import java.util.ArrayList;
 
@@ -65,7 +66,7 @@ public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRe
         } else {
             viewHolder.book_file_format_tv.setText(item.getFormat());
         }
-        viewHolder.read_progress_tv.setText(item.getProgress() + "%");
+        viewHolder.read_progress_tv.setText(NumberUtil.doubleDecimals(item.getProgress()) + "%");
 
         viewHolder.item_book_rl.setOnClickListener(new View.OnClickListener() {
             @Override

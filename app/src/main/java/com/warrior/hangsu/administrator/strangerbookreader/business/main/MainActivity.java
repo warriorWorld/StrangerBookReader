@@ -49,8 +49,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         initUI();
         db = new DbAdapter(this);
-        refreshBooks();
 //        navWidth = DisplayUtil.dip2px(this, 266);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshBooks();
     }
 
     private void initUI() {
@@ -166,8 +171,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initDateRv();
     }
 
-    public void addBooks(String path, String bpPath) {
-        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, bpPath);
+    public void addBooks(String path, String format, String bpPath) {
+        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, bpPath);
         refreshBooks();
     }
 
@@ -239,7 +244,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 e.printStackTrace();
             }
             ToastUtils.showSingleToast(path);
-            addBooks(path, null);
+            String format = "";
+            if (path.endsWith(".txt") || path.endsWith(".TXT")) {
+                format = "TXT";
+            } else if (path.endsWith(".pdf") || path.endsWith(".PDF")) {
+                format = "PDF";
+            } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
+                format = "EPUB";
+            }
+            addBooks(path, format,null);
         }
     }
 
