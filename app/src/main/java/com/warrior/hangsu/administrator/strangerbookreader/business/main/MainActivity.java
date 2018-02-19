@@ -26,6 +26,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyc
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
@@ -133,7 +134,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onOptionsClick() {
-
+                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(intent);
             }
         });
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -50,6 +50,12 @@
         <activity
             android:name=".business.login.RegisterActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".business.other.AboutActivity"
+            android:launchMode="standard"></activity>
+        <activity
+            android:name=".business.other.FeedbackActivity"
+            android:launchMode="standard"></activity>
     </application>
 
 </manifest>

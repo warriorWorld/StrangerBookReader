@@ -8,4 +8,7 @@
     <dimen name="list_title_size">16sp</dimen>
     <dimen name="list_message_size">14sp</dimen>
     <dimen name="main_text_size">14sp</dimen>
+    <dimen name="user_item_h">50dp</dimen>
+    <dimen name="item_padding_horizontal">17dp</dimen>
+    <dimen name="item_padding_vertical">10dp</dimen>
 </resources>
