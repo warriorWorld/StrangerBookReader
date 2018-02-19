@@ -109,6 +109,7 @@ public class PageFactory {
 
     private OnReadStateChangeListener listener;
     private String charset = "UTF-8";
+    private float currentPercent;
 
     public PageFactory(Context context, String bookId) {
         this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
@@ -230,16 +231,20 @@ public class PageFactory {
                 canvas.drawBitmap(batteryBitmap, marginWidth + 2,
                         mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
             }
-            float percent = (float) curBeginPos * 100 / mbBufferLen;
-            canvas.drawText(decimalFormat.format(percent) + "%", (mWidth - percentLen) / 2,
+            currentPercent = (float) curBeginPos * 100 / mbBufferLen;
+            canvas.drawText(decimalFormat.format(currentPercent) + "%", (mWidth - percentLen) / 2,
                     mHeight - marginHeight, mTitlePaint);
             //绘制时间
             String mTime = dateFormat.format(new Date());
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
 
             // 保存阅读进度
-            SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos, percent);
+            SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos, currentPercent);
         }
+    }
+
+    public float getCurrentPercent() {
+        return currentPercent;
     }
 
     /**

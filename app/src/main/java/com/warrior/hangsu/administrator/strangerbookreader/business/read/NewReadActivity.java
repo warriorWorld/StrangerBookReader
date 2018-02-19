@@ -21,6 +21,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.readview.Ove
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
@@ -31,6 +32,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +50,9 @@ public class NewReadActivity extends BaseActivity implements
     private BaseReadView mPageWidget;
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
-    private AlertDialog dialog;
     private String bookPath;
+    private MangaDialog dialog;
+    private ReadDialog readDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,6 @@ public class NewReadActivity extends BaseActivity implements
         }
         initUI();
         initPagerWidget();
-        initDialog();
     }
 
     private void initUI() {
@@ -95,6 +98,12 @@ public class NewReadActivity extends BaseActivity implements
                     if (StringUtil.isWord(word)) {
                         translation(word);
                     }
+                }
+            });
+            mPageWidget.setOnUpFlipListener(new OnUpFlipListener() {
+                @Override
+                public void onUpFlip() {
+                    showReadDialog();
                 }
             });
             readWidgetFl.removeAllViews();
@@ -158,22 +167,23 @@ public class NewReadActivity extends BaseActivity implements
 
     }
 
-    private void initDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        dialog = builder.create();
-        dialog.setCancelable(true);
-    }
 
     private void showOnlyOkDialog(String title, String msg) {
+        if (null == dialog) {
+            dialog = new MangaDialog(this);
+        }
+        dialog.show();
         dialog.setTitle(title);
         dialog.setMessage(msg);
-        dialog.show();
+        dialog.setOkText("确定");
+    }
+
+    private void showReadDialog() {
+        if (null == readDialog) {
+            readDialog = new ReadDialog(this);
+        }
+        readDialog.show();
+        readDialog.initSeekBar((int) mPageWidget.getCurrentPercent());
     }
 
     private class ReadListener implements OnReadStateChangeListener {

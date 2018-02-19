@@ -27,6 +27,7 @@ import android.widget.Scroller;
 
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
@@ -54,6 +55,7 @@ public abstract class BaseReadView extends View {
     protected OnReadStateChangeListener listener;
     protected String bookId;
     public boolean isPrepared = false;
+    private OnUpFlipListener onUpFlipListener;
 
     Scroller mScroller;
     private int FLIP_THRESHOLD = 30;//滑动到下一页或上一页的阈值
@@ -172,6 +174,14 @@ public abstract class BaseReadView extends View {
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
 
+                if ((Math.abs(ux - dx) < FLIP_THRESHOLD*2) && (Math.abs(uy - dy) > FLIP_THRESHOLD*2)) {
+                    if (null != onUpFlipListener) {
+                        pagefactory.cancelPage();
+                        restoreAnimation();
+                        onUpFlipListener.onUpFlip();
+                    }
+                    return true;
+                }
 
                 if (!is_threshold) {
                     if ((Math.abs(ux - dx) != 0)) {
@@ -240,6 +250,10 @@ public abstract class BaseReadView extends View {
     protected abstract void setBitmaps(Bitmap mCurPageBitmap, Bitmap mNextPageBitmap);
 
     public abstract void setTheme(int theme);
+
+    public float getCurrentPercent() {
+        return pagefactory.getCurrentPercent();
+    }
 
     /**
      * 复位触摸点位
@@ -359,5 +373,9 @@ public abstract class BaseReadView extends View {
 
     public void setOnWordClickListener(OnWordClickListener onWordClickListener) {
         this.onWordClickListener = onWordClickListener;
+    }
+
+    public void setOnUpFlipListener(OnUpFlipListener onUpFlipListener) {
+        this.onUpFlipListener = onUpFlipListener;
     }
 }

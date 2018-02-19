@@ -26,4 +26,8 @@
         </item>
         <item name="android:progressDrawable">@drawable/shape_progressbar_mini</item>
     </style>
+    <style name="AnimationDialog">
+        <item name="android:windowEnterAnimation">@anim/v5_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/v5_dialog_exit</item>
+    </style>
 </resources>
