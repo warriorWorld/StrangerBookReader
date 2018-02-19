@@ -396,6 +396,7 @@ public abstract class BaseReadView extends View {
     public void setPercent(int percent) {
         pagefactory.setPercent(percent);
         nextPage();
+        prePage();
     }
 
     public void setOnWordClickListener(OnWordClickListener onWordClickListener) {
