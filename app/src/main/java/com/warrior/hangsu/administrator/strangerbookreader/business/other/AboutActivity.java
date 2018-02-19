@@ -51,6 +51,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private RelativeLayout authorRl;
     private RelativeLayout feedbackRl;
     private TextView logoutTv;
+    private RelativeLayout backgroundStyleRl;
+    private TextView backgroundStyleTv;
+    private RelativeLayout translateWayRl;
+    private TextView translateWayTv;
+    private RelativeLayout textSizeRl;
+    private TextView textSizeTv;
     //版本更新
     private String versionName, msg;
     private int versionCode;
@@ -58,6 +64,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +98,16 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TRANSLATE, false));
+        backgroundStyleRl = (RelativeLayout) findViewById(R.id.background_style_rl);
+        backgroundStyleTv = (TextView) findViewById(R.id.background_style_tv);
+        translateWayRl = (RelativeLayout) findViewById(R.id.translate_way_rl);
+        translateWayTv = (TextView) findViewById(R.id.translate_way_tv);
+        textSizeRl = (RelativeLayout) findViewById(R.id.text_size_rl);
+        textSizeTv = (TextView) findViewById(R.id.text_size_tv);
 
+        backgroundStyleRl.setOnClickListener(this);
+        translateWayRl.setOnClickListener(this);
+        textSizeRl.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
         feedbackRl.setOnClickListener(this);
@@ -268,6 +284,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 break;
             case R.id.logout_tv:
                 showLogoutDialog();
+                break;
+            case R.id.background_style_rl:
+                break;
+            case R.id.text_size_rl:
+                break;
+            case R.id.translate_way_rl:
                 break;
         }
         if (null != intent) {

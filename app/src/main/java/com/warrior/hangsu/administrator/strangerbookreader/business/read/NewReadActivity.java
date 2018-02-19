@@ -26,6 +26,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
@@ -119,6 +120,10 @@ public class NewReadActivity extends BaseActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (this, ShareKeys.CLOSE_TRANSLATE, false)) {
+            return;
+        }
         String url = Globle.YOUDAO + word;
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {

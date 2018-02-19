@@ -98,6 +98,51 @@
             </RelativeLayout>
 
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/divide_line"
+                android:visibility="visible" />
+
+
+            <RelativeLayout
+                android:id="@+id/background_style_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/item_padding_horizontal"
+                android:paddingRight="@dimen/item_padding_horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="主题样式"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+                <TextView
+                    android:id="@+id/background_style_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/background_style_iv"
+                    android:text="默认"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/background_style_iv"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/forward" />
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -105,6 +150,96 @@
                 android:background="@color/divide_line"
                 android:visibility="visible" />
 
+
+            <RelativeLayout
+                android:id="@+id/translate_way_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/item_padding_horizontal"
+                android:paddingRight="@dimen/item_padding_horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="切换单击/长按调出翻译"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+                <TextView
+                    android:id="@+id/translate_way_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/translate_way_iv"
+                    android:text="单击翻译"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/translate_way_iv"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/forward" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/divide_line"
+                android:visibility="visible" />
+
+            <RelativeLayout
+                android:id="@+id/text_size_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/item_padding_horizontal"
+                android:paddingRight="@dimen/item_padding_horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="修改字体大小"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+                <TextView
+                    android:id="@+id/text_size_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/text_size_iv"
+                    android:text="默认"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/text_size_iv"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/forward" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/divide_line"
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/author_rl"
