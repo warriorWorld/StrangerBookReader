@@ -1,5 +1,6 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.main;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
@@ -21,21 +29,35 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginA
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.QrDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends BaseActivity implements View.OnClickListener,
+        EasyPermissions.PermissionCallbacks {
     private DrawerLayout drawer;
     private SevenFourteenNavigationView navigationView;
     private RelativeLayout appBarMain;
@@ -47,6 +69,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
     private BookListRecyclerListAdapter adapter;
     private DbAdapter db;//数据库
+    //版本更新
+    private String versionName, msg;
+    private int versionCode;
+    private boolean forceUpdate;
+    private AVFile downloadFile, qrCodeFile;
+    private MangaDialog versionDialog;
+    private DownloadDialog downloadDialog;
+    private String qrFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initUI();
         db = new DbAdapter(this);
 //        navWidth = DisplayUtil.dip2px(this, 266);
+        doGetVersionInfo();
     }
 
     @Override
@@ -92,7 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onShare_appClick() {
-
+                showQrDialog();
             }
 
             @Override
@@ -264,6 +295,170 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void doGetVersionInfo() {
+        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        versionName = list.get(0).getString("versionName");
+                        versionCode = list.get(0).getInt("versionCode");
+                        forceUpdate = list.get(0).getBoolean("forceUpdate");
+                        msg = list.get(0).getString("description");
+                        downloadFile = list.get(0).getAVFile("apk");
+                        qrCodeFile = list.get(0).getAVFile("QRcode");
+                        if (null != qrCodeFile) {
+                            doDownloadQRcode();
+                        }
+                        if (BaseParameterUtil.getInstance(MainActivity.this).
+                                getAppVersionCode() >= versionCode || SharedPreferencesUtils.
+                                getBooleanSharedPreferencesData(MainActivity.this,
+                                        ShareKeys.IGNORE_THIS_VERSION_KEY + versionName, false)) {
+                        } else {
+                            showVersionDialog();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @AfterPermissionGranted(111)
+    private void doDownloadQRcode() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            final String folderPath = Globle.DOWNLOAD_PATH;
+            final File file = new File(folderPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            final String qrFileName = "QR" + versionName + ".png";
+            qrFilePath = Globle.DOWNLOAD_PATH + "/" + qrFileName;
+            final File qrFile = new File(qrFilePath);
+            if (qrFile.exists()) {
+                //有就不下了
+                return;
+            }
+            qrCodeFile.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, AVException e) {
+                    // bytes 就是文件的数据流
+                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                        File apkFile = FileUtils.byte2File(bytes, folderPath, qrFileName);
+                    }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+                    // 下载进度数据，integer 介于 0 和 100。
+                }
+            });
+
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    111, perms);
+        }
+    }
+
+    private void showQrDialog() {
+        QrDialog qrDialog = new QrDialog(this);
+        qrDialog.show();
+        qrDialog.setImg("file://" + qrFilePath);
+    }
+
+    private void showVersionDialog() {
+        if (null == versionDialog) {
+            versionDialog = new MangaDialog(MainActivity.this);
+            versionDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+                @Override
+                public void onOkClick() {
+                    versionDialog.dismiss();
+                    doDownload();
+                }
+
+                @Override
+                public void onCancelClick() {
+                    if (forceUpdate) {
+                        ActivityPoor.finishAllActivity();
+                    } else {
+                        SharedPreferencesUtils.setSharedPreferencesData(MainActivity.this,
+                                ShareKeys.IGNORE_THIS_VERSION_KEY + versionName, true);
+                        ToastUtils.showSingleToast("忽略后可在'我的'页中点击'版本'按钮升级至最新版!");
+                    }
+                }
+            });
+        }
+        versionDialog.show();
+
+        versionDialog.setTitle("有新版本啦" + "v_" + versionName);
+        versionDialog.setMessage(msg);
+        versionDialog.setOkText("升级");
+        versionDialog.setCancelable(false);
+
+        if (!forceUpdate) {
+            versionDialog.setCancelText("忽略");
+        } else {
+            versionDialog.setCancelText("退出");
+        }
+    }
+
+    @AfterPermissionGranted(111)
+    private void doDownload() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            showDownLoadDialog();
+            final String filePath = Globle.DOWNLOAD_PATH + "/apk";
+            final File file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            downloadFile.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, AVException e) {
+                    // bytes 就是文件的数据流
+                    if (null != downloadDialog && downloadDialog.isShowing()) {
+                        downloadDialog.dismiss();
+                    }
+                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                        File apkFile = FileUtils.byte2File(bytes, filePath, "english_book_reader.apk");
+
+                        Intent intent = new Intent();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setAction("android.intent.action.VIEW");
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+                        startActivity(intent);
+                    }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+                    // 下载进度数据，integer 介于 0 和 100。
+                    downloadDialog.setProgress(integer);
+                }
+            });
+
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    111, perms);
+        }
+    }
+
+    private void showDownLoadDialog() {
+        if (null == downloadDialog) {
+            downloadDialog = new DownloadDialog(this);
+        }
+        downloadDialog.show();
+        downloadDialog.setCancelable(false);
+    }
+
     @Override
     public void onBackPressed() {
         showLogoutDialog();
@@ -303,5 +498,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         db.closeDb();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        ToastUtils.showSingleToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+//        baseToast.showToast(getResources().getString(R.string.no_permissions), true);
+        if (111 == requestCode) {
+            MangaDialog peanutDialog = new MangaDialog(MainActivity.this);
+            peanutDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+                @Override
+                public void onOkClick() {
+                    ActivityPoor.finishAllActivity();
+                }
+
+                @Override
+                public void onCancelClick() {
+
+                }
+            });
+            peanutDialog.show();
+            peanutDialog.setTitle("没有文件读写权限,无法更新App!可以授权后重试!");
+        }
     }
 }
