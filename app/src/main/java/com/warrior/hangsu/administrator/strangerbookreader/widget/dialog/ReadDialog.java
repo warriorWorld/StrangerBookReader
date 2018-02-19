@@ -152,9 +152,9 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
         }
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
                 ShareKeys.DOUBLE_CLICK_TRANSLATE, false)) {
-            translateWayTv.setText("单击查词");
+            translateWayTv.setText("切换到单击查词");
         } else {
-            translateWayTv.setText("双击查词");
+            translateWayTv.setText("切换到双击查词");
         }
         backgroundStyleTv.setText("背景样式(" + ThemeManager.THEME_LIST[SettingManager.getInstance().getReadTheme()] + ")");
         textSizeTv.setText("字体大小(" + SettingManager.getInstance().getFontSizeExplain() + ")");
@@ -165,10 +165,10 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
                 ShareKeys.ISNIGHT, false)) {
             sunMoonModeIv.setBackgroundResource(R.drawable.sun_icon);
-            sunMoonModeTv.setText("日间模式");
+            sunMoonModeTv.setText("切换到日间模式");
         } else {
             sunMoonModeIv.setBackgroundResource(R.drawable.moon_icon);
-            sunMoonModeTv.setText("夜间模式");
+            sunMoonModeTv.setText("切换到夜间模式");
         }
     }
 

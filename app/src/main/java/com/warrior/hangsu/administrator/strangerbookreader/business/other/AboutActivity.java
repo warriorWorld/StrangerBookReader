@@ -22,16 +22,22 @@ import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
@@ -64,6 +70,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
+    private final String[] TRANSLATE_WAY_LIST = {"单击", "双击"};
 
 
     @Override
@@ -125,6 +132,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
             logoutTv.setVisibility(View.GONE);
         } else {
             logoutTv.setVisibility(View.VISIBLE);
+        }
+        backgroundStyleTv.setText(ThemeManager.THEME_LIST[SettingManager.getInstance().getReadTheme()]);
+        textSizeTv.setText(SettingManager.getInstance().getFontSizeExplain());
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
+                ShareKeys.DOUBLE_CLICK_TRANSLATE, false)) {
+            translateWayTv.setText("双击查词");
+        } else {
+            translateWayTv.setText("单击查词");
         }
     }
 
@@ -268,6 +283,90 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
     }
 
+    private void showThemeSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                SettingManager.getInstance().saveReadTheme(position);
+                if (position == ThemeManager.NIGHT) {
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (AboutActivity.this, ShareKeys.ISNIGHT,
+                                    true);
+                    return;
+                }
+                refreshUI();
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(ThemeManager.THEME_LIST);
+    }
+
+    private void showFontSizeSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+                SettingManager.getInstance().saveFontSize(ScreenUtils.dpToPxInt(Integer.valueOf(selectedCodeRes)));
+                refreshUI();
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(SettingManager.FONT_SIZE_LIST);
+        listDialog.setCodeList(SettingManager.FONT_SIZE_CODE_LIST);
+    }
+
+    private void showTranslateWaySelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        SharedPreferencesUtils.setSharedPreferencesData
+                                (AboutActivity.this, ShareKeys.DOUBLE_CLICK_TRANSLATE,
+                                        false);
+                        break;
+                    case 1:
+                        SharedPreferencesUtils.setSharedPreferencesData
+                                (AboutActivity.this, ShareKeys.DOUBLE_CLICK_TRANSLATE,
+                                        true);
+                        break;
+                }
+                refreshUI();
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(TRANSLATE_WAY_LIST);
+    }
 
     @Override
     public void onClick(View v) {
@@ -286,10 +385,13 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 showLogoutDialog();
                 break;
             case R.id.background_style_rl:
+                showThemeSelectorDialog();
                 break;
             case R.id.text_size_rl:
+                showFontSizeSelectorDialog();
                 break;
             case R.id.translate_way_rl:
+                showTranslateWaySelectorDialog();
                 break;
         }
         if (null != intent) {
