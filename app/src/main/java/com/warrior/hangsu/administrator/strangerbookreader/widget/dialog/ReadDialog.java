@@ -20,6 +20,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
@@ -47,6 +49,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
     private DiscreteSeekBar progressSeekBar;
     private RelativeLayout closeDialogRl;
     private LinearLayout headLl;
+    private boolean isProgressChange = false;
 
     public ReadDialog(Context context) {
         super(context);
@@ -114,6 +117,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
         progressSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                isProgressChange = true;
             }
 
             @Override
@@ -123,7 +127,8 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                if (seekBar.getProgress() >= 0) {
+                if (seekBar.getProgress() > 0 && isProgressChange) {
+                    isProgressChange = false;
                     if (null != onReadDialogClickListener) {
                         onReadDialogClickListener.onProgressJumpSelected(seekBar.getProgress());
                     }
@@ -151,6 +156,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
         } else {
             translateWayTv.setText("双击查词");
         }
+        backgroundStyleTv.setText("背景样式(" + ThemeManager.THEME_LIST[SettingManager.getInstance().getReadTheme()] + ")");
         toggleSunMoonMode();
     }
 

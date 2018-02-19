@@ -66,7 +66,7 @@ public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRe
         } else {
             viewHolder.book_file_format_tv.setText(item.getFormat());
         }
-        viewHolder.read_progress_tv.setText(NumberUtil.doubleDecimals(item.getProgress()) + "%");
+        viewHolder.read_progress_tv.setText("阅读进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%");
 
         viewHolder.item_book_rl.setOnClickListener(new View.OnClickListener() {
             @Override

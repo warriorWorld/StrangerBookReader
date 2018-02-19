@@ -26,6 +26,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
@@ -38,8 +39,10 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +91,7 @@ public class NewReadActivity extends BaseActivity implements
 
     @AfterPermissionGranted(111)
     private void initPagerWidget() {
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
@@ -120,6 +124,7 @@ public class NewReadActivity extends BaseActivity implements
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    SingleLoadBarUtil.getInstance().dismissLoadBar();
                     /**
                      *要执行的操作
                      */
@@ -215,7 +220,7 @@ public class NewReadActivity extends BaseActivity implements
 
                 @Override
                 public void onBackgroundStyleClick() {
-
+                    showThemeSelectorDialog();
                 }
 
                 @Override
@@ -264,6 +269,36 @@ public class NewReadActivity extends BaseActivity implements
             mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_day),
                     getResources().getColor(R.color.chapter_title_day));
         }
+    }
+
+    private void showThemeSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                SettingManager.getInstance().saveReadTheme(position);
+                if (position == ThemeManager.NIGHT) {
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (NewReadActivity.this, ShareKeys.ISNIGHT,
+                                    true);
+                    toggleDayNight();
+                    return;
+                }
+                mPageWidget.setTheme(position);
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(ThemeManager.THEME_LIST);
     }
 
     private class ReadListener implements OnReadStateChangeListener {

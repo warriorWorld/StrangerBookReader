@@ -40,6 +40,7 @@ public class ThemeManager {
     public static final int LEATHER = 3;
     public static final int GRAY = 4;
     public static final int NIGHT = 5;
+    public static final String[] THEME_LIST = {"默认", "黄色", "绿色", "羊皮纸", "灰色"};
 
     public static void setReaderTheme(int theme, View view) {
         switch (theme) {
