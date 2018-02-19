@@ -98,12 +98,8 @@ public class SevenFourteenNavigationView extends RelativeLayout implements OnCli
     }
 
     public void setUserName(String userName) {
-        if (TextUtils.isEmpty(userName)) {
-            userNameTv.setText("你好");
-        } else {
-            userNameTv.setText(userName);
-        }
-        toggleLogged(true);
+        userNameTv.setText(userName);
+        toggleLogged(!TextUtils.isEmpty(userName));
     }
 
 

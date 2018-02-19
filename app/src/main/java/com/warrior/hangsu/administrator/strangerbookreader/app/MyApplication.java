@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
@@ -32,6 +34,16 @@ public class MyApplication extends Application {
         initPrefs();
 
         dealFileUriExposedException();
+        initLeanCloud();
+        initUserInfo();
+    }
+    private void initUserInfo() {
+        LoginBean.getInstance().setLoginInfo(this, LoginBean.getLoginInfo(this));
+    }
+    private void initLeanCloud() {
+        // 初始化参数依次为 this, AppId, AppKey
+        AVOSCloud.initialize(this, "BBKcJTQVwerDmDbfgVfY0ypM-gzGzoHsz", "urKwS49BYgiF5Rfs593jYiuc");
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     private void dealFileUriExposedException() {

@@ -13,11 +13,14 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
@@ -26,6 +29,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
 import java.net.URISyntaxException;
@@ -56,6 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         refreshBooks();
+        navigationView.setUserName(LoginBean.getInstance().getUserName());
     }
 
     private void initUI() {
@@ -64,7 +69,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         navigationView.setOnNavigationItemClickListener(new SevenFourteenNavigationView.OnNavigationItemClickListener() {
             @Override
             public void onLoginBtnClick() {
-
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
 
             @Override
@@ -74,12 +80,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onNewWordClick() {
-
+                Intent intent = new Intent(MainActivity.this, WordsBookActivity.class);
+                startActivity(intent);
             }
 
             @Override
             public void onStatisticsClick() {
-
+                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+                startActivity(intent);
             }
 
             @Override
@@ -252,11 +260,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
                 format = "EPUB";
             }
-            addBooks(path, format,null);
+            addBooks(path, format, null);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        showLogoutDialog();
+    }
+
     private void showLogoutDialog() {
+        MangaDialog logoutDialog = new MangaDialog(MainActivity.this);
+        logoutDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                MainActivity.this.finish();
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        logoutDialog.show();
+
+        logoutDialog.setTitle("确定退出?");
+        logoutDialog.setOkText("退出");
+        logoutDialog.setCancelText("再逛逛");
+        logoutDialog.setCancelable(true);
     }
 
     @Override
