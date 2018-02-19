@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="120dp"
-    android:layout_height="200dp"
-    android:orientation="vertical"
-    android:padding="2dp"
-    tools:context=".mangalist.MainActivity">
+    android:id="@+id/item_book_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divide">
 
-    <TextView
-        android:id="@+id/book_txt_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:background="@drawable/book1"
-        android:paddingLeft="22dp"
-        android:paddingRight="15dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="25dp"
-        android:scaleType="centerCrop"
-        android:text="Kritik_der_reinen"
-        android:textSize="16sp"
-        android:textStyle="italic|bold"
-        android:typeface="serif"
-        android:visibility="visible">
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
 
-    </TextView>
+        <ImageView
+            android:id="@+id/book_iv"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@drawable/book_icon" />
 
-    <ImageView
-        android:id="@+id/book_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:scaleType="centerCrop"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:visibility="gone">
+        <TextView
+            android:id="@+id/book_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/book_iv"
+            android:text="https://www.buzzingandroid.com/tools/android-layout-finder/"
+            android:textColor="@color/main_text_color"
+            android:textSize="18sp" />
 
-    </ImageView>
+        <TextView
+            android:id="@+id/read_progress_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/book_iv"
+            android:text="阅读进度:  0.00%"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="11sp" />
 
-
-    <TextView
-        android:id="@+id/book_name"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:ellipsize="marquee"
-        android:gravity="center"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        android:text="XXX"
-        android:textSize="16sp" />
-
-</LinearLayout>
+        <TextView
+            android:id="@+id/book_file_format_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:text="TXT"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="30sp" />
+    </RelativeLayout>
+</RelativeLayout>

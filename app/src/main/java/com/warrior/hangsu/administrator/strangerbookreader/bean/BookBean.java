@@ -9,13 +9,14 @@ public class BookBean {
     private String path;
     private String bpPath;
     private String name;
-    private int progress;
+    private float progress;
+    private String format;
 
     public String getBpPath() {
         if (TextUtils.isEmpty(bpPath)) {
             return "";
         } else {
-            return "file://" + bpPath;
+            return bpPath;
         }
     }
 
@@ -40,11 +41,19 @@ public class BookBean {
         this.name = name;
     }
 
-    public int getProgress() {
+    public float getProgress() {
         return progress;
     }
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 }

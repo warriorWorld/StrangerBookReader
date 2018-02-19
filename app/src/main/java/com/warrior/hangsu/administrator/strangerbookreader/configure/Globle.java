@@ -26,4 +26,10 @@ public class Globle {
     public static int nowBookPosition;
 
     public static boolean closeQueryWord;
+    final public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .considerExifParams(true)
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .build();
 }

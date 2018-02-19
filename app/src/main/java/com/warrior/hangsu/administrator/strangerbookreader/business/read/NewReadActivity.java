@@ -56,6 +56,7 @@ public class NewReadActivity extends BaseActivity implements
 
     private void initUI() {
         readWidgetFl = (FrameLayout) findViewById(R.id.read_widget_fl);
+        hideBaseTopBar();
     }
 
     @Override

@@ -7,20 +7,26 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.DisplayUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private DrawerLayout drawer;
@@ -29,12 +35,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     //    private int navWidth;
     private TopBar mainTopbar;
     private RecyclerView bookListRcv;
-
+    private View emptyView;
+    private TextView emptyTv;
+    private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
+    private BookListRecyclerListAdapter adapter;
+    private DbAdapter db;//数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
+        db = new DbAdapter(this);
+        refreshBooks();
 //        navWidth = DisplayUtil.dip2px(this, 266);
     }
 
@@ -123,15 +135,61 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         });
         bookListRcv = (RecyclerView) findViewById(R.id.book_list_rcv);
-        bookListRcv.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        bookListRcv.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         bookListRcv.setFocusableInTouchMode(false);
         bookListRcv.setFocusable(false);
         bookListRcv.setHasFixedSize(true);
+        emptyView = findViewById(R.id.empty_view);
+        emptyTv = (TextView) findViewById(R.id.empty_tv);
+        emptyTv.setText("书架是空的!点击添加!");
+
+        emptyView.setOnClickListener(this);
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
+    }
+
+    public void refreshBooks() {
+        booksList = db.queryAllBooks();
+
+        initDateRv();
+    }
+
+    public void addBooks(String path, String bpPath) {
+        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, bpPath);
+        refreshBooks();
+    }
+
+    public void deleteBooks(String bookName) {
+        db.deleteBookByBookName(bookName);
+        refreshBooks();
+    }
+
+    private void initDateRv() {
+        try {
+            if (null == booksList || booksList.size() <= 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (null == adapter) {
+                adapter = new BookListRecyclerListAdapter(this, booksList);
+                bookListRcv.setAdapter(adapter);
+            } else {
+                adapter.setList(booksList);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -164,8 +222,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 e.printStackTrace();
             }
             ToastUtils.showSingleToast(path);
-            //TODO
-//            booksTableFragment.addBooks(path, null);
+            addBooks(path, null);
         }
     }
 
@@ -175,6 +232,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.empty_view:
+                showFileChooser();
+                break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        db.closeDb();
     }
 }

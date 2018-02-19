@@ -4,22 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mangalist.MainActivity">
+    android:background="@color/white">
 
     <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/empty_books_table" />
+        android:id="@+id/empty_iv"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="140dp"
+        android:background="@drawable/empty_box_icon" />
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/empty_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image"
+        android:layout_below="@+id/empty_iv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:text="书架是空的,快去添加书籍吧!"
-        android:textSize="18sp" />
+        android:text="书架是空的!点击添加!"
+        android:textColor="@color/main_text_color"
+        android:textSize="14sp" />
 </RelativeLayout>
