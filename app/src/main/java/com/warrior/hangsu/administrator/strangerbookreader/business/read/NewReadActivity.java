@@ -20,9 +20,11 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.readview.Bas
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
@@ -117,7 +119,7 @@ public class NewReadActivity extends BaseActivity implements
                     /**
                      *要执行的操作
                      */
-                    mPageWidget.init(ThemeManager.NORMAL);
+                    mPageWidget.init(SettingManager.getInstance().getReadTheme());
                 }
             }, 500);//n秒后执行Runnable中的run方法
         } else {
@@ -181,6 +183,52 @@ public class NewReadActivity extends BaseActivity implements
     private void showReadDialog() {
         if (null == readDialog) {
             readDialog = new ReadDialog(this);
+            readDialog.setOnReadDialogClickListener(new OnReadDialogClickListener() {
+                @Override
+                public void onSearchJumpClick() {
+
+                }
+
+                @Override
+                public void onProgressJumpSelected(int progress) {
+                    mPageWidget.setPercent(progress);
+                }
+
+                @Override
+                public void onSunMoonToggleClick(boolean isMoonMode) {
+
+                }
+
+                @Override
+                public void onTextSizeClick() {
+
+                }
+
+                @Override
+                public void onBackgroundStyleClick() {
+
+                }
+
+                @Override
+                public void onToggleTranslateWayClick() {
+
+                }
+
+                @Override
+                public void onCloseTranslateClick() {
+
+                }
+
+                @Override
+                public void onUserHeadClick() {
+
+                }
+
+                @Override
+                public void onCloseDialogClick() {
+
+                }
+            });
         }
         readDialog.show();
         readDialog.initSeekBar((int) mPageWidget.getCurrentPercent());

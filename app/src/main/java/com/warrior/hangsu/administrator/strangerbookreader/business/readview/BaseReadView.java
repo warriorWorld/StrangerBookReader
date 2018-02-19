@@ -174,7 +174,7 @@ public abstract class BaseReadView extends View {
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
 
-                if ((Math.abs(ux - dx) < FLIP_THRESHOLD*2) && (Math.abs(uy - dy) > FLIP_THRESHOLD*2)) {
+                if ((Math.abs(ux - dx) < FLIP_THRESHOLD * 2) && (Math.abs(uy - dy) > FLIP_THRESHOLD * 2)) {
                     if (null != onUpFlipListener) {
                         pagefactory.cancelPage();
                         restoreAnimation();
@@ -369,6 +369,11 @@ public abstract class BaseReadView extends View {
             mNextPageBitmap = null;
             LogUtils.d("mNextPageBitmap recycle");
         }
+    }
+
+    public void setPercent(int percent) {
+        pagefactory.setPercent(percent);
+        nextPage();
     }
 
     public void setOnWordClickListener(OnWordClickListener onWordClickListener) {

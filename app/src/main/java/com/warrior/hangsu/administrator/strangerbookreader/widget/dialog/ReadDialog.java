@@ -125,6 +125,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
                     if (null != onReadDialogClickListener) {
                         onReadDialogClickListener.onProgressJumpSelected(seekBar.getProgress());
                     }
+                    dismiss();
                 }
             }
         });
