@@ -30,7 +30,6 @@ public class StatisticsActivity extends BaseActivity implements OnItemLongClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_statisctics);
         db = new DbAdapter(this);
 
         initUI();
@@ -128,6 +127,11 @@ public class StatisticsActivity extends BaseActivity implements OnItemLongClickL
         bookLv = (ListView) findViewById(R.id.book_list);
         emptyView = findViewById(R.id.empty_view);
         refresh();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_statisctics;
     }
 
     private void refresh() {

@@ -48,7 +48,6 @@ public class NewReadActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         initUI();
         initPagerWidget();
@@ -57,6 +56,11 @@ public class NewReadActivity extends BaseActivity implements
 
     private void initUI() {
         readWidgetFl = (FrameLayout) findViewById(R.id.read_widget_fl);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_test;
     }
 
     @AfterPermissionGranted(111)

@@ -50,5 +50,6 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.4.2'
     // LeanCloud 基础包
     compile('cn.leancloud.android:avoscloud-sdk:v4.4.3')
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.support:recyclerview-v7:25.0.+'
 }

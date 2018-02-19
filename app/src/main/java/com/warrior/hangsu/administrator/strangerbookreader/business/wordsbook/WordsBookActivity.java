@@ -44,7 +44,6 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_words_book);
         db = new DbAdapter(this);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         initUI();
@@ -74,6 +73,11 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
 
         killBtn.setOnClickListener(this);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_words_book;
     }
 
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar
+        android:id="@+id/main_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:background="@color/english_book_reader"
+        app:left_background="@drawable/options_main_icon"
+        app:right_background="@drawable/add_icon"
+        app:title_text="@string/app_name"
+        app:title_textColor="@color/white" />
+
+
+</RelativeLayout>
