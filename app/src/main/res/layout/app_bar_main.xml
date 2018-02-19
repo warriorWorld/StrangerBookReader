@@ -16,5 +16,9 @@
         app:title_text="@string/app_name"
         app:title_textColor="@color/white" />
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/book_list_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_topbar"></android.support.v7.widget.RecyclerView>
 </RelativeLayout>

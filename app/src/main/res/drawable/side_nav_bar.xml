@@ -3,6 +3,6 @@
     <gradient
         android:angle="45"
         android:endColor="@color/english_book_reader_shallow"
-        android:startColor="@color/english_book_reader_deep"
+        android:startColor="@color/english_book_reader"
         android:type="linear" />
 </shape>

@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -14,6 +17,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.DisplayUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
 import java.net.URISyntaxException;
@@ -22,13 +26,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private DrawerLayout drawer;
     private SevenFourteenNavigationView navigationView;
     private RelativeLayout appBarMain;
-    private int navWidth;
+    //    private int navWidth;
+    private TopBar mainTopbar;
+    private RecyclerView bookListRcv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
-        navWidth = DisplayUtil.dip2px(this, 266);
+//        navWidth = DisplayUtil.dip2px(this, 266);
     }
 
     private void initUI() {
@@ -78,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 //slideOffset是个从0-1的值
-                appBarMain.setTranslationX(slideOffset * navWidth);
+//                appBarMain.setTranslationX(slideOffset * navWidth);
             }
 
             @Override
@@ -97,6 +104,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         });
         toggle.syncState();
+        hideBaseTopBar();
+        mainTopbar = (TopBar) findViewById(R.id.main_topbar);
+        mainTopbar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                drawer.openDrawer(GravityCompat.START);
+            }
+
+            @Override
+            public void onRightClick() {
+                showFileChooser();
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
+        bookListRcv = (RecyclerView) findViewById(R.id.book_list_rcv);
+        bookListRcv.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        bookListRcv.setFocusableInTouchMode(false);
+        bookListRcv.setFocusable(false);
+        bookListRcv.setHasFixedSize(true);
     }
 
     @Override
