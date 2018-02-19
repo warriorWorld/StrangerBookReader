@@ -124,6 +124,7 @@ public class NewReadActivity extends BaseActivity implements
                      *要执行的操作
                      */
                     mPageWidget.init(SettingManager.getInstance().getReadTheme());
+                    toggleDayNight();
                 }
             }, 500);//n秒后执行Runnable中的run方法
         } else {
@@ -199,8 +200,12 @@ public class NewReadActivity extends BaseActivity implements
                 }
 
                 @Override
-                public void onSunMoonToggleClick(boolean isMoonMode) {
-
+                public void onSunMoonToggleClick() {
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (NewReadActivity.this, ShareKeys.ISNIGHT,
+                                    !SharedPreferencesUtils.getBooleanSharedPreferencesData(NewReadActivity.this,
+                                            ShareKeys.ISNIGHT, false));
+                    toggleDayNight();
                 }
 
                 @Override
@@ -246,6 +251,19 @@ public class NewReadActivity extends BaseActivity implements
         readDialog.show();
         readDialog.refreshUI();
         readDialog.initSeekBar((int) mPageWidget.getCurrentPercent());
+    }
+
+    private void toggleDayNight() {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(NewReadActivity.this,
+                ShareKeys.ISNIGHT, false)) {
+            mPageWidget.setTheme(ThemeManager.NIGHT);
+            mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_night),
+                    getResources().getColor(R.color.chapter_title_night));
+        } else {
+            mPageWidget.setTheme(SettingManager.getInstance().getReadTheme());
+            mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_day),
+                    getResources().getColor(R.color.chapter_title_day));
+        }
     }
 
     private class ReadListener implements OnReadStateChangeListener {

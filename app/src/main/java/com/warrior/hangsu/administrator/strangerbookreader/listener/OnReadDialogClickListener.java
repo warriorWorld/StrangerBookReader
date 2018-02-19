@@ -9,7 +9,7 @@ public interface OnReadDialogClickListener {
 
     void onProgressJumpSelected(int progress);
 
-    void onSunMoonToggleClick(boolean isMoonMode);
+    void onSunMoonToggleClick();
 
     void onTextSizeClick();
 

@@ -47,7 +47,6 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
     private DiscreteSeekBar progressSeekBar;
     private RelativeLayout closeDialogRl;
     private LinearLayout headLl;
-    private boolean isMoonMode = false;
 
     public ReadDialog(Context context) {
         super(context);
@@ -156,7 +155,8 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
     }
 
     private void toggleSunMoonMode() {
-        if (isMoonMode) {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
+                ShareKeys.ISNIGHT, false)) {
             sunMoonModeIv.setBackgroundResource(R.drawable.sun_icon);
             sunMoonModeTv.setText("日间模式");
         } else {
@@ -190,9 +190,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.sun_moon_mode_ll:
                 if (null != onReadDialogClickListener) {
-                    isMoonMode = !isMoonMode;
-                    toggleSunMoonMode();
-                    onReadDialogClickListener.onSunMoonToggleClick(isMoonMode);
+                    onReadDialogClickListener.onSunMoonToggleClick();
                 }
                 break;
             case R.id.background_style_ll:
