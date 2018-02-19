@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Scroller;
 
 
+import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
@@ -33,6 +34,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManage
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
 /**
@@ -61,6 +63,8 @@ public abstract class BaseReadView extends View {
     private int FLIP_THRESHOLD = 30;//滑动到下一页或上一页的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;
+    //记录点击次数
+    private int clickTime = 0;
 
     public BaseReadView(Context context, String bookId,
                         OnReadStateChangeListener listener) {
@@ -188,8 +192,26 @@ public abstract class BaseReadView extends View {
                         pagefactory.cancelPage();
                         restoreAnimation();
                     }
-                    if ((t - et < 1000)) { // 单击
-                        onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
+                    if ((t - et < 1000)) {
+                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
+                                ShareKeys.DOUBLE_CLICK_TRANSLATE, false)) {
+                            // 单击
+                            if (onWordClickListener != null) {
+                                onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
+                            }
+                        }
+
+                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
+                                ShareKeys.DOUBLE_CLICK_TRANSLATE, false)) {
+                            //双击
+                            clickTime++;
+                            if (clickTime > 1) {
+                                clickTime = 0;
+                                if (onWordClickListener != null) {
+                                    onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
+                                }
+                            }
+                        }
                     } else { // 长按
                         onWordClickListener.onWordClick(pagefactory.getClickWord((int) actiondownX, (int) actiondownY));
                     }

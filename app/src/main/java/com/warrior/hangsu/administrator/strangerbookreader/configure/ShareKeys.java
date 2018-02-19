@@ -12,4 +12,6 @@ public class ShareKeys {
     public static final String DEVICE_KEY = "device_key";
     public static final String DEVICE_TOKEN_KEY = "device_token_key";
     public static final String IGNORE_THIS_VERSION_KEY = "ignore_this_version_key";
+    public static final String LONG_CLICK_TRANSLATE = "long_click_translate";
+    public static final String DOUBLE_CLICK_TRANSLATE = "double_click_translate";
 }

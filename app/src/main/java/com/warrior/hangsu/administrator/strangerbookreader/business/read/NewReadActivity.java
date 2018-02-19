@@ -15,7 +15,11 @@ import android.widget.FrameLayout;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
+import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.main.MainActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.BaseReadView;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
@@ -211,17 +215,26 @@ public class NewReadActivity extends BaseActivity implements
 
                 @Override
                 public void onToggleTranslateWayClick() {
-
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (NewReadActivity.this, ShareKeys.DOUBLE_CLICK_TRANSLATE,
+                                    !SharedPreferencesUtils.getBooleanSharedPreferencesData(NewReadActivity.this,
+                                            ShareKeys.DOUBLE_CLICK_TRANSLATE, false));
                 }
 
                 @Override
                 public void onCloseTranslateClick() {
-
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (NewReadActivity.this, ShareKeys.CLOSE_TRANSLATE,
+                                    !SharedPreferencesUtils.getBooleanSharedPreferencesData(NewReadActivity.this,
+                                            ShareKeys.CLOSE_TRANSLATE, false));
                 }
 
                 @Override
                 public void onUserHeadClick() {
-
+                    if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+                        Intent intent = new Intent(NewReadActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
                 }
 
                 @Override
@@ -231,6 +244,7 @@ public class NewReadActivity extends BaseActivity implements
             });
         }
         readDialog.show();
+        readDialog.refreshUI();
         readDialog.initSeekBar((int) mPageWidget.getCurrentPercent());
     }
 

@@ -17,7 +17,10 @@ import android.widget.TextView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -136,6 +139,18 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
             setUserName(LoginBean.getInstance().getUserName());
         } else {
             setUserName("立即登录");
+        }
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
+                ShareKeys.CLOSE_TRANSLATE, false)) {
+            closeTranslateTv.setText("开启查词");
+        } else {
+            closeTranslateTv.setText("关闭查词");
+        }
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
+                ShareKeys.DOUBLE_CLICK_TRANSLATE, false)) {
+            translateWayTv.setText("单击查词");
+        } else {
+            translateWayTv.setText("双击查词");
         }
         toggleSunMoonMode();
     }
