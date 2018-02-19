@@ -157,11 +157,11 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
 
     private void toggleSunMoonMode() {
         if (isMoonMode) {
-            sunMoonModeIv.setBackgroundResource(R.drawable.moon_icon);
-            sunMoonModeTv.setText("夜间模式");
-        } else {
             sunMoonModeIv.setBackgroundResource(R.drawable.sun_icon);
             sunMoonModeTv.setText("日间模式");
+        } else {
+            sunMoonModeIv.setBackgroundResource(R.drawable.moon_icon);
+            sunMoonModeTv.setText("夜间模式");
         }
     }
 
