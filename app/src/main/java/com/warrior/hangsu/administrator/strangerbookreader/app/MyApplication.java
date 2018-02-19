@@ -26,12 +26,6 @@ public class MyApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         sInstance = this;
-        String s = SharedPreferencesUtils.getSharedPreferencesData(getApplicationContext(), "closeQueryWord");
-        if ("true".equals(s)) {
-            Globle.closeQueryWord = true;
-        } else {
-            Globle.closeQueryWord = false;
-        }
         initImageLoader(this);
 
         AppUtils.init(this);

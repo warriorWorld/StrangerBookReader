@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.android.volley.Request;
@@ -44,11 +47,20 @@ public class NewReadActivity extends BaseActivity implements
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
     private AlertDialog dialog;
+    private String bookPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //取消状态栏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        Intent intent = getIntent();
+        bookPath = intent.getStringExtra("bookPath");
+        if (TextUtils.isEmpty(bookPath)) {
+            finish();
+        }
         initUI();
         initPagerWidget();
         initDialog();
@@ -70,7 +82,7 @@ public class NewReadActivity extends BaseActivity implements
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            mPageWidget = new OverlappedWidget(this, Globle.nowBookPath, new ReadListener());
+            mPageWidget = new OverlappedWidget(this, bookPath, new ReadListener());
 
             if (SharedPreferencesUtil.getInstance().getBoolean(ShareKeys.ISNIGHT, false)) {
                 mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_night),

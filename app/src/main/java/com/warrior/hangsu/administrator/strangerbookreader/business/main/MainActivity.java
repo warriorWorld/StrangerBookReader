@@ -17,7 +17,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
@@ -182,6 +185,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
             if (null == adapter) {
                 adapter = new BookListRecyclerListAdapter(this, booksList);
+                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
+                        intent.putExtra("bookPath", booksList.get(position).getPath());
+                        startActivity(intent);
+                    }
+                });
+                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(int position) {
+                        deleteBooks(booksList.get(position).getName());
+                    }
+                });
                 bookListRcv.setAdapter(adapter);
             } else {
                 adapter.setList(booksList);
