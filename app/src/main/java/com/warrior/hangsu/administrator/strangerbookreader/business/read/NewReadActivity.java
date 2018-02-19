@@ -33,6 +33,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManage
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
@@ -215,7 +216,7 @@ public class NewReadActivity extends BaseActivity implements
 
                 @Override
                 public void onTextSizeClick() {
-
+                    showFontSizeSelectorDialog();
                 }
 
                 @Override
@@ -299,6 +300,28 @@ public class NewReadActivity extends BaseActivity implements
         });
         listDialog.show();
         listDialog.setOptionsList(ThemeManager.THEME_LIST);
+    }
+
+    private void showFontSizeSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+                mPageWidget.setFontSize(ScreenUtils.dpToPxInt(Integer.valueOf(selectedCodeRes)));
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(SettingManager.FONT_SIZE_LIST);
+        listDialog.setCodeList(SettingManager.FONT_SIZE_CODE_LIST);
     }
 
     private class ReadListener implements OnReadStateChangeListener {

@@ -157,6 +157,7 @@ public class ReadDialog extends Dialog implements View.OnClickListener {
             translateWayTv.setText("双击查词");
         }
         backgroundStyleTv.setText("背景样式(" + ThemeManager.THEME_LIST[SettingManager.getInstance().getReadTheme()] + ")");
+        textSizeTv.setText("字体大小(" + SettingManager.getInstance().getFontSizeExplain() + ")");
         toggleSunMoonMode();
     }
 

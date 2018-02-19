@@ -33,6 +33,8 @@ import java.util.ArrayList;
 public class SettingManager {
 
     private volatile static SettingManager manager;
+    public static final String[] FONT_SIZE_LIST = {"超小", "小", "默认", "大", "很大", "巨大", "非常大"};
+    public static final String[] FONT_SIZE_CODE_LIST = {"12", "14", "16", "18", "20", "22", "24"};
 
     public static SettingManager getInstance() {
         return manager != null ? manager : (manager = new SettingManager());
@@ -61,6 +63,16 @@ public class SettingManager {
 
     public int getReadFontSize(String bookId) {
         return SharedPreferencesUtil.getInstance().getInt(getFontSizeKey(bookId), ScreenUtils.dpToPxInt(16));
+    }
+
+    public String getFontSizeExplain() {
+        for (int i = 0; i < FONT_SIZE_LIST.length; i++) {
+            int size = Integer.valueOf(FONT_SIZE_CODE_LIST[i]);
+            if (size >= (int)ScreenUtils.pxToDp(getReadFontSize())) {
+                return FONT_SIZE_LIST[i];
+            }
+        }
+        return "";
     }
 
     public int getReadFontSize() {
