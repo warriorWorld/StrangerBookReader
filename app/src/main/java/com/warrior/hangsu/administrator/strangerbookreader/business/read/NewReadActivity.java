@@ -24,6 +24,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.readview.Bas
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
@@ -42,6 +43,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
@@ -197,7 +199,7 @@ public class NewReadActivity extends BaseActivity implements
             readDialog.setOnReadDialogClickListener(new OnReadDialogClickListener() {
                 @Override
                 public void onSearchJumpClick() {
-
+                    showSearchJumpDialog();
                 }
 
                 @Override
@@ -322,6 +324,24 @@ public class NewReadActivity extends BaseActivity implements
         listDialog.show();
         listDialog.setOptionsList(SettingManager.FONT_SIZE_LIST);
         listDialog.setCodeList(SettingManager.FONT_SIZE_CODE_LIST);
+    }
+
+    private void showSearchJumpDialog() {
+        MangaEditDialog dialog = new MangaEditDialog(this);
+        dialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                mPageWidget.jumpToPositionBySearchText(text);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setHint("输入要查找的内容");
+        dialog.setTitle("查找跳转");
     }
 
     private class ReadListener implements OnReadStateChangeListener {

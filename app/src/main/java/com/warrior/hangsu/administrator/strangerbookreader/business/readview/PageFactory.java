@@ -110,6 +110,7 @@ public class PageFactory {
     private OnReadStateChangeListener listener;
     private String charset = "UTF-8";
     private float currentPercent;
+    private int searchEndPos = 0;//搜索指针
 
     public PageFactory(Context context, String bookId) {
         this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
@@ -723,5 +724,39 @@ public class PageFactory {
         str = str.replaceAll("\r", "");
         str = str.replaceAll("\\s", "");
         return str;
+    }
+
+    public void jumpToPositionBySearchText(String searchText) {
+        if (searchEndPos == 0) {
+            searchEndPos = curEndPos;
+        }
+        byte[] parabuffer = readParagraphForward(searchEndPos);
+        searchEndPos += parabuffer.length;
+        String strParagraph = "";
+        try {
+            strParagraph = new String(parabuffer, charset);//转成UTF-8
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (getWordAgain(strParagraph).toLowerCase().contains(getWordAgain(searchText).toLowerCase())) {
+            jumpToPosition(searchEndPos-parabuffer.length);
+            searchEndPos = 0;
+        } else {
+            jumpToPositionBySearchText(searchText);
+        }
+    }
+
+    /**
+     * 根据百分比，跳到目标位置
+     */
+    public void jumpToPosition(int endPosition) {
+        curEndPos = endPosition;
+        if (curEndPos == 0) {
+            nextPage();
+        } else {
+            nextPage();
+            prePage();
+            nextPage();
+        }
     }
 }

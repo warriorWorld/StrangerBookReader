@@ -399,6 +399,12 @@ public abstract class BaseReadView extends View {
         prePage();
     }
 
+    public void jumpToPositionBySearchText(String searchText) {
+        pagefactory.jumpToPositionBySearchText(searchText);
+        nextPage();
+        prePage();
+    }
+
     public void setOnWordClickListener(OnWordClickListener onWordClickListener) {
         this.onWordClickListener = onWordClickListener;
     }
