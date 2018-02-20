@@ -56,6 +56,9 @@
         <activity
             android:name=".business.other.FeedbackActivity"
             android:launchMode="standard"></activity>
+        <activity
+            android:name=".business.ad.AdvertisingActivity"
+            android:launchMode="standard"></activity>
     </application>
 
 </manifest>

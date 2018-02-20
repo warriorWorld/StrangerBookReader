@@ -25,6 +25,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
@@ -42,6 +43,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
@@ -112,14 +114,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onNewWordClick() {
-                Intent intent = new Intent(MainActivity.this, WordsBookActivity.class);
-                startActivity(intent);
+                ToastUtils.showSingleToast("开发中...");
+//                Intent intent = new Intent(MainActivity.this, WordsBookActivity.class);
+//                startActivity(intent);
             }
 
             @Override
             public void onStatisticsClick() {
-                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
-                startActivity(intent);
+                ToastUtils.showSingleToast("开发中...");
+//                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+//                startActivity(intent);
             }
 
             @Override
@@ -129,7 +133,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onEnglishAdClick() {
-
+                Intent intent = new Intent(MainActivity.this, AdvertisingActivity.class);
+                startActivity(intent);
             }
 
             @Override
