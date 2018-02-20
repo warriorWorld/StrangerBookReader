@@ -132,10 +132,6 @@ public class AdvertisingActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void doGetData() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            this.finish();
-            return;
-        }
         AVQuery<AVObject> query = new AVQuery<>("AD");
         query.findInBackground(new FindCallback<AVObject>() {
             @Override

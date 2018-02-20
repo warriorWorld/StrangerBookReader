@@ -331,7 +331,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         });
     }
 
-    @AfterPermissionGranted(111)
+    @AfterPermissionGranted(222)
     private void doDownloadQRcode() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
@@ -367,7 +367,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    111, perms);
+                    222, perms);
         }
     }
 
