@@ -61,7 +61,7 @@ public abstract class BaseReadView extends View {
     private OnUpFlipListener onUpFlipListener;
 
     Scroller mScroller;
-    private int FLIP_THRESHOLD = 30;//滑动到下一页或上一页的阈值
+    private int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;
     //记录点击次数
@@ -179,7 +179,7 @@ public abstract class BaseReadView extends View {
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
 
-                if ((Math.abs(ux - dx) < FLIP_THRESHOLD * 2) && (Math.abs(uy - dy) > FLIP_THRESHOLD * 2)) {
+                if ((Math.abs(ux - dx) < FLIP_THRESHOLD ) && (Math.abs(uy - dy) > FLIP_THRESHOLD )) {
                     if (null != onUpFlipListener) {
                         pagefactory.cancelPage();
                         restoreAnimation();
