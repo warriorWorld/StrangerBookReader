@@ -27,6 +27,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
@@ -39,6 +40,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferenc
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
@@ -331,7 +333,20 @@ public class NewReadActivity extends BaseActivity implements
         dialog.setOnEditResultListener(new OnEditResultListener() {
             @Override
             public void onResult(String text) {
-                mPageWidget.jumpToPositionBySearchText(text);
+                SingleLoadBarUtil.getInstance().showLoadBar(NewReadActivity.this);
+                mPageWidget.jumpToPositionBySearchText(text, new OnSearchResultListener() {
+                    @Override
+                    public void onSearchDone() {
+                        ToastUtils.showSingleLongToast("查找完成");
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    }
+
+                    @Override
+                    public void onSearchFail() {
+                        ToastUtils.showSingleLongToast("没找到!");
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    }
+                });
             }
 
             @Override

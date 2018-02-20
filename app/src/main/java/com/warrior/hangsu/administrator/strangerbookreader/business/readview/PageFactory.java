@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
@@ -726,7 +727,7 @@ public class PageFactory {
         return str;
     }
 
-    public void jumpToPositionBySearchText(String searchText) {
+    public void jumpToPositionBySearchText(String searchText, OnSearchResultListener listener) {
         if (searchEndPos == 0) {
             searchEndPos = curEndPos;
         }
@@ -739,10 +740,15 @@ public class PageFactory {
             e.printStackTrace();
         }
         if (getWordAgain(strParagraph).toLowerCase().contains(getWordAgain(searchText).toLowerCase())) {
-            jumpToPosition(searchEndPos-parabuffer.length);
+            jumpToPosition(searchEndPos - parabuffer.length);
             searchEndPos = 0;
+            listener.onSearchDone();
         } else {
-            jumpToPositionBySearchText(searchText);
+            if ((curEndPos < mbBufferLen)) {
+                jumpToPositionBySearchText(searchText, listener);
+            } else {
+                listener.onSearchFail();
+            }
         }
     }
 

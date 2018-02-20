@@ -28,6 +28,7 @@ import android.widget.Scroller;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
@@ -399,8 +400,8 @@ public abstract class BaseReadView extends View {
         prePage();
     }
 
-    public void jumpToPositionBySearchText(String searchText) {
-        pagefactory.jumpToPositionBySearchText(searchText);
+    public void jumpToPositionBySearchText(String searchText, OnSearchResultListener listener) {
+        pagefactory.jumpToPositionBySearchText(searchText,listener);
         nextPage();
         prePage();
     }
