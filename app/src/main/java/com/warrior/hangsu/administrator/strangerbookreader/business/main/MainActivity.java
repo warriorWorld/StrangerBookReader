@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
-                return false;
+                return true;
             }
         });
         bookListRcv.setFocusableInTouchMode(false);
@@ -247,7 +247,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
                     @Override
                     public void onItemLongClick(int position) {
-                        deleteBooks(booksList.get(position).getName());
+                        showDeleteDialog(position);
                     }
                 });
                 bookListRcv.setAdapter(adapter);
@@ -270,6 +270,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         startActivityForResult(intent, 1);
     }
 
+    private void showDeleteDialog(final int position) {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                deleteBooks(booksList.get(position).getName());
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("是否从书架中删除该书?");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
