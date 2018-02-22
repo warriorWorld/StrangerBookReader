@@ -181,7 +181,7 @@ public abstract class BaseReadView extends View {
 
                 if ((Math.abs(ux - dx) < FLIP_THRESHOLD ) && (Math.abs(uy - dy) > FLIP_THRESHOLD )) {
                     if (null != onUpFlipListener) {
-                        pagefactory.cancelPage();
+//                        pagefactory.cancelPage();
                         restoreAnimation();
                         onUpFlipListener.onUpFlip();
                     }
@@ -190,7 +190,7 @@ public abstract class BaseReadView extends View {
 
                 if (!is_threshold) {
                     if ((Math.abs(ux - dx) != 0)) {
-                        pagefactory.cancelPage();
+//                        pagefactory.cancelPage();
                         restoreAnimation();
                     }
                     if ((t - et < 1000)) {

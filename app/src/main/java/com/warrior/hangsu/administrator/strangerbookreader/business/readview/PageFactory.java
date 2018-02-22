@@ -36,6 +36,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -675,12 +676,28 @@ public class PageFactory {
             end = (i < indices.length ? indices[i] : lineString.length());
             if (end >= touchCharacterPosition) {
                 res = lineString.substring(start, end);
-                //处理当最后一个单词被行断开的情况
-                if (i == indices.length && !lineString.endsWith("@")) {
+                //处理当最后一个单词被行断开的情况 不能是句尾 末尾是标点或空格也不行
+                if (i == indices.length && !lineString.endsWith("@") &&
+                        StringUtil.isWord(lineString.substring(lineString.length() - 1, lineString.length()))) {
                     try {
                         String nextLineString = mLines.get(linePosition + 1);
                         int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
                         res += nextLineString.substring(0, firstUnLetterPosition);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        //当最后一个字符是特殊字符时直接catch就好
+                    }
+                } else if (start == 0 && linePosition != 0) {
+                    //处理当这一行第一个单词实际上上一行最后一个单词一部分的情况
+                    try {
+                        String lastLineString = mLines.get(linePosition - 1);
+                        if (lastLineString.endsWith("@") ||
+                                !StringUtil.isWord(lastLineString.substring(lastLineString.length() - 1, lastLineString.length()))) {
+                            //当上一行最后一个单词是句尾 或者末尾是标点或空格也不行
+                            break;
+                        }
+                        Integer[] lastUnletters = getUnLetterPosition(lastLineString);
+                        int endUnLetterPosition = lastUnletters[lastUnletters.length - 1];
+                        res = lastLineString.substring(endUnLetterPosition, lastLineString.length()) + res;
                     } catch (ArrayIndexOutOfBoundsException e) {
                         //当最后一个字符是特殊字符时直接catch就好
                     }
