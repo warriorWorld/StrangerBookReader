@@ -14,6 +14,9 @@ import android.widget.FrameLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.SaveCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
@@ -22,6 +25,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.main.MainAct
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.BaseReadView;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
+import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
@@ -35,6 +39,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickL
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
@@ -164,6 +169,10 @@ public class NewReadActivity extends BaseActivity implements
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();
+        if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
+                NewReadActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + mPageWidget.getBookTitle()))) {
+            doStatisctics();
+        }
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (this, ShareKeys.CLOSE_TRANSLATE, false)) {
             return;
@@ -212,6 +221,32 @@ public class NewReadActivity extends BaseActivity implements
         } else {
             db.insertStatiscticsTb(date, date, "book", 1, mPageWidget.getBookSize(),
                     mPageWidget.getBookTitle(), mPageWidget.getCurrentPercent());
+        }
+    }
+
+    private void doStatisctics() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        try {
+            StatisticsBean item = db.queryStatisticsByBookName(mPageWidget.getBookTitle());
+            AVObject object = new AVObject("Statistics");
+            object.put("owner", LoginBean.getInstance().getUserName());
+            object.put("query_word_c", item.getQuery_word_c());
+            object.put("word_c", item.getWord_c());
+            object.put("progress", item.getProgress());
+            object.put("book_name", item.getBook_name());
+            object.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (LeanCloundUtil.handleLeanResult(NewReadActivity.this, e)) {
+                        SharedPreferencesUtils.setSharedPreferencesData
+                                (NewReadActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + mPageWidget.getBookTitle(), date);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            //有可能空指针 不处理 不能阻断看书进程
         }
     }
 

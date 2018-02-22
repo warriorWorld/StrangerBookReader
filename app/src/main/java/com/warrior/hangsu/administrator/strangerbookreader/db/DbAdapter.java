@@ -180,6 +180,36 @@ public class DbAdapter {
         return res;
     }
 
+    public StatisticsBean queryStatisticsByBookName(String bookName) {
+        Cursor cursor = db.rawQuery(
+                "select * from STATISTICS where book_name=?",
+                new String[]{bookName});
+        StatisticsBean item = new StatisticsBean();
+        int count = cursor.getCount();
+        if (count > 0) {
+            while (cursor.moveToNext()) {
+                String date_start = cursor.getString(cursor
+                        .getColumnIndex("date_start"));
+                String date_end = cursor.getString(cursor
+                        .getColumnIndex("date_end"));
+                String type = cursor.getString(cursor
+                        .getColumnIndex("type"));
+                int query_word_c = cursor.getInt(cursor.getColumnIndex("query_word_c"));
+                int word_c = cursor.getInt(cursor.getColumnIndex("word_c"));
+                float progress = cursor.getFloat(cursor.getColumnIndex("progress"));
+                item.setProgress(progress);
+                item.setBook_name(bookName);
+                item.setType(type);
+                item.setDateStart(date_start);
+                item.setDateEnd(date_end);
+                item.setQuery_word_c(query_word_c);
+                item.setWord_c(word_c);
+            }
+        }
+        cursor.close();
+        return item;
+    }
+
     /**
      * 查询是否查询过
      */
