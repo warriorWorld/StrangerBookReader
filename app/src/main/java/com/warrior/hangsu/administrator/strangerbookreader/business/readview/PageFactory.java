@@ -338,6 +338,17 @@ public class PageFactory {
             //因为段落间也有空白 所以需要更新总可以显示的行数
             mPageLineCount = (mVisibleHeight - paraSpace) / (mFontSize + mLineSpace);
         }
+        for (int i = 0; i < lines.size() - 1; i++) {
+            //不处理最后一行
+            //给单词加换行符
+            String lineString = lines.get(i);
+            String nextLineString = lines.get(i + 1);
+            if (!lineString.endsWith("@") &&
+                    StringUtil.isWord(lineString.substring(lineString.length() - 1, lineString.length())) &&
+                    StringUtil.isWord(nextLineString.substring(0, 1))) {
+                lines.set(i, lines.get(i) + "-");
+            }
+        }
         return lines;
     }
 
@@ -677,12 +688,20 @@ public class PageFactory {
             if (end >= touchCharacterPosition) {
                 res = lineString.substring(start, end);
                 //处理当最后一个单词被行断开的情况 不能是句尾 末尾是标点或空格也不行
-                if (i == indices.length && !lineString.endsWith("@") &&
-                        StringUtil.isWord(lineString.substring(lineString.length() - 1, lineString.length()))) {
+//                if (i == indices.length && !lineString.endsWith("@") &&
+//                        StringUtil.isWord(lineString.substring(lineString.length() - 1, lineString.length()))) {
+                if (i == indices.length && lineString.endsWith("-")) {
+                    //因为我给所有末尾断开的单词加换行符了 所以直接这么判断就好了
                     try {
                         String nextLineString = mLines.get(linePosition + 1);
-                        int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
-                        res += nextLineString.substring(0, firstUnLetterPosition);
+                        Integer[] nextUnletters = getUnLetterPosition(nextLineString);
+                        if (nextUnletters == null || nextUnletters.length == 0) {
+                            //说明下一行整行都没有特殊字符
+                            res += nextLineString;
+                        } else {
+                            int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
+                            res += nextLineString.substring(0, firstUnLetterPosition);
+                        }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         //当最后一个字符是特殊字符时直接catch就好
                     }
@@ -690,9 +709,11 @@ public class PageFactory {
                     //处理当这一行第一个单词实际上上一行最后一个单词一部分的情况
                     try {
                         String lastLineString = mLines.get(linePosition - 1);
-                        if (lastLineString.endsWith("@") ||
-                                !StringUtil.isWord(lastLineString.substring(lastLineString.length() - 1, lastLineString.length()))) {
-                            //当上一行最后一个单词是句尾 或者末尾是标点或空格也不行
+//                        if (lastLineString.endsWith("@") ||
+//                                !StringUtil.isWord(lastLineString.substring(lastLineString.length() - 1, lastLineString.length()))) {
+                        //当上一行最后一个单词是句尾 或者末尾是标点或空格也不行
+                        if (!lastLineString.endsWith("-")) {
+                            //因为我加了换行符 所以直接改成这么判断了
                             break;
                         }
                         Integer[] lastUnletters = getUnLetterPosition(lastLineString);
