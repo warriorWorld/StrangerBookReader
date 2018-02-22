@@ -10,7 +10,7 @@ public class StatisticsBean {
     private String book_name;
     private int query_word_c;
     private int word_c;//
-
+    private float progress;
 
     public String getType() {
         return type;
@@ -58,5 +58,13 @@ public class StatisticsBean {
 
     public void setDateEnd(String dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
     }
 }

@@ -113,6 +113,7 @@ public class PageFactory {
     private String charset = "UTF-8";
     private float currentPercent;
     private int searchEndPos = 0;//搜索指针
+    private String title;
 
     public PageFactory(Context context, String bookId) {
         this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
@@ -214,7 +215,7 @@ public class PageFactory {
             // 绘制标题       //TODO
             int separatorPosition = bookId.lastIndexOf(File.separator);
             int dotPosition = bookId.lastIndexOf(".");
-            String title = bookId.substring(separatorPosition + 1, dotPosition);
+            title = bookId.substring(separatorPosition + 1, dotPosition);
             canvas.drawText(title, marginWidth, y, mTitlePaint);
             y += mLineSpace + mNumFontSize;
             // 绘制阅读页面文字
@@ -248,6 +249,14 @@ public class PageFactory {
 
     public float getCurrentPercent() {
         return currentPercent;
+    }
+
+    public String getBookTitle() {
+        return title;
+    }
+
+    public int getBookSize() {
+        return mbBufferLen;
     }
 
     /**

@@ -110,7 +110,7 @@ public class StatisticsActivity extends BaseActivity implements OnItemLongClickL
             viewHolder.bookName_tv.setText(item.getBook_name());
             viewHolder.date_tv.setText(item.getDateStart() + "至" + item.getDateEnd());
             viewHolder.char_amount_tv.setText(item.getWord_c() + "");
-            viewHolder.word_amount_tv.setText(item.getQuery_word_c() + "");
+            viewHolder.word_amount_tv.setText(item.getQuery_word_c() + "\n"+item.getProgress());
             return convertView;
         }
     }

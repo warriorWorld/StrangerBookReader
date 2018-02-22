@@ -179,7 +179,7 @@ public abstract class BaseReadView extends View {
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
 
-                if ((Math.abs(ux - dx) < FLIP_THRESHOLD ) && (Math.abs(uy - dy) > FLIP_THRESHOLD )) {
+                if ((Math.abs(ux - dx) < FLIP_THRESHOLD) && (Math.abs(uy - dy) > FLIP_THRESHOLD)) {
                     if (null != onUpFlipListener) {
 //                        pagefactory.cancelPage();
                         restoreAnimation();
@@ -276,6 +276,14 @@ public abstract class BaseReadView extends View {
 
     public float getCurrentPercent() {
         return pagefactory.getCurrentPercent();
+    }
+
+    public String getBookTitle() {
+        return pagefactory.getBookTitle();
+    }
+
+    public int getBookSize() {
+        return pagefactory.getBookSize();
     }
 
     /**
@@ -401,7 +409,7 @@ public abstract class BaseReadView extends View {
     }
 
     public void jumpToPositionBySearchText(String searchText, OnSearchResultListener listener) {
-        pagefactory.jumpToPositionBySearchText(searchText,listener);
+        pagefactory.jumpToPositionBySearchText(searchText, listener);
         nextPage();
         prePage();
     }

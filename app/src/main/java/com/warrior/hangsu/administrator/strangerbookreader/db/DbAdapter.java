@@ -54,13 +54,13 @@ public class DbAdapter {
     /**
      * 插入一条统计信息
      */
-    public void insertStatiscticsTb(String dateStart, String dateEnd, String type, int query_word_c, int word_c, String book_name) {
+    public void insertStatiscticsTb(String dateStart, String dateEnd, String type, int query_word_c, int word_c, String book_name, float progress) {
 //        if (queryStatisticsed(book_name)) {
 //            updateStatistics(dateEnd, query_word_c, book_name);
 //        } else {
         db.execSQL(
-                "insert into STATISTICS (date_start,date_end,type,query_word_c,word_c,book_name) values (?,?,?,?,?,?)",
-                new Object[]{dateStart, dateEnd, type, query_word_c, word_c, book_name});
+                "insert into STATISTICS (date_start,date_end,type,query_word_c,word_c,book_name,progress) values (?,?,?,?,?,?,?)",
+                new Object[]{dateStart, dateEnd, type, query_word_c, word_c, book_name, progress});
 //        }
     }
 
@@ -85,9 +85,9 @@ public class DbAdapter {
     /**
      * 更新生词信息
      */
-    public void updateStatistics(String date_end, int query_word_c, String book_name) {
-        db.execSQL("update STATISTICS set date_end=?,query_word_c=? where book_name=?",
-                new Object[]{date_end, query_word_c, book_name});
+    public void updateStatistics(String date_end, int query_word_c, String book_name, float progress) {
+        db.execSQL("update STATISTICS set date_end=?,query_word_c=?,progress=? where book_name=?",
+                new Object[]{date_end, query_word_c, progress, book_name});
     }
 
 
@@ -230,6 +230,8 @@ public class DbAdapter {
                     .getColumnIndex("type"));
             int query_word_c = cursor.getInt(cursor.getColumnIndex("query_word_c"));
             int word_c = cursor.getInt(cursor.getColumnIndex("word_c"));
+            float progress = cursor.getFloat(cursor.getColumnIndex("progress"));
+            item.setProgress(progress);
             item.setBook_name(bookName);
             item.setType(type);
             item.setDateStart(date_start);

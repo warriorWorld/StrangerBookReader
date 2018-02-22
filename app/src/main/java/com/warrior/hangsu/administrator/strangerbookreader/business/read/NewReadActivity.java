@@ -24,6 +24,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.readview.Bas
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
@@ -49,6 +50,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEd
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,6 +70,13 @@ public class NewReadActivity extends BaseActivity implements
     private String bookPath;
     private MangaDialog dialog;
     private ReadDialog readDialog;
+    private DbAdapter db;//数据库
+    /**
+     * 时间
+     */
+    private SimpleDateFormat sdf;
+    private Date curDate;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +84,12 @@ public class NewReadActivity extends BaseActivity implements
         //取消状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        db = new DbAdapter(this);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        curDate = new Date(System.currentTimeMillis());//获取当前时间
+        date = sdf.format(curDate);
+
         Intent intent = getIntent();
         bookPath = intent.getStringExtra("bookPath");
         if (TextUtils.isEmpty(bookPath)) {
@@ -146,6 +161,9 @@ public class NewReadActivity extends BaseActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
+        //记录查过的单词
+        db.insertWordsBookTb(word);
+        updateStatisctics();
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (this, ShareKeys.CLOSE_TRANSLATE, false)) {
             return;
@@ -184,6 +202,18 @@ public class NewReadActivity extends BaseActivity implements
 
     }
 
+    private void updateStatisctics() {
+        //初始记录
+        int queryC = db.queryStatisticsed(mPageWidget.getBookTitle());
+        if (queryC > 0) {
+            //如果这本书没有记录 那就update 并且time+1
+            queryC++;
+            db.updateStatistics(date, queryC, mPageWidget.getBookTitle(), mPageWidget.getCurrentPercent());
+        } else {
+            db.insertStatiscticsTb(date, date, "book", 1, mPageWidget.getBookSize(),
+                    mPageWidget.getBookTitle(), mPageWidget.getCurrentPercent());
+        }
+    }
 
     private void showOnlyOkDialog(String title, String msg) {
         if (null == dialog) {
@@ -382,6 +412,12 @@ public class NewReadActivity extends BaseActivity implements
             //TODO
 //            hideReadBar();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDb();
     }
 
     @Override

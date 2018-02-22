@@ -114,16 +114,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onNewWordClick() {
-                ToastUtils.showSingleToast("开发中...");
-//                Intent intent = new Intent(MainActivity.this, WordsBookActivity.class);
-//                startActivity(intent);
+//                ToastUtils.showSingleToast("开发中...");
+                Intent intent = new Intent(MainActivity.this, WordsBookActivity.class);
+                startActivity(intent);
             }
 
             @Override
             public void onStatisticsClick() {
-                ToastUtils.showSingleToast("开发中...");
-//                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
-//                startActivity(intent);
+//                ToastUtils.showSingleToast("开发中...");
+                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+                startActivity(intent);
             }
 
             @Override
