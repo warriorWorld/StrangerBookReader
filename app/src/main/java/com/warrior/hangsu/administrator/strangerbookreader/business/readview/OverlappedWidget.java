@@ -61,7 +61,7 @@ public class OverlappedWidget extends BaseReadView {
         mPath0.reset();
 
         canvas.save();
-        if (actiondownX > mScreenWidth >> 1) {
+        if (actiondownX > mScreenWidth >> 1) {//>>1相当于除2
             mPath0.moveTo(mScreenWidth + touch_down, 0);
             mPath0.lineTo(mScreenWidth + touch_down, mScreenHeight);
             mPath0.lineTo(mScreenWidth, mScreenHeight);

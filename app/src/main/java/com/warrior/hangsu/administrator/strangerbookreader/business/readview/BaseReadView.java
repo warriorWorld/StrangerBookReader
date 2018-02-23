@@ -61,7 +61,7 @@ public abstract class BaseReadView extends View {
     private OnUpFlipListener onUpFlipListener;
 
     Scroller mScroller;
-    private int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
+    protected int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;
     //记录点击次数
@@ -169,8 +169,10 @@ public abstract class BaseReadView extends View {
                         return false;
                     }
                 }
-                //实时绘制
-                this.postInvalidate();
+                if (Math.abs(touch_down) > FLIP_THRESHOLD) {
+                    //只有大于阈值才开始实时绘制
+                    this.postInvalidate();
+                }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -182,7 +184,8 @@ public abstract class BaseReadView extends View {
                 if ((Math.abs(ux - dx) < FLIP_THRESHOLD) && (Math.abs(uy - dy) > FLIP_THRESHOLD)) {
                     if (null != onUpFlipListener) {
 //                        pagefactory.cancelPage();
-                        restoreAnimation();
+                        //只有大于阈值才绘制动画 所以这里不需要调用这个了
+//                        restoreAnimation();
                         onUpFlipListener.onUpFlip();
                     }
                     return true;
@@ -191,7 +194,8 @@ public abstract class BaseReadView extends View {
                 if (!is_threshold) {
                     if ((Math.abs(ux - dx) != 0)) {
 //                        pagefactory.cancelPage();
-                        restoreAnimation();
+                        //只有大于阈值才绘制动画 所以这里不需要调用这个了
+//                        restoreAnimation();
                     }
                     if ((t - et < 1000)) {
                         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(context,
