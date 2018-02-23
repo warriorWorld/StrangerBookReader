@@ -25,6 +25,7 @@ import android.graphics.drawable.GradientDrawable;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
 import java.util.List;
 
@@ -183,16 +184,19 @@ public class OverlappedWidget extends BaseReadView {
         int dx;
         float adjustedTouchDown = 0;
         if (touch_down < -FLIP_THRESHOLD) {
+//            ToastUtils.showLongToast("startAnimation  左滑");
             //左滑
             adjustedTouchDown = touch_down + FLIP_THRESHOLD;
             dx = (int) -(mScreenWidth + adjustedTouchDown);
             mScroller.startScroll((int) (mScreenWidth + touch_down), (int) mTouch.y, dx, 0, 700);
         } else if (touch_down > FLIP_THRESHOLD) {
+//            ToastUtils.showLongToast("startAnimation  右滑");
             //右滑
             adjustedTouchDown = touch_down - FLIP_THRESHOLD;
             dx = (int) (mScreenWidth - adjustedTouchDown);
             mScroller.startScroll((int) touch_down, (int) mTouch.y, dx, 0, 700);
         } else {
+//            ToastUtils.showLongToast("startAnimation  处理了");
             mScroller.startScroll((int) touch_down, (int) mTouch.y, 0, 0, 700);
         }
     }
@@ -220,18 +224,33 @@ public class OverlappedWidget extends BaseReadView {
         int startPosition;
         float travelX = 0;
         if (touch_down < CANCEL_THRESHOLD && touch_down > FLIP_THRESHOLD) {
+//            ToastUtils.showLongToast("restoreAnimation  右滑");
             //右滑
             startPosition = (int) (touch_down - FLIP_THRESHOLD);
             travelX = (int) (-startPosition);
             mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
         } else if (touch_down > -CANCEL_THRESHOLD && touch_down < -FLIP_THRESHOLD) {
+            //左滑
+//            ToastUtils.showLongToast("restoreAnimation  左滑");
             startPosition = (int) (mScreenWidth + touch_down + FLIP_THRESHOLD);
             travelX = (int) -(touch_down - FLIP_THRESHOLD);
 
             mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
         } else {
-        }
+//            ToastUtils.showLongToast("restoreAnimation  未处理");
+            if (touch_down > 0) {
+                //右滑
+                startPosition = (int) (touch_down);
+                travelX = (int) (-startPosition);
+                mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
+            } else {
+                //左滑
+                startPosition = (int) (mScreenWidth + touch_down );
+                travelX = (int) -(touch_down);
 
+                mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
+            }
+        }
     }
 
     public void setBitmaps(Bitmap bm1, Bitmap bm2) {
