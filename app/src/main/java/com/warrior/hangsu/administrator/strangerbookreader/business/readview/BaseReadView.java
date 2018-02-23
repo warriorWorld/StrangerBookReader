@@ -62,6 +62,7 @@ public abstract class BaseReadView extends View {
 
     Scroller mScroller;
     protected int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
+    protected int CANCEL_THRESHOLD=FLIP_THRESHOLD*3;//取消的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;
     //记录点击次数
@@ -135,7 +136,8 @@ public abstract class BaseReadView extends View {
             case MotionEvent.ACTION_MOVE:
                 int mx = (int) e.getX();
                 int my = (int) e.getY();
-                cancel = (actiondownX < mScreenWidth / 2 && mx < mTouch.x) || (actiondownX > mScreenWidth / 2 && mx > mTouch.x);
+//                cancel = (actiondownX < mScreenWidth / 2 && mx < mTouch.x) || (actiondownX > mScreenWidth / 2 && mx > mTouch.x);
+                cancel = Math.abs(touch_down) <= CANCEL_THRESHOLD;
                 mTouch.x = mx;
                 mTouch.y = my;
 
