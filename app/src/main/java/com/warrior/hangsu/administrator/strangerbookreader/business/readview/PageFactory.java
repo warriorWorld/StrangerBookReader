@@ -366,53 +366,53 @@ public class PageFactory {
      *
      * @return
      */
-    public Vector<String> pageLast() {
-        String strParagraph = "";
-        Vector<String> lines = new Vector<>();
-        currentPage = 0;
-        while (curEndPos < mbBufferLen) {
-            int paraSpace = 0;
-            mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
-            curBeginPos = curEndPos;
-            while ((lines.size() < mPageLineCount) && (curEndPos < mbBufferLen)) {
-                byte[] parabuffer = readParagraphForward(curEndPos);
-                curEndPos += parabuffer.length;
-                try {
-                    strParagraph = new String(parabuffer, charset);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                strParagraph = strParagraph.replaceAll("\r\n", "  ");
-                strParagraph = strParagraph.replaceAll("\n", " "); // 段落中的换行符去掉，绘制的时候再换行
-
-                while (strParagraph.length() > 0) {
-                    int paintSize = mPaint.breakText(strParagraph, true, mVisibleWidth, null);
-                    lines.add(strParagraph.substring(0, paintSize));
-                    strParagraph = strParagraph.substring(paintSize);
-                    if (lines.size() >= mPageLineCount) {
-                        break;
-                    }
-                }
-                lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
-
-                if (strParagraph.length() != 0) {
-                    try {
-                        curEndPos -= (strParagraph).getBytes(charset).length;
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-                paraSpace += mLineSpace;
-                mPageLineCount = (mVisibleHeight - paraSpace) / (mFontSize + mLineSpace);
-            }
-            if (curEndPos < mbBufferLen) {
-                lines.clear();
-            }
-            currentPage++;
-        }
-        //SettingManager.getInstance().saveReadProgress(bookId, currentChapter, curBeginPos, curEndPos);
-        return lines;
-    }
+//    public Vector<String> pageLast() {
+//        String strParagraph = "";
+//        Vector<String> lines = new Vector<>();
+//        currentPage = 0;
+//        while (curEndPos < mbBufferLen) {
+//            int paraSpace = 0;
+//            mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
+//            curBeginPos = curEndPos;
+//            while ((lines.size() < mPageLineCount) && (curEndPos < mbBufferLen)) {
+//                byte[] parabuffer = readParagraphForward(curEndPos);
+//                curEndPos += parabuffer.length;
+//                try {
+//                    strParagraph = new String(parabuffer, charset);
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                strParagraph = strParagraph.replaceAll("\r\n", "  ");
+//                strParagraph = strParagraph.replaceAll("\n", " "); // 段落中的换行符去掉，绘制的时候再换行
+//
+//                while (strParagraph.length() > 0) {
+//                    int paintSize = mPaint.breakText(strParagraph, true, mVisibleWidth, null);
+//                    lines.add(strParagraph.substring(0, paintSize));
+//                    strParagraph = strParagraph.substring(paintSize);
+//                    if (lines.size() >= mPageLineCount) {
+//                        break;
+//                    }
+//                }
+//                lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
+//
+//                if (strParagraph.length() != 0) {
+//                    try {
+//                        curEndPos -= (strParagraph).getBytes(charset).length;
+//                    } catch (UnsupportedEncodingException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                paraSpace += mLineSpace;
+//                mPageLineCount = (mVisibleHeight - paraSpace) / (mFontSize + mLineSpace);
+//            }
+//            if (curEndPos < mbBufferLen) {
+//                lines.clear();
+//            }
+//            currentPage++;
+//        }
+//        //SettingManager.getInstance().saveReadProgress(bookId, currentChapter, curBeginPos, curEndPos);
+//        return lines;
+//    }
 
     /**
      * 读取下一段落
