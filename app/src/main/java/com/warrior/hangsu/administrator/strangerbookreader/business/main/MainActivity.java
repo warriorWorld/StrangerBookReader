@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -88,6 +89,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         db = new DbAdapter(this);
 //        navWidth = DisplayUtil.dip2px(this, 266);
         doGetVersionInfo();
+        handleIntent();
     }
 
     @Override
@@ -95,6 +97,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         super.onResume();
         refreshBooks();
         navigationView.setUserName(LoginBean.getInstance().getUserName());
+    }
+
+    /**
+     * 已弃用
+     */
+    private void handleIntent() {
+//        Intent intent = getIntent();
+//
+//        String urlTitle = intent.getStringExtra("url_title");
+//        String url = intent.getStringExtra("url");
+//        ToastUtils.showSingleToast(url + urlTitle);
+//        if (!TextUtils.isEmpty(urlTitle) && !TextUtils.isEmpty(url)) {
+//            Intent intent1 = new Intent(this, NewReadActivity.class);
+//            intent1.putExtra("url_title", urlTitle);
+//            intent1.putExtra("url", url);
+//            startActivity(intent1);
+//        }
     }
 
     private void initUI() {
@@ -265,7 +284,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
      **/
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/plain");//设置类型和后缀
+//        intent.setType("text/plain");//设置类型和后缀
+        intent.setType("*/*");//设置类型和后缀
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, 1);
     }
