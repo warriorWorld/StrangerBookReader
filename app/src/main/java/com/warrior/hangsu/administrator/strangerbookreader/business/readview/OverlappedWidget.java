@@ -158,10 +158,19 @@ public class OverlappedWidget extends BaseReadView {
         if (mScroller.computeScrollOffset()) {
             float x = mScroller.getCurrX();
             float y = mScroller.getCurrY();
-            if (actiondownX > mScreenWidth >> 1) {
-                touch_down = -(mScreenWidth - x);
+//            if (actiondownX > mScreenWidth >> 1) {
+//                touch_down = -(mScreenWidth - x);
+//            } else {
+//                touch_down = x;
+//            }
+            if (touch_down < -FLIP_THRESHOLD) {
+                //左滑
+                touch_down = -(mScreenWidth - x + FLIP_THRESHOLD);
+            } else if (touch_down > FLIP_THRESHOLD) {
+                //右滑
+                touch_down = x + FLIP_THRESHOLD;
             } else {
-                touch_down = x;
+                return;
             }
             mTouch.y = y;
             //touch_down = mTouch.x - actiondownX;
@@ -174,10 +183,12 @@ public class OverlappedWidget extends BaseReadView {
         int dx;
         float adjustedTouchDown = 0;
         if (touch_down < -FLIP_THRESHOLD) {
+            //左滑
             adjustedTouchDown = touch_down + FLIP_THRESHOLD;
             dx = (int) -(mScreenWidth + adjustedTouchDown);
             mScroller.startScroll((int) (mScreenWidth + touch_down), (int) mTouch.y, dx, 0, 700);
         } else if (touch_down > FLIP_THRESHOLD) {
+            //右滑
             adjustedTouchDown = touch_down - FLIP_THRESHOLD;
             dx = (int) (mScreenWidth - adjustedTouchDown);
             mScroller.startScroll((int) touch_down, (int) mTouch.y, dx, 0, 700);
@@ -208,29 +219,14 @@ public class OverlappedWidget extends BaseReadView {
 //        }
         int startPosition;
         float travelX = 0;
-        if (touch_down < CANCEL_THRESHOLD && touch_down > 0) {
+        if (touch_down < CANCEL_THRESHOLD && touch_down > FLIP_THRESHOLD) {
             //右滑
-            if (actiondownX > mScreenWidth / 2) {
-                //右屏开始
-                startPosition = (int)(mScreenWidth-(touch_down + FLIP_THRESHOLD));
-                travelX = (int) ((touch_down + FLIP_THRESHOLD));
-            } else {
-                //左屏开始
-                startPosition = (int) (touch_down - FLIP_THRESHOLD);
-                travelX = (int) (-startPosition);
-            }
-            mScroller.startScroll((int) startPosition, (int) mTouch.y, (int)travelX, 0, 600);
-        } else if (touch_down > -CANCEL_THRESHOLD && touch_down < 0) {
-            //左滑
-            if (actiondownX > mScreenWidth / 2) {
-                //右屏开始
-                travelX = touch_down + FLIP_THRESHOLD;
-                startPosition = (int) (mScreenWidth - travelX);
-            } else {
-                //左屏开始
-                travelX = touch_down + FLIP_THRESHOLD;
-                startPosition = (int) (-travelX);
-            }
+            startPosition = (int) (touch_down - FLIP_THRESHOLD);
+            travelX = (int) (-startPosition);
+            mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
+        } else if (touch_down > -CANCEL_THRESHOLD && touch_down < -FLIP_THRESHOLD) {
+            startPosition = (int) (mScreenWidth + touch_down + FLIP_THRESHOLD);
+            travelX = (int) -(touch_down - FLIP_THRESHOLD);
 
             mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
         } else {
