@@ -1,9 +1,7 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.read;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +19,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.main.MainActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.BaseReadView;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsBean;
@@ -111,7 +107,7 @@ public class NewReadActivity extends BaseActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_test;
+        return R.layout.activity_read_new;
     }
 
     @AfterPermissionGranted(111)

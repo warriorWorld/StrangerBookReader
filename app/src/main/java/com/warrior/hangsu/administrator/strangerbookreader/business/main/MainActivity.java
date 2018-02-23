@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +30,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginA
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.test.TestActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
@@ -44,7 +44,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
@@ -259,6 +258,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
+                        if (booksList.get(position).getFormat().equals("EPUB")) {
+                            intent = new Intent(MainActivity.this, TestActivity.class);
+                        }
                         intent.putExtra("bookPath", booksList.get(position).getPath());
                         startActivity(intent);
                     }
