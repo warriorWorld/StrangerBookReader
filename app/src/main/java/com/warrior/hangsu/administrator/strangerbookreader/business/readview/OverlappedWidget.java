@@ -22,6 +22,7 @@ import android.graphics.Path;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 
+import com.warrior.hangsu.administrator.strangerbookreader.enums.BookFormat;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
@@ -40,9 +41,9 @@ public class OverlappedWidget extends BaseReadView {
     GradientDrawable mBackShadowDrawableLR;
     GradientDrawable mBackShadowDrawableRL;
 
-    public OverlappedWidget(Context context, String bookId,
+    public OverlappedWidget(Context context, String bookId, String format,
                             OnReadStateChangeListener listener) {
-        super(context, bookId, listener);
+        super(context, bookId, format, listener);
 
         mTouch.x = 0.01f;
         mTouch.y = 0.01f;
@@ -245,7 +246,7 @@ public class OverlappedWidget extends BaseReadView {
                 mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);
             } else {
                 //左滑
-                startPosition = (int) (mScreenWidth + touch_down );
+                startPosition = (int) (mScreenWidth + touch_down);
                 travelX = (int) -(touch_down);
 
                 mScroller.startScroll((int) startPosition, (int) mTouch.y, (int) travelX, 0, 600);

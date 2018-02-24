@@ -15,7 +15,6 @@
  */
 package com.warrior.hangsu.administrator.strangerbookreader.business.readview;
 
-import android.animation.FloatArrayEvaluator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,8 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
-
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.enums.BookFormat;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
@@ -53,7 +52,7 @@ public abstract class BaseReadView extends View {
 
     protected Bitmap mCurPageBitmap, mNextPageBitmap;
     protected Canvas mCurrentPageCanvas, mNextPageCanvas;
-    protected PageFactory pagefactory = null;
+    protected BasePageFactory pagefactory = null;
 
     protected OnReadStateChangeListener listener;
     protected String bookId;
@@ -68,7 +67,8 @@ public abstract class BaseReadView extends View {
     //记录点击次数
     private int clickTime = 0;
 
-    public BaseReadView(Context context, String bookId,
+
+    public BaseReadView(Context context, String bookId, String format,
                         OnReadStateChangeListener listener) {
         super(context);
         this.context = context;
@@ -84,9 +84,15 @@ public abstract class BaseReadView extends View {
         mNextPageCanvas = new Canvas(mNextPageBitmap);
 
         mScroller = new Scroller(getContext());
+        if (format.toLowerCase().equals(BookFormat.TXT)) {
+            pagefactory = new TxtPageFactory(getContext(), bookId);
+        } else if (format.toLowerCase().equals(BookFormat.EPUB)) {
 
+        } else if (format.toLowerCase().equals(BookFormat.PDF)) {
 
-        pagefactory = new PageFactory(getContext(), bookId);
+        } else if (format.toLowerCase().equals(BookFormat.WORD)) {
+
+        }
         pagefactory.setOnReadStateChangeListener(listener);
     }
 
@@ -378,14 +384,6 @@ public abstract class BaseReadView extends View {
         }
         pagefactory.onDraw(mCurrentPageCanvas);
         postInvalidate();
-    }
-
-    public int[] getReadPos() {
-        return pagefactory.getPosition();
-    }
-
-    public String getHeadLine() {
-        return pagefactory.getHeadLineStr().replaceAll("@", "");
     }
 
     @Override

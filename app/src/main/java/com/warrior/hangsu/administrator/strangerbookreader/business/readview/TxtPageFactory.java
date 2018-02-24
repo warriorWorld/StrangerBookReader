@@ -16,24 +16,12 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.readview;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ProgressBar;
 
-import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
@@ -45,44 +33,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class PageFactory {
-    private Context mContext;
-    /**
-     * 屏幕宽高
-     */
-    private int mHeight, mWidth;
-    /**
-     * 文字区域宽高
-     */
-    private int mVisibleHeight, mVisibleWidth;
-    /**
-     * 间距
-     */
-    private int marginHeight, marginWidth;
-    /**
-     * 字体大小
-     */
-    private int mFontSize, mNumFontSize;
-    /**
-     * 每页行数
-     */
-    private int mPageLineCount;
-    /**
-     * 行间距
-     **/
-    private int mLineSpace;
-    /**
-     * 字节长度  整个书籍文件的字符长度
-     */
-    private int mbBufferLen;
+public class TxtPageFactory extends BasePageFactory {
     /**
      * MappedByteBuffer：高效的文件内存映射
      */
@@ -92,75 +46,17 @@ public class PageFactory {
      */
     private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
     private Vector<String> mLines = new Vector<>();
-
-    private Paint mPaint;
-    private Paint mTitlePaint;
-    private Bitmap mBookPageBg;
-
     private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-    private int timeLen = 0, percentLen = 0;
-    private String time;
-    private int battery = 40;
-    private Rect rectF;
-    private ProgressBar batteryView;
-    private Bitmap batteryBitmap;
-
-    private String bookId;
     private int currentPage = 1;
-
-    private OnReadStateChangeListener listener;
     private String charset = "UTF-8";
-    private float currentPercent;
     private int searchEndPos = 0;//搜索指针
-    private String title;
 
-    public PageFactory(Context context, String bookId) {
-        this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
-                //SettingManager.getInstance().getReadFontSize(bookId),
-                SettingManager.getInstance().getReadFontSize(),
-                bookId);
+    public TxtPageFactory(Context context, String bookPath) {
+        super(context, bookPath);
     }
 
-    public PageFactory(Context context, int width, int height, int fontSize, String bookId) {
-        mContext = context;
-        mWidth = width;
-        mHeight = height;
-        mFontSize = fontSize;
-        mLineSpace = mFontSize / 5 * 2;
-        mNumFontSize = ScreenUtils.dpToPxInt(16);
-        marginWidth = ScreenUtils.dpToPxInt(15);
-        marginHeight = ScreenUtils.dpToPxInt(15);
-        mVisibleHeight = mHeight - marginHeight * 2 - mNumFontSize * 2 - mLineSpace * 2;
-        mVisibleWidth = mWidth - marginWidth * 2;
-        mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
-        rectF = new Rect(0, 0, mWidth, mHeight);
-
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setTextSize(mFontSize);
-        mPaint.setColor(Color.BLACK);
-        mTitlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTitlePaint.setTextSize(mNumFontSize);
-        mTitlePaint.setColor(ContextCompat.getColor(AppUtils.getAppContext(), R.color.chapter_title_day));
-        timeLen = (int) mTitlePaint.measureText("00:00");
-        percentLen = (int) mTitlePaint.measureText("00.00%");
-        // Typeface typeface = Typeface.createFromAsset(context.getAssets(),"fonts/FZBYSK.TTF");
-        // mPaint.setTypeface(typeface);
-        // mNumPaint.setTypeface(typeface);
-
-        this.bookId = bookId;
-
-        time = dateFormat.format(new Date());
-    }
-
-    public File getBookFile(String path) {
-        File file = FileUtils.getChapterFile(path);
-        if (file != null && file.length() > 10) {
-            // 解决空文件造成编码错误的问题
-            charset = FileUtils.getCharset(file.getAbsolutePath());
-        }
-        LogUtils.i("charset=" + charset);
-        return file;
+    public TxtPageFactory(Context context, int width, int height, int fontSize, String bookPath) {
+        super(context, width, height, fontSize, bookPath);
     }
 
 
@@ -170,6 +66,7 @@ public class PageFactory {
      * @param position 阅读位置
      * @return 0：文件不存在或打开失败  1：打开成功
      */
+    @Override
     public int openBook(String path, int[] position) {
         try {
             File file = new File(path);
@@ -178,7 +75,7 @@ public class PageFactory {
             }
             long length = file.length();
             if (length > 10) {
-                mbBufferLen = (int) length;
+                bookSize = (int) length;
                 // 创建文件通道，映射为MappedByteBuffer
                 mbBuff = new RandomAccessFile(file, "r")
                         .getChannel()
@@ -213,11 +110,11 @@ public class PageFactory {
                 canvas.drawColor(Color.WHITE);
             }
             // 绘制标题       //TODO
-            int separatorPosition = bookId.lastIndexOf(File.separator);
-            int dotPosition = bookId.lastIndexOf(".");
-            title = bookId.substring(separatorPosition + 1, dotPosition);
+            int separatorPosition = bookPath.lastIndexOf(File.separator);
+            int dotPosition = bookPath.lastIndexOf(".");
+            title = bookPath.substring(separatorPosition + 1, dotPosition);
             canvas.drawText(title, marginWidth, y, mTitlePaint);
-            y += mLineSpace + mNumFontSize;
+            y += mLineSpace + mTitleFontSize;
             // 绘制阅读页面文字
             for (String line : mLines) {
                 y += mLineSpace;
@@ -235,7 +132,7 @@ public class PageFactory {
                 canvas.drawBitmap(batteryBitmap, marginWidth + 2,
                         mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
             }
-            currentPercent = (float) curBeginPos * 100 / mbBufferLen;
+            currentPercent = (float) curBeginPos * 100 / bookSize;
             canvas.drawText(decimalFormat.format(currentPercent) + "%", (mWidth - percentLen) / 2,
                     mHeight - marginHeight, mTitlePaint);
             //绘制时间
@@ -243,20 +140,8 @@ public class PageFactory {
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
 
             // 保存阅读进度
-            SettingManager.getInstance().saveReadProgress(bookId, curBeginPos, curEndPos, currentPercent);
+            SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
         }
-    }
-
-    public float getCurrentPercent() {
-        return currentPercent;
-    }
-
-    public String getBookTitle() {
-        return title;
-    }
-
-    public int getBookSize() {
-        return mbBufferLen;
     }
 
     /**
@@ -313,7 +198,7 @@ public class PageFactory {
         int paraSpace = 0;
         mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
         //这是一段一段的循环添加的 直到填满整页
-        while ((lines.size() < mPageLineCount) && (curEndPos < mbBufferLen)) {
+        while ((lines.size() < mPageLineCount) && (curEndPos < bookSize)) {
             byte[] parabuffer = readParagraphForward(curEndPos);
             curEndPos += parabuffer.length;
             try {
@@ -424,7 +309,7 @@ public class PageFactory {
         byte b0;
         int i = curEndPos;
         //计算段落的长度 遇到回车就停下
-        while (i < mbBufferLen) {
+        while (i < bookSize) {
             b0 = mbBuff.get(i++);
             if (b0 == 0x0a) {//回车
                 break;
@@ -467,7 +352,7 @@ public class PageFactory {
 
     public boolean hasNextPage() {
         //TODO
-        return curEndPos < mbBufferLen;
+        return curEndPos < bookSize;
     }
 
     public boolean hasPrePage() {
@@ -478,13 +363,14 @@ public class PageFactory {
     /**
      * 跳转下一页
      */
+    @Override
     public BookStatus nextPage() {
         if (!hasNextPage()) { // 最后一章的结束页
             return BookStatus.NO_NEXT_PAGE;
         } else {
             tempBeginPos = curBeginPos;
             tempEndPos = curEndPos;
-            if (curEndPos >= mbBufferLen) { // 中间章节结束页
+            if (curEndPos >= bookSize) { // 中间章节结束页
                 //文件结束 我这边没有这种情况
             } else {
                 curBeginPos = curEndPos; // 起始指针移到结束位置
@@ -499,6 +385,7 @@ public class PageFactory {
     /**
      * 跳转上一页
      */
+    @Override
     public BookStatus prePage() {
         if (!hasPrePage()) { // 第一章第一页
             return BookStatus.NO_PRE_PAGE;
@@ -521,9 +408,9 @@ public class PageFactory {
         curBeginPos = tempBeginPos;
         curEndPos = curBeginPos;
 
-        int ret = openBook(bookId, new int[]{curBeginPos, curEndPos});
+        int ret = openBook(bookPath, new int[]{curBeginPos, curEndPos});
         if (ret == 0) {
-            onLoadChapterFailure(bookId);
+            onLoadChapterFailure(bookPath);
             return;
         }
         mLines.clear();
@@ -551,6 +438,7 @@ public class PageFactory {
      *
      * @param fontsize 单位：px
      */
+    @Override
     public void setTextFont(int fontsize) {
         LogUtils.i("fontSize=" + fontsize);
         mFontSize = fontsize;
@@ -567,13 +455,10 @@ public class PageFactory {
      * @param textColor
      * @param titleColor
      */
+    @Override
     public void setTextColor(int textColor, int titleColor) {
         mPaint.setColor(textColor);
         mTitlePaint.setColor(titleColor);
-    }
-
-    public int getTextFont() {
-        return mFontSize;
     }
 
     /**
@@ -581,8 +466,9 @@ public class PageFactory {
      *
      * @param persent
      */
+    @Override
     public void setPercent(int persent) {
-        float a = (float) (mbBufferLen * persent) / 100;
+        float a = (float) (bookSize * persent) / 100;
         curEndPos = (int) a;
         if (curEndPos == 0) {
             nextPage();
@@ -591,14 +477,6 @@ public class PageFactory {
             prePage();
             nextPage();
         }
-    }
-
-    public void setBgBitmap(Bitmap BG) {
-        mBookPageBg = BG;
-    }
-
-    public void setOnReadStateChangeListener(OnReadStateChangeListener listener) {
-        this.listener = listener;
     }
 
 
@@ -612,50 +490,11 @@ public class PageFactory {
             listener.onLoadFailure(path);
     }
 
-    public void convertBetteryBitmap() {
-        batteryView = (ProgressBar) LayoutInflater.from(mContext).inflate(R.layout.layout_battery_progress, null);
-        batteryView.setProgressDrawable(ContextCompat.getDrawable(mContext,
-                SettingManager.getInstance().getReadTheme() < 4 ?
-                        R.drawable.seekbar_battery_bg : R.drawable.seekbar_battery_night_bg));
-        batteryView.setProgress(battery);
-        batteryView.setDrawingCacheEnabled(true);
-        batteryView.measure(View.MeasureSpec.makeMeasureSpec(ScreenUtils.dpToPxInt(26), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(ScreenUtils.dpToPxInt(14), View.MeasureSpec.EXACTLY));
-        batteryView.layout(0, 0, batteryView.getMeasuredWidth(), batteryView.getMeasuredHeight());
-        batteryView.buildDrawingCache();
-        //batteryBitmap = batteryView.getDrawingCache();
-        // tips: @link{https://github.com/JustWayward/BookReader/issues/109}
-        batteryBitmap = Bitmap.createBitmap(batteryView.getDrawingCache());
-        batteryView.setDrawingCacheEnabled(false);
-        batteryView.destroyDrawingCache();
-    }
 
-    public void setBattery(int battery) {
-        this.battery = battery;
-        convertBetteryBitmap();
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void recycle() {
-        if (mBookPageBg != null && !mBookPageBg.isRecycled()) {
-            mBookPageBg.recycle();
-            mBookPageBg = null;
-            LogUtils.d("mBookPageBg recycle");
-        }
-
-        if (batteryBitmap != null && !batteryBitmap.isRecycled()) {
-            batteryBitmap.recycle();
-            batteryBitmap = null;
-            LogUtils.d("batteryBitmap recycle");
-        }
-    }
-
+    @Override
     public String getClickWord(int touchX, int touchY) {
         String res = "";
-        int contentStartY = marginHeight + mLineSpace + mNumFontSize;//内容起始y
+        int contentStartY = marginHeight + mLineSpace + mTitleFontSize;//内容起始y
         int y = contentStartY;
         int absoluteY = touchY - contentStartY;
         if (absoluteY < 0) {
@@ -740,40 +579,7 @@ public class PageFactory {
         return res;
     }
 
-    private Integer[] getUnLetterPosition(String s) {
-        List<Integer> indices = new ArrayList<Integer>();
-        Pattern p;
-        Matcher m;
-        p = Pattern.compile("[a-zA-Z]");
-        m = p.matcher(s);
-        // 尝试在目标字符串里查找下一个匹配子串。
-        int lastOnePosition = -1;
-        while (m.find()) {
-            // 获取到匹配字符的结束点
-            if (m.start() - lastOnePosition != 1) {
-                // 获取的m.start是每个符合正则表达式的字符的位置
-                // 而我想要的是不符合的位置 而断掉的位置就必然是不符合的位置
-                indices.add(lastOnePosition + 1);
-            }
-            lastOnePosition = m.start();
-        }
-        return (Integer[]) indices.toArray(new Integer[0]);
-    }
-
-    /**
-     * 因为当单词间的非字母多于1个时会导致后边的单词附加上非字母 用这个方法去掉
-     *
-     * @param s
-     * @return
-     */
-    private String getWordAgain(String s) {
-        String str = s.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&;*（）——+|{}【】\"‘；：”“’。，、？|-]", "");
-        str = str.replaceAll("\n", "");
-        str = str.replaceAll("\r", "");
-        str = str.replaceAll("\\s", "");
-        return str;
-    }
-
+    @Override
     public void jumpToPositionBySearchText(String searchText, OnSearchResultListener listener) {
         if (searchEndPos == 0) {
             searchEndPos = curEndPos;
@@ -791,7 +597,7 @@ public class PageFactory {
             searchEndPos = 0;
             listener.onSearchDone();
         } else {
-            if ((curEndPos < mbBufferLen)) {
+            if ((curEndPos < bookSize)) {
                 jumpToPositionBySearchText(searchText, listener);
             } else {
                 listener.onSearchFail();
@@ -802,6 +608,7 @@ public class PageFactory {
     /**
      * 根据百分比，跳到目标位置
      */
+    @Override
     public void jumpToPosition(int endPosition) {
         curEndPos = endPosition;
         if (curEndPos == 0) {

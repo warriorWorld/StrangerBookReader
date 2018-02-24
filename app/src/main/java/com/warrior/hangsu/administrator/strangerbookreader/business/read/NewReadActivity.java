@@ -68,7 +68,7 @@ public class NewReadActivity extends BaseActivity implements
     private BaseReadView mPageWidget;
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
-    private String bookPath;
+    private String bookPath,bookFormat;
     private MangaDialog dialog;
     private ReadDialog readDialog;
     private DbAdapter db;//数据库
@@ -93,6 +93,7 @@ public class NewReadActivity extends BaseActivity implements
 
         Intent intent = getIntent();
         bookPath = intent.getStringExtra("bookPath");
+        bookFormat=intent.getStringExtra("bookFormat");
         if (TextUtils.isEmpty(bookPath)) {
             finish();
         }
@@ -117,7 +118,7 @@ public class NewReadActivity extends BaseActivity implements
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            mPageWidget = new OverlappedWidget(this, bookPath, new ReadListener());
+            mPageWidget = new OverlappedWidget(this, bookPath,bookFormat, new ReadListener());
 
             if (SharedPreferencesUtil.getInstance().getBoolean(ShareKeys.ISNIGHT, false)) {
                 mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_night),
@@ -189,7 +190,7 @@ public class NewReadActivity extends BaseActivity implements
                         showOnlyOkDialog(word, result.getQuery() + " [" + item.getPhonetic() +
                                 "]: " + "\n" + t);
                     } else {
-                        ToastUtil.tipShort(NewReadActivity.this, "没查到该词");
+                        ToastUtil.tipShort(NewReadActivity.this, "没查到该词"+word);
                     }
                 } else {
                     ToastUtil.tipShort(NewReadActivity.this, "网络连接失败");

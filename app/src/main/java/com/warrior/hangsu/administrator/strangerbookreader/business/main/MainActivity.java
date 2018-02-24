@@ -262,6 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                             intent = new Intent(MainActivity.this, TestActivity.class);
                         }
                         intent.putExtra("bookPath", booksList.get(position).getPath());
+                        intent.putExtra("bookFormat", booksList.get(position).getFormat());
                         startActivity(intent);
                     }
                 });

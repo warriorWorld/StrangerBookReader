@@ -17,6 +17,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.readview;
 
 import android.content.Context;
 
+import com.warrior.hangsu.administrator.strangerbookreader.enums.BookFormat;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 
 /**
@@ -25,8 +26,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateC
  */
 public class NoAimWidget extends OverlappedWidget {
 
-    public NoAimWidget(Context context, String bookId, OnReadStateChangeListener listener) {
-        super(context, bookId, listener);
+    public NoAimWidget(Context context, String bookId, String format, OnReadStateChangeListener listener) {
+        super(context, bookId, format, listener);
     }
 
     @Override
