@@ -87,7 +87,7 @@ public abstract class BaseReadView extends View {
         if (format.toLowerCase().equals(BookFormat.TXT)) {
             pagefactory = new TxtPageFactory(getContext(), bookId);
         } else if (format.toLowerCase().equals(BookFormat.EPUB)) {
-
+            pagefactory = new EpubPageFactory(getContext(), bookId);
         } else if (format.toLowerCase().equals(BookFormat.PDF)) {
 
         } else if (format.toLowerCase().equals(BookFormat.WORD)) {
@@ -102,7 +102,7 @@ public abstract class BaseReadView extends View {
                 pagefactory.setBgBitmap(ThemeManager.getThemeDrawable(theme));
                 // 自动跳转到上次阅读位置
                 int pos[] = SettingManager.getInstance().getReadProgress(bookId);
-                int ret = pagefactory.openBook(bookId, new int[]{pos[0], pos[1]});
+                int ret = pagefactory.openBook(bookId, pos);
                 LogUtils.i(" startPos=" + pos[0] + " endPos=" + pos[1]);
                 if (ret == 0) {
                     listener.onLoadFailure(bookId);

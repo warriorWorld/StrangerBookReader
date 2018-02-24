@@ -114,7 +114,7 @@ public class SettingManager {
     }
 
     /**
-     * 获取上次阅读章节及位置
+     * 获取上次阅读章节及位置 TODO epub回传三位的数组
      *
      * @param bookId
      * @return
