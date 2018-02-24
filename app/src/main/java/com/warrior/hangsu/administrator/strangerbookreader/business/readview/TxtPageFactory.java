@@ -41,7 +41,7 @@ public class TxtPageFactory extends BasePageFactory {
      * MappedByteBuffer：高效的文件内存映射
      */
     private MappedByteBuffer mbBuff;
-
+    private int currentPage = 1;//这个在TXT里只是展示用的页码
     private String charset = "UTF-8";
     private int searchEndPos = 0;//搜索指针
 

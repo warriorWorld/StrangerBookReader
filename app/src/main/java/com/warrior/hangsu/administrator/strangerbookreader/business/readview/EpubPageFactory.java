@@ -43,9 +43,6 @@
 //    /**
 //     * 页首页尾的位置  epub这里为具体某一页的位置
 //     */
-//    private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
-//    private Vector<String> mLines = new Vector<>();
-//    private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 //    private int currentPage = 1;//epub自己有分页 这个是epub的页数
 //    private String charset = "UTF-8";
 //    private int searchEndPos = 0;//搜索指针
@@ -144,7 +141,8 @@
 //     *
 //     * @return
 //     */
-//    private Vector<String> pageDown() {
+//    @Override
+//    protected Vector<String> pageDown() {
 //        String strParagraph = "";
 //        Vector<String> lines = new Vector<>();
 //        int paraSpace = 0;

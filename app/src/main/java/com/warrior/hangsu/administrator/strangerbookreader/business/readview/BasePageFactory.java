@@ -87,7 +87,6 @@ public abstract class BasePageFactory {
     protected int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
     protected Vector<String> mLines = new Vector<>();
     protected DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-    protected int currentPage = 1;
 
     public BasePageFactory(Context context, String bookPath) {
         this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
