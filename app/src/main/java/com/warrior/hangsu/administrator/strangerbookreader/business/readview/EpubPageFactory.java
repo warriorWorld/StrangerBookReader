@@ -43,7 +43,8 @@
 //    /**
 //     * 页首页尾的位置  epub这里为具体某一页的位置
 //     */
-//    private int currentPage = 1;//epub自己有分页 这个是epub的页数
+//    private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
+//    private int currentPage = 0;//epub自己有分页 这个是epub的页数
 //    private String charset = "UTF-8";
 //    private int searchEndPos = 0;//搜索指针
 //    private Reader epubReader;
@@ -91,6 +92,19 @@
 //            e.printStackTrace();
 //        }
 //        return 0;
+//    }
+//
+//    @Override
+//    protected void saveReadProgress() {
+//        // 保存阅读进度 TODO
+//        SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
+//    }
+//
+//    @Override
+//    protected void loadLines() {
+//        currentPage = 0;
+//        curEndPos = curBeginPos;
+//        mLines = pageDown();
 //    }
 //
 //    /**
@@ -568,5 +582,10 @@
 //            prePage();
 //            nextPage();
 //        }
+//    }
+//
+//    @Override
+//    protected float calculatePercent() {
+//        return 0;
 //    }
 //}

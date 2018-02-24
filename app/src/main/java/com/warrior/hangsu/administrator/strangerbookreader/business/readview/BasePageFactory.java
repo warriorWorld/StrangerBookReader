@@ -81,10 +81,7 @@ public abstract class BasePageFactory {
     protected Bitmap batteryBitmap;
     protected ProgressBar batteryView;
     protected int battery = 40;
-    /**
-     * 页首页尾的位置
-     */
-    protected int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
+
     protected Vector<String> mLines = new Vector<>();
     protected DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 
@@ -141,8 +138,7 @@ public abstract class BasePageFactory {
 //    public abstract void onDraw(Canvas canvas);
     public synchronized void onDraw(Canvas canvas) {
         if (mLines.size() == 0) {
-            curEndPos = curBeginPos;
-            mLines = pageDown();
+            loadLines();
         }
         if (mLines.size() > 0) {
             int y = marginHeight + (mLineSpace << 1);
@@ -175,17 +171,27 @@ public abstract class BasePageFactory {
                 canvas.drawBitmap(batteryBitmap, marginWidth + 2,
                         mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
             }
-            currentPercent = (float) curBeginPos * 100 / bookSize;
+            currentPercent = calculatePercent();
             canvas.drawText(decimalFormat.format(currentPercent) + "%", (mWidth - percentLen) / 2,
                     mHeight - marginHeight, mTitlePaint);
             //绘制时间
             String mTime = dateFormat.format(new Date());
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
-
-            // 保存阅读进度
-            SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
+            saveReadProgress();
         }
     }
+
+    /**
+     * 保存阅读进度
+     */
+    protected abstract void saveReadProgress();
+
+    /**
+     * 读取mLines
+     *
+     * @return
+     */
+    protected abstract void loadLines();
 
     /**
      * 根据起始位置指针，读取一页内容 配置mLines
@@ -323,6 +329,13 @@ public abstract class BasePageFactory {
             LogUtils.d("batteryBitmap recycle");
         }
     }
+
+    /**
+     * 计算阅读进度
+     *
+     * @return
+     */
+    protected abstract float calculatePercent();
 
     public float getCurrentPercent() {
         return currentPercent;

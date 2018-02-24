@@ -40,6 +40,10 @@ public class TxtPageFactory extends BasePageFactory {
     /**
      * MappedByteBuffer：高效的文件内存映射
      */
+    /**
+     * 页首页尾的位置
+     */
+    private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
     private MappedByteBuffer mbBuff;
     private int currentPage = 1;//这个在TXT里只是展示用的页码
     private String charset = "UTF-8";
@@ -83,6 +87,18 @@ public class TxtPageFactory extends BasePageFactory {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    protected void saveReadProgress() {
+        // 保存阅读进度
+        SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
+    }
+
+    @Override
+    protected void loadLines() {
+        curEndPos = curBeginPos;
+        mLines = pageDown();
     }
 
     /**
@@ -560,5 +576,10 @@ public class TxtPageFactory extends BasePageFactory {
             prePage();
             nextPage();
         }
+    }
+
+    @Override
+    protected float calculatePercent() {
+        return (float) curBeginPos * 100 / bookSize;
     }
 }
