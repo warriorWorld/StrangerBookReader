@@ -20,10 +20,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 
+import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,6 +81,13 @@ public abstract class BasePageFactory {
     protected Bitmap batteryBitmap;
     protected ProgressBar batteryView;
     protected int battery = 40;
+    /**
+     * 页首页尾的位置
+     */
+    protected int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
+    protected Vector<String> mLines = new Vector<>();
+    protected DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+    protected int currentPage = 1;
 
     public BasePageFactory(Context context, String bookPath) {
         this(context, ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight(),
@@ -129,7 +139,61 @@ public abstract class BasePageFactory {
      *
      * @param canvas
      */
-    public abstract void onDraw(Canvas canvas);
+//    public abstract void onDraw(Canvas canvas);
+    public synchronized void onDraw(Canvas canvas) {
+        if (mLines.size() == 0) {
+            curEndPos = curBeginPos;
+            mLines = pageDown();
+        }
+        if (mLines.size() > 0) {
+            int y = marginHeight + (mLineSpace << 1);
+            // 绘制背景
+            if (mBookPageBg != null) {
+                canvas.drawBitmap(mBookPageBg, null, rectF, null);
+            } else {
+                canvas.drawColor(Color.WHITE);
+            }
+            // 绘制标题       //TODO
+            int separatorPosition = bookPath.lastIndexOf(File.separator);
+            int dotPosition = bookPath.lastIndexOf(".");
+            title = bookPath.substring(separatorPosition + 1, dotPosition);
+            canvas.drawText(title, marginWidth, y, mTitlePaint);
+            y += mLineSpace + mTitleFontSize;
+            // 绘制阅读页面文字
+            for (String line : mLines) {
+                y += mLineSpace;
+                if (line.endsWith("@")) {
+                    //@当做段落尾换行符 这样段落间距就会比行间距大 这里正好是行间距的两倍
+                    canvas.drawText(line.substring(0, line.length() - 1), marginWidth, y, mPaint);
+                    y += mLineSpace;
+                } else {
+                    canvas.drawText(line, marginWidth, y, mPaint);
+                }
+                y += mFontSize;
+            }
+            // 绘制提示内容
+            if (batteryBitmap != null) {
+                canvas.drawBitmap(batteryBitmap, marginWidth + 2,
+                        mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
+            }
+            currentPercent = (float) curBeginPos * 100 / bookSize;
+            canvas.drawText(decimalFormat.format(currentPercent) + "%", (mWidth - percentLen) / 2,
+                    mHeight - marginHeight, mTitlePaint);
+            //绘制时间
+            String mTime = dateFormat.format(new Date());
+            canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
+
+            // 保存阅读进度
+            SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
+        }
+    }
+
+    /**
+     * 根据起始位置指针，读取一页内容 配置mLines
+     *
+     * @return
+     */
+    protected abstract Vector<String> pageDown();
 
     /**
      * 跳转下一页

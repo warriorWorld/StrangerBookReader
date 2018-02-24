@@ -41,13 +41,7 @@ public class TxtPageFactory extends BasePageFactory {
      * MappedByteBuffer：高效的文件内存映射
      */
     private MappedByteBuffer mbBuff;
-    /**
-     * 页首页尾的位置
-     */
-    private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
-    private Vector<String> mLines = new Vector<>();
-    private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-    private int currentPage = 1;
+
     private String charset = "UTF-8";
     private int searchEndPos = 0;//搜索指针
 
@@ -89,59 +83,6 @@ public class TxtPageFactory extends BasePageFactory {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    /**
-     * 绘制阅读页面
-     *
-     * @param canvas
-     */
-    public synchronized void onDraw(Canvas canvas) {
-        if (mLines.size() == 0) {
-            curEndPos = curBeginPos;
-            mLines = pageDown();
-        }
-        if (mLines.size() > 0) {
-            int y = marginHeight + (mLineSpace << 1);
-            // 绘制背景
-            if (mBookPageBg != null) {
-                canvas.drawBitmap(mBookPageBg, null, rectF, null);
-            } else {
-                canvas.drawColor(Color.WHITE);
-            }
-            // 绘制标题       //TODO
-            int separatorPosition = bookPath.lastIndexOf(File.separator);
-            int dotPosition = bookPath.lastIndexOf(".");
-            title = bookPath.substring(separatorPosition + 1, dotPosition);
-            canvas.drawText(title, marginWidth, y, mTitlePaint);
-            y += mLineSpace + mTitleFontSize;
-            // 绘制阅读页面文字
-            for (String line : mLines) {
-                y += mLineSpace;
-                if (line.endsWith("@")) {
-                    //@当做段落尾换行符 这样段落间距就会比行间距大 这里正好是行间距的两倍
-                    canvas.drawText(line.substring(0, line.length() - 1), marginWidth, y, mPaint);
-                    y += mLineSpace;
-                } else {
-                    canvas.drawText(line, marginWidth, y, mPaint);
-                }
-                y += mFontSize;
-            }
-            // 绘制提示内容
-            if (batteryBitmap != null) {
-                canvas.drawBitmap(batteryBitmap, marginWidth + 2,
-                        mHeight - marginHeight - ScreenUtils.dpToPxInt(12), mTitlePaint);
-            }
-            currentPercent = (float) curBeginPos * 100 / bookSize;
-            canvas.drawText(decimalFormat.format(currentPercent) + "%", (mWidth - percentLen) / 2,
-                    mHeight - marginHeight, mTitlePaint);
-            //绘制时间
-            String mTime = dateFormat.format(new Date());
-            canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
-
-            // 保存阅读进度
-            SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
-        }
     }
 
     /**
@@ -192,7 +133,8 @@ public class TxtPageFactory extends BasePageFactory {
      *
      * @return
      */
-    private Vector<String> pageDown() {
+    @Override
+    protected Vector<String> pageDown() {
         String strParagraph = "";
         Vector<String> lines = new Vector<>();
         int paraSpace = 0;
