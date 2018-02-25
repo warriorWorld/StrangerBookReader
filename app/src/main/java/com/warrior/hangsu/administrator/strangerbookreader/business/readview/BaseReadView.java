@@ -87,7 +87,7 @@ public abstract class BaseReadView extends View {
         if (format.toLowerCase().equals(BookFormat.TXT)) {
             pagefactory = new TxtPageFactory(getContext(), bookId);
         } else if (format.toLowerCase().equals(BookFormat.EPUB)) {
-//            pagefactory = new EpubPageFactory(getContext(), bookId);
+            pagefactory = new EpubPageFactory(getContext(), bookId);
         } else if (format.toLowerCase().equals(BookFormat.PDF)) {
 
         } else if (format.toLowerCase().equals(BookFormat.WORD)) {
