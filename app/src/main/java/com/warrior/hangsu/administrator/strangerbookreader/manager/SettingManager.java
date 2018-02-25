@@ -68,7 +68,7 @@ public class SettingManager {
     public String getFontSizeExplain() {
         for (int i = 0; i < FONT_SIZE_LIST.length; i++) {
             int size = Integer.valueOf(FONT_SIZE_CODE_LIST[i]);
-            if (size >= (int)ScreenUtils.pxToDp(getReadFontSize())) {
+            if (size >= (int) ScreenUtils.pxToDp(getReadFontSize())) {
                 return FONT_SIZE_LIST[i];
             }
         }
@@ -104,13 +104,19 @@ public class SettingManager {
         return "readLightness";
     }
 
-    public synchronized void saveReadProgress(String bookId, int m_mbBufBeginPos, int m_mbBufEndPos, float percent) {
+    public synchronized void saveReadProgress(String bookId, int m_mbBufBeginPos, int m_mbBufEndPos, int currentPage, float percent) {
         SharedPreferencesUtil.getInstance()
                 .putInt(getStartPosKey(bookId), m_mbBufBeginPos)
-                .putInt(getEndPosKey(bookId), m_mbBufEndPos);
+                .putInt(getEndPosKey(bookId), m_mbBufEndPos).
+                putInt(getCurrentPageKey(bookId), currentPage);
+
         DbAdapter db = new DbAdapter(AppUtils.getAppContext());
         db.updateProgressTOBooksTb(StringUtil.cutString(bookId, '/', '.'), percent);
         db.closeDb();
+    }
+
+    public synchronized void saveReadProgress(String bookId, int m_mbBufBeginPos, int m_mbBufEndPos, float percent) {
+        saveReadProgress(bookId, m_mbBufBeginPos, m_mbBufEndPos, 0, percent);
     }
 
     /**
@@ -122,8 +128,8 @@ public class SettingManager {
     public int[] getReadProgress(String bookId) {
         int startPos = SharedPreferencesUtil.getInstance().getInt(getStartPosKey(bookId), 0);
         int endPos = SharedPreferencesUtil.getInstance().getInt(getEndPosKey(bookId), 0);
-
-        return new int[]{startPos, endPos};
+        int currentPage = SharedPreferencesUtil.getInstance().getInt(getCurrentPageKey(bookId), 0);
+        return new int[]{startPos, endPos,currentPage};
     }
 
     public void removeReadProgress(String bookId) {
@@ -139,6 +145,10 @@ public class SettingManager {
 
     private String getEndPosKey(String bookId) {
         return bookId + "-endPos";
+    }
+
+    private String getCurrentPageKey(String bookId) {
+        return bookId + "-current_page";
     }
 
 

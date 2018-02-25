@@ -47,7 +47,6 @@ public class EpubPageFactory extends BasePageFactory {
     private int searchEndPos = 0;//搜索指针
     private Reader epubReader;
     private static org.jsoup.nodes.Document doc;
-    private BookSection bookSection = null;
     private Vector<String> currentPageContents = new Vector<>();
     private boolean isPageDone = false;
 
@@ -82,12 +81,9 @@ public class EpubPageFactory extends BasePageFactory {
                 epubReader.setIsIncludingTextContent(true); // Optional, to return the tags-excluded version.
                 epubReader.setFullContent(bookPath); // Must call before readSection.
 
-//                curBeginPos = position[0];
-//                curEndPos = position[1];
-//                currentPage = position[2];
-                curBeginPos = 0;
-                curEndPos = 0;
-                currentPage = 1;
+                curBeginPos = position[0];
+                curEndPos = position[1];
+                currentPage = position[2];
                 mLines.clear();
                 return 1;
             }
@@ -102,7 +98,7 @@ public class EpubPageFactory extends BasePageFactory {
     @Override
     protected void saveReadProgress() {
         // 保存阅读进度 TODO
-        SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPercent);
+        SettingManager.getInstance().saveReadProgress(bookPath, curBeginPos, curEndPos, currentPage, currentPercent);
     }
 
     @Override
@@ -187,7 +183,10 @@ public class EpubPageFactory extends BasePageFactory {
                 }
             }
             //在段落的末尾加@作为段落尾换行符
-            lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
+            if (lines.size() > 0) {
+                lines.set(lines.size() - 1, lines.get(lines.size() - 1) + "@");
+                lines.set(lines.size() - 1, lines.get(lines.size() - 1).replaceAll("@@", "@"));
+            }
             //当段落太长 不够地方显示的话 重置curEndPos
             if (strParagraph.length() != 0) {
                 try {
@@ -197,7 +196,10 @@ public class EpubPageFactory extends BasePageFactory {
                     e.printStackTrace();
                 }
             }
-            if (isPageDone){
+            if (isPageDone) {
+                currentPage++;
+                curEndPos = 0;
+                currentPageContents = null;
                 break;
             }
             paraSpace += mLineSpace;//段落间的空白高度
@@ -229,6 +231,7 @@ public class EpubPageFactory extends BasePageFactory {
     private byte[] readParagraphForward() {
         try {
             if (null == currentPageContents || currentPageContents.size() == 0) {
+                BookSection bookSection = null;
                 bookSection = epubReader.readSection(currentPage);
                 String currentPageContent = bookSection.getSectionContent(); // Returns content as html.
 
@@ -332,7 +335,7 @@ public class EpubPageFactory extends BasePageFactory {
             }
             mLines.clear();
             mLines = pageDown(); // 读取一页内容
-            onPageChanged(++currentPage);
+            onPageChanged(currentPage);
         }
         return BookStatus.LOAD_SUCCESS;
     }
@@ -354,7 +357,7 @@ public class EpubPageFactory extends BasePageFactory {
             mLines.clear();
             pageUp(); // 起始指针移到上一页开始处
             mLines = pageDown(); // 读取一页内容
-            onPageChanged(--currentPage);
+            onPageChanged(currentPage);
         }
         return BookStatus.LOAD_SUCCESS;
     }
@@ -577,6 +580,6 @@ public class EpubPageFactory extends BasePageFactory {
 
     @Override
     protected float calculatePercent() {
-        return 0;
+        return currentPage;
     }
 }
