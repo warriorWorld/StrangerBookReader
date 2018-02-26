@@ -38,6 +38,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
@@ -48,11 +49,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.QrDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
     private String qrFilePath;
+    private final String[] DELETE_LIST = {"从书架中删除", "从文件中删除"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +250,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         refreshBooks();
     }
 
+    private void showDeleteSelectorDialog(final int deletePosition) {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        deleteBooks(booksList.get(deletePosition).getName());
+                        break;
+                    case 1:
+                        showDeleteDialog(deletePosition);
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(DELETE_LIST);
+    }
+
     private void initDateRv() {
         try {
             if (null == booksList || booksList.size() <= 0) {
@@ -270,7 +302,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
                     @Override
                     public void onItemLongClick(int position) {
-                        showDeleteDialog(position);
+                        showDeleteSelectorDialog(position);
                     }
                 });
                 bookListRcv.setAdapter(adapter);
@@ -300,6 +332,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
+                try {
+                    FileUtils.deleteFile(new File(booksList.get(position).getPath()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 deleteBooks(booksList.get(position).getName());
             }
 
@@ -309,7 +346,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
             }
         });
         dialog.show();
-        dialog.setTitle("是否从书架中删除该书?");
+        dialog.setTitle("是否从文件中删除该书?");
+        dialog.setMessage("从文件中移除后无法恢复");
         dialog.setOkText("是");
         dialog.setCancelText("否");
     }
