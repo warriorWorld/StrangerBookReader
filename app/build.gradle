@@ -46,4 +46,5 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.support:recyclerview-v7:25.0.+'
     compile 'org.jsoup:jsoup:1.10.3'
+    compile 'com.github.mertakdut:EpubParser:1.0.95'
 }
