@@ -375,6 +375,9 @@ public abstract class BasePageFactory {
         str = str.replaceAll("\n", "");
         str = str.replaceAll("\r", "");
         str = str.replaceAll("\\s", "");
+        for (int i = 0; i < 10; i++) {
+            str = str.replaceAll(i + "", "");
+        }
         return str;
     }
 
