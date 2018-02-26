@@ -258,7 +258,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
-                        if (booksList.get(position).getFormat().equals("EPUB") && position % 2 == 0) {
+                        if (booksList.get(position).getFormat().equals("EPUB") ) {
                             intent = new Intent(MainActivity.this, TestActivity.class);
                         }
                         intent.putExtra("bookPath", booksList.get(position).getPath());
