@@ -244,7 +244,92 @@ public abstract class BasePageFactory {
      * @param touchY
      * @return
      */
-    public abstract String getClickWord(int touchX, int touchY);
+    public String getClickWord(int touchX, int touchY) {
+        String res = "";
+        int contentStartY = marginHeight + mLineSpace + mTitleFontSize;//内容起始y
+        int y = contentStartY;
+        int absoluteY = touchY - contentStartY;
+        if (absoluteY < 0) {
+            return "这是标题";
+        }
+        int linePosition = 0;
+        String lineString = "";
+        for (int i = 0; i < mLines.size(); i++) {
+            y += mLineSpace;
+            if (mLines.get(i).endsWith("@")) {
+                //@当做段落尾换行符 这样段落间距就会比行间距大 这里正好是行间距的两倍
+                y += mLineSpace;
+            }
+            y += mFontSize;
+            if (y >= touchY) {
+                linePosition = i;
+                lineString = mLines.get(linePosition);
+                break;
+            }
+        }
+
+        //获取横向位置
+        float[] measuredWidth = {(float) mVisibleWidth};
+        //这个方法会返回一个字符串真正的宽度
+        mPaint.breakText(lineString, true, mVisibleWidth, measuredWidth);
+        float touchPercentX = (float) (touchX - marginWidth) / measuredWidth[0];
+        int touchCharacterPosition = (int) (touchPercentX * lineString.length());
+
+
+        Integer[] indices = getUnLetterPosition(lineString);
+        int start = 0;
+        int end = 0;
+        // to cater last/only word loop will run equal to the length of
+        // indices.length
+        //因为末尾不一定有特殊字符 所以一直循环到超出数组1然后把最后一个加上
+        for (int i = 0; i <= indices.length; i++) {
+            // 末尾不能超出文本
+            end = (i < indices.length ? indices[i] : lineString.length());
+            if (end >= touchCharacterPosition) {
+                res = lineString.substring(start, end);
+                //处理当最后一个单词被行断开的情况 不能是句尾 末尾是标点或空格也不行
+//                if (i == indices.length && !lineString.endsWith("@") &&
+//                        StringUtil.isWord(lineString.substring(lineString.length() - 1, lineString.length()))) {
+                if (i == indices.length && lineString.endsWith("-")) {
+                    //因为我给所有末尾断开的单词加换行符了 所以直接这么判断就好了
+                    try {
+                        String nextLineString = mLines.get(linePosition + 1);
+                        Integer[] nextUnletters = getUnLetterPosition(nextLineString);
+                        if (nextUnletters == null || nextUnletters.length == 0) {
+                            //说明下一行整行都没有特殊字符
+                            res += nextLineString;
+                        } else {
+                            int firstUnLetterPosition = getUnLetterPosition(nextLineString)[0];
+                            res += nextLineString.substring(0, firstUnLetterPosition);
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        //当最后一个字符是特殊字符时直接catch就好
+                    }
+                } else if (start == 0 && linePosition != 0) {
+                    //处理当这一行第一个单词实际上上一行最后一个单词一部分的情况
+                    try {
+                        String lastLineString = mLines.get(linePosition - 1);
+//                        if (lastLineString.endsWith("@") ||
+//                                !StringUtil.isWord(lastLineString.substring(lastLineString.length() - 1, lastLineString.length()))) {
+                        //当上一行最后一个单词是句尾 或者末尾是标点或空格也不行
+                        if (!lastLineString.endsWith("-")) {
+                            //因为我加了换行符 所以直接改成这么判断了
+                            break;
+                        }
+                        Integer[] lastUnletters = getUnLetterPosition(lastLineString);
+                        int endUnLetterPosition = lastUnletters[lastUnletters.length - 1];
+                        res = lastLineString.substring(endUnLetterPosition, lastLineString.length()) + res;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        //当最后一个字符是特殊字符时直接catch就好
+                    }
+                }
+                break;
+            }
+            start = end + 1;//+1表示只允许有一个非字母间隔 否则就会把别的东西加进去
+        }
+        res = getWordAgain(res);
+        return res;
+    }
 
     /**
      * 根据输入的关键词 查找并跳转
