@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -286,9 +287,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
      * 调用文件选择软件来选择文件
      **/
     private void showFileChooser() {
+        ToastUtils.showSingleToast("目前仅支持txt格式");
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("text/plain");//设置类型和后缀
-        intent.setType("*/*");//设置类型和后缀
+        intent.setType("text/plain");//设置类型和后缀 txt
+//        intent.setType("*/*");//设置类型和后缀  全部文件
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, 1);
     }

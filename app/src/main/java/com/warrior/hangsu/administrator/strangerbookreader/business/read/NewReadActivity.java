@@ -1,8 +1,10 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.read;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.ClipboardManager;
@@ -68,7 +70,7 @@ public class NewReadActivity extends BaseActivity implements
     private BaseReadView mPageWidget;
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
-    private String bookPath,bookFormat;
+    private String bookPath, bookFormat;
     private MangaDialog dialog;
     private ReadDialog readDialog;
     private DbAdapter db;//数据库
@@ -78,6 +80,11 @@ public class NewReadActivity extends BaseActivity implements
     private SimpleDateFormat sdf;
     private Date curDate;
     private String date;
+    /**
+     * 电量和时间监听
+     */
+    private Receiver receiver = new Receiver();
+    private IntentFilter intentFilter = new IntentFilter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +100,7 @@ public class NewReadActivity extends BaseActivity implements
 
         Intent intent = getIntent();
         bookPath = intent.getStringExtra("bookPath");
-        bookFormat=intent.getStringExtra("bookFormat");
+        bookFormat = intent.getStringExtra("bookFormat");
         if (TextUtils.isEmpty(bookPath)) {
             finish();
         }
@@ -118,7 +125,7 @@ public class NewReadActivity extends BaseActivity implements
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            mPageWidget = new OverlappedWidget(this, bookPath,bookFormat, new ReadListener());
+            mPageWidget = new OverlappedWidget(this, bookPath, bookFormat, new ReadListener());
 
             if (SharedPreferencesUtil.getInstance().getBoolean(ShareKeys.ISNIGHT, false)) {
                 mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_night),
@@ -141,6 +148,9 @@ public class NewReadActivity extends BaseActivity implements
             readWidgetFl.removeAllViews();
             readWidgetFl.addView(mPageWidget);
 
+            intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            intentFilter.addAction(Intent.ACTION_TIME_TICK);
+            registerReceiver(receiver, intentFilter);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -190,7 +200,7 @@ public class NewReadActivity extends BaseActivity implements
                         showOnlyOkDialog(word, result.getQuery() + " [" + item.getPhonetic() +
                                 "]: " + "\n" + t);
                     } else {
-                        ToastUtil.tipShort(NewReadActivity.this, "没查到该词"+word);
+                        ToastUtil.tipShort(NewReadActivity.this, "没查到该词" + word);
                     }
                 } else {
                     ToastUtil.tipShort(NewReadActivity.this, "网络连接失败");
@@ -421,6 +431,21 @@ public class NewReadActivity extends BaseActivity implements
         dialog.setTitle("查找跳转");
     }
 
+    class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mPageWidget != null) {
+                if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
+                    int level = intent.getIntExtra("level", 0);
+                    mPageWidget.setBattery(100 - level);
+                } else if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                    mPageWidget.setTime(sdf.format(new Date()));
+                }
+            }
+        }
+    }
+
     private class ReadListener implements OnReadStateChangeListener {
         @Override
         public void onPageChanged(int page) {
@@ -450,6 +475,11 @@ public class NewReadActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         db.closeDb();
+        try {
+            unregisterReceiver(receiver);
+        } catch (Exception e) {
+            LogUtils.e("Receiver not registered");
+        }
     }
 
     @Override
