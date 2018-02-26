@@ -372,7 +372,7 @@ public class EpubPageFactory extends BasePageFactory {
         curBeginPos = tempBeginPos;
         curEndPos = curBeginPos;
 
-        int ret = openBook(bookPath, new int[]{curBeginPos, curEndPos});
+        int ret = openBook(bookPath, new int[]{curBeginPos, curEndPos,currentPage-1});
         if (ret == 0) {
             onLoadChapterFailure(bookPath);
             return;
