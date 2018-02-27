@@ -29,6 +29,7 @@ public class CalendarView extends LinearLayout {
     private ArrayList<CalendarBean> dateList = new ArrayList<>();
     private OnRecycleItemClickListener onRecycleItemClickListener;
     private boolean hideOtherMonthDay = false;
+    private int maxDay;
 
     public CalendarView(Context context) {
         this(context, null);
@@ -65,7 +66,7 @@ public class CalendarView extends LinearLayout {
         calendar.clear();
         calendar.set(Calendar.YEAR, currentYear);
         calendar.set(Calendar.MONTH, currentMonth - 1); //初始化日期
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);  //获得当前日期所在月份有多少天（或者说day的最大值)，用于后面的计算
+        maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);  //获得当前日期所在月份有多少天（或者说day的最大值)，用于后面的计算
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);  //将日期调到当前月份的第一天
         //这个DAY_OF_WEEK代表的是这个星期的第几天 而各个时区的第一天是不一样的 中国时区的第一天是周日 这个脚标是从1开始的..
@@ -146,6 +147,10 @@ public class CalendarView extends LinearLayout {
             }
         }
         initDateRv();
+    }
+
+    public int getMaxDay() {
+        return maxDay;
     }
 
     public void setFirstDayOfWeek(int firstDayOfWeek) {

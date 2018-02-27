@@ -79,4 +79,18 @@ public class WeekUtil {
         }
         return date;
     }
+
+    public static String getDateStringWithDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = "";
+        dateString = dateFormat.format(date);
+        return dateString;
+    }
+
+    public static String getDayStringWithDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd");
+        String dateString = "";
+        dateString = dateFormat.format(date);
+        return dateString;
+    }
 }

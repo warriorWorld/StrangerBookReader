@@ -142,6 +142,10 @@ public class CalendarViewLayout extends LinearLayout implements View.OnClickList
         });
     }
 
+    public int getMaxDay() {
+        return calendarView.getMaxDay();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
