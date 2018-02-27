@@ -21,7 +21,7 @@ public class WordsBookView extends RelativeLayout {
     private String word, translate, TRANSLATING = "查询中";
     private TextView wordTv;
     private OnWordsBookViewListener onWordsBookViewListener;
-    private int DURATION = 400;//动画时间
+    private int DURATION = 500;//动画时间
     private float rotationValue = 0f;
 
     public WordsBookView(Context context) {

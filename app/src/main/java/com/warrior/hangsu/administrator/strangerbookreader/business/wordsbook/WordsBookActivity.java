@@ -61,7 +61,9 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
             emptyView.setVisibility(View.GONE);
             killBtn.setVisibility(View.VISIBLE);
         }
-        topBarLeft.setText("总计:" + wordsList.size() + "个生词");
+        WordsBookBean item = wordsList.get(nowPosition);
+        topBarRight.setText("查询次数:" + item.getTime());
+        topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (nowPosition + 1));
         initViewPager();
     }
 
@@ -180,13 +182,14 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
             case R.id.kill_btn:
                 //太吵
 //                TipVoiceManager.getInstance().voiceTip(0);
-                VibratorUtil.Vibrate(WordsBookActivity.this, 30);
+                VibratorUtil.Vibrate(WordsBookActivity.this, 10);
                 WordsBookBean item = wordsList.get(nowPosition);
                 db.deleteWordByWord(item.getWord());
-                if (nowPosition + 1 >= wordsList.size()) {
+                if (nowPosition >= wordsList.size()) {
                     WordsBookActivity.this.finish();
                 }
-                vp.setCurrentItem(nowPosition + 1, true);
+                wordsList.remove(nowPosition);
+                initViewPager();
                 break;
         }
     }

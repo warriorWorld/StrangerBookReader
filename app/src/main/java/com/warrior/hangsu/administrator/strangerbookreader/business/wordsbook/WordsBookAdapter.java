@@ -12,6 +12,8 @@ public class WordsBookAdapter extends PagerAdapter {
     private Context context;
     private WordsBookView nowView;
     private WordsBookView.OnWordsBookViewListener onWordsBookViewListener;
+    //为解决删除后不刷新问题
+    private int mChildCount = 0;
 
     public WordsBookAdapter(Context context) {
         this.context = context;
@@ -61,5 +63,22 @@ public class WordsBookAdapter extends PagerAdapter {
 
     public void setOnWordsBookViewListener(WordsBookView.OnWordsBookViewListener onWordsBookViewListener) {
         this.onWordsBookViewListener = onWordsBookViewListener;
+    }
+
+    //为解决删除后不刷新问题
+    @Override
+    public void notifyDataSetChanged() {
+        mChildCount = getCount();
+        super.notifyDataSetChanged();
+    }
+
+    //为解决删除后不刷新问题
+    @Override
+    public int getItemPosition(Object object) {
+        if (mChildCount > 0) {
+            mChildCount--;
+            return POSITION_NONE;
+        }
+        return super.getItemPosition(object);
     }
 }
