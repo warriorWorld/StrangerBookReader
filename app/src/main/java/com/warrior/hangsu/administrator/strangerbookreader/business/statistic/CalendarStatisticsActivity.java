@@ -1,6 +1,8 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,9 +15,15 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.CalendarStatisticsListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.main.MainActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnCalendarMonthChangeClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
@@ -37,6 +45,7 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
     private RecyclerView calendarStatisticsRcv;
     private View emptyView;
     private int currentYear, currentMonth;
+    private CalendarStatisticsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,16 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
             }
         });
         calendarStatisticsRcv = (RecyclerView) findViewById(R.id.calendar_statistics_rcv);
+        calendarStatisticsRcv.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        calendarStatisticsRcv.setFocusableInTouchMode(false);
+        calendarStatisticsRcv.setFocusable(false);
+        calendarStatisticsRcv.setHasFixedSize(true);
         emptyView = findViewById(R.id.empty_view);
 
         baseTopBar.setTitle("数据统计");
@@ -112,18 +131,63 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
         });
     }
 
+    private void initDateRv() {
+        try {
+            if (null == handled_list || handled_list.size() <= 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (null == adapter) {
+                adapter = new CalendarStatisticsListAdapter(this, handled_list);
+                calendarStatisticsRcv.setAdapter(adapter);
+            } else {
+                adapter.setList(handled_list);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void refreshData() {
         int[] selecteds = new int[data_list.size()];
         for (int i = 0; i < selecteds.length; i++) {
             selecteds[i] = Integer.valueOf(WeekUtil.getDayStringWithDate(data_list.get(i).getCreate_at()));
         }
         calendarCvl.setSelecties(selecteds);
+
+        handled_list = handleList(data_list);
+        initDateRv();
     }
 
     private ArrayList<CalendarStatisticsBean> handleList(ArrayList<CalendarStatisticsBean> list) {
         ArrayList<CalendarStatisticsBean> res = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
+            if (i > 0 && list.get(i).getProgress() > list.get(i - 1).getProgress()) {
+                //每月第一条不统计 因为这些是比对出来的数据 每月第一条没得比对  并且进度得向前才行
+                CalendarStatisticsBean itemOri = list.get(i);
+                CalendarStatisticsBean itemLast = list.get(i - 1);
+                CalendarStatisticsBean item = new CalendarStatisticsBean();
+                item.setBook_name(itemOri.getBook_name());
+                item.setProgress(itemOri.getProgress());
+                item.setCreate_at(itemOri.getCreate_at());
+                int todayQueryC = itemOri.getQuery_word_c() - itemLast.getQuery_word_c();
+                if (todayQueryC < 0) {
+                    //删除数据库后会出现这个小于之前的情况
+                    todayQueryC = itemOri.getQuery_word_c();
+                }
+                item.setToday_query_word_c(todayQueryC);
+                int todayReadC = (int) ((float)((itemOri.getProgress() - itemLast.getProgress())/100) * item.getWord_c());
+                item.setToday_read_c(todayReadC);
+                if (todayReadC==0){
+                    item.setToday_query_word_r(0);
+                }else {
+                    item.setToday_query_word_r((todayQueryC / todayReadC) * 100);
+                }
 
+                res.add(item);
+            }
         }
         return res;
     }
