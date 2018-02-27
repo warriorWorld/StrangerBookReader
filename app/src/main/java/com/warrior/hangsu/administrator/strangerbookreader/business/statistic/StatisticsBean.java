@@ -1,9 +1,13 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
+import com.warrior.hangsu.administrator.strangerbookreader.bean.BaseBean;
+
+import java.util.Date;
+
 /**
  * Created by Administrator on 2016-06-16.
  */
-public class StatisticsBean {
+public class StatisticsBean extends BaseBean{
     private String dateStart;
     private String dateEnd;
     private String type;
@@ -11,6 +15,7 @@ public class StatisticsBean {
     private int query_word_c;
     private int word_c;//
     private float progress;
+    private Date create_at;
 
     public String getType() {
         return type;
@@ -66,5 +71,13 @@ public class StatisticsBean {
 
     public void setProgress(float progress) {
         this.progress = progress;
+    }
+
+    public Date getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(Date create_at) {
+        this.create_at = create_at;
     }
 }

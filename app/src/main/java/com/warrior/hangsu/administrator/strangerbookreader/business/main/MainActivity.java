@@ -30,6 +30,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.ad.Advertisi
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.CalendarStatisticsActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.test.TestActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
@@ -145,7 +146,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onStatisticsClick() {
 //                ToastUtils.showSingleToast("开发中...");
-                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+                Intent intent = new Intent(MainActivity.this, CalendarStatisticsActivity.class);
                 startActivity(intent);
             }
 

@@ -112,4 +112,13 @@ public class NumberUtil {
             return num + "";
         }
     }
+
+    public static String toDoubleNum(double num) {
+        try {
+            java.text.DecimalFormat df = new java.text.DecimalFormat("00");
+            return df.format(num);
+        } catch (Exception e) {
+            return num + "";
+        }
+    }
 }
