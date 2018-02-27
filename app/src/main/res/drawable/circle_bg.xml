@@ -4,7 +4,7 @@
     <item>
         <shape android:shape="oval">
             <corners android:radius="@dimen/size90" />
-            <solid android:color="@color/killed" />
+            <solid android:color="@color/kill" />
             <size
                 android:width="170dp"
                 android:height="170dp" />
@@ -20,7 +20,7 @@
             <item android:state_pressed="true">
                 <shape android:shape="oval">
                     <corners android:radius="@dimen/size90" />
-                    <solid android:color="@color/killed" />
+                    <solid android:color="@color/kill" />
                     <size
                         android:width="162dp"
                         android:height="162dp" />
@@ -30,7 +30,7 @@
             <item>
                 <shape android:shape="oval">
                     <corners android:radius="@dimen/size90" />
-                    <solid android:color="@color/kill" />
+                    <solid android:color="@color/english_book_reader" />
                     <size
                         android:width="162dp"
                         android:height="162dp" />

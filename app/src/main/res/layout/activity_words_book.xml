@@ -9,7 +9,7 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:background="@color/top_bar">
+        android:background="@color/english_book_reader">
 
         <TextView
             android:id="@+id/top_bar_left"

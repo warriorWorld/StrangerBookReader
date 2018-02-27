@@ -17,6 +17,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.voice.TipVoiceManager;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
@@ -56,7 +57,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
         if (null == wordsList || wordsList.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
             killBtn.setVisibility(View.GONE);
-        }else {
+        } else {
             emptyView.setVisibility(View.GONE);
             killBtn.setVisibility(View.VISIBLE);
         }
@@ -71,7 +72,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
         killBtn = (Button) findViewById(R.id.kill_btn);
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
-
+        hideBaseTopBar();
         killBtn.setOnClickListener(this);
     }
 
@@ -115,7 +116,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
                 public void onPageSelected(int position) {
                     nowPosition = position;
                     WordsBookBean item = wordsList.get(nowPosition);
-                    topBarRight.setText("次数:" + item.getTime());
+                    topBarRight.setText("查询次数:" + item.getTime());
                     topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (position + 1));
                 }
 
@@ -177,7 +178,9 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.kill_btn:
-                TipVoiceManager.getInstance().voiceTip(0);
+                //太吵
+//                TipVoiceManager.getInstance().voiceTip(0);
+                VibratorUtil.Vibrate(WordsBookActivity.this, 30);
                 WordsBookBean item = wordsList.get(nowPosition);
                 db.deleteWordByWord(item.getWord());
                 if (nowPosition + 1 >= wordsList.size()) {
