@@ -38,22 +38,17 @@ import java.util.List;
 /**
  * 个人信息页
  */
-public class CalendarStatisticsActivity extends BaseActivity implements View.OnClickListener {
-    private ArrayList<CalendarStatisticsBean> data_list = new ArrayList<>();
+public class CalendarStatisticsActivity extends BaseStatisticsActivity implements View.OnClickListener {
     private ArrayList<CalendarStatisticsBean> handled_list = new ArrayList<>();
     private CalendarViewLayout calendarCvl;
     private RecyclerView calendarStatisticsRcv;
     private View emptyView;
-    private int currentYear, currentMonth;
     private CalendarStatisticsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
         initUI();
-        doGetData();
     }
 
     private void initUI() {
@@ -88,49 +83,6 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
         return R.layout.activity_calendar_statistics;
     }
 
-    private void doGetData() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            this.finish();
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(CalendarStatisticsActivity.this);
-        AVQuery<AVObject> ownerQuery = new AVQuery<>("Statistics");
-        ownerQuery.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-
-        final AVQuery<AVObject> startDateQuery = new AVQuery<>("Statistics");
-        startDateQuery.whereGreaterThanOrEqualTo("createdAt", WeekUtil.getDateWithDateString(currentYear + "-" + currentMonth + "-1"));
-
-        final AVQuery<AVObject> endDateQuery = new AVQuery<>("Statistics");
-        endDateQuery.whereLessThan("createdAt", WeekUtil.getDateWithDateString(currentYear + "-" + currentMonth + "-" + calendarCvl.getMaxDay() + 1));
-
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(ownerQuery, startDateQuery, endDateQuery));
-
-        query.limit(999);
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(CalendarStatisticsActivity.this, e)) {
-                    data_list = new ArrayList<CalendarStatisticsBean>();
-                    if (null != list && list.size() > 0) {
-                        CalendarStatisticsBean item;
-                        for (int i = 0; i < list.size(); i++) {
-                            item = new CalendarStatisticsBean();
-                            item.setBook_name(list.get(i).getString("book_name"));
-                            item.setProgress((float) list.get(i).getDouble("progress"));
-                            item.setCreate_at(list.get(i).getCreatedAt());
-                            item.setQuery_word_c(list.get(i).getInt("query_word_c"));
-                            item.setWord_c(list.get(i).getInt("word_c"));
-
-                            data_list.add(item);
-                        }
-                    }
-                    refreshData();
-                }
-            }
-        });
-    }
-
     private void initDateRv() {
         try {
             if (null == handled_list || handled_list.size() <= 0) {
@@ -150,7 +102,8 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
         }
     }
 
-    private void refreshData() {
+    @Override
+    protected void refreshData() {
         int[] selecteds = new int[data_list.size()];
         for (int i = 0; i < selecteds.length; i++) {
             selecteds[i] = Integer.valueOf(WeekUtil.getDayStringWithDate(data_list.get(i).getCreate_at()));
