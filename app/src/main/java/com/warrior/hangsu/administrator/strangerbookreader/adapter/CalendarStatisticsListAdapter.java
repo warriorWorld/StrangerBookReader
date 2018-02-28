@@ -18,6 +18,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
 
 import java.util.ArrayList;
@@ -55,11 +56,21 @@ public class CalendarStatisticsListAdapter extends RecyclerView.Adapter<Calendar
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         CalendarStatisticsBean item = list.get(position);
         viewHolder.book_title_tv.setText(item.getBook_name());
-        viewHolder.query_word_c_tv.setText("当天查词量:  " + item.getToday_query_word_c());
-        viewHolder.query_word_r_tv.setText("当天查词率:  " + NumberUtil.doubleDecimals(item.getToday_query_word_r()) + "%");
-        viewHolder.read_word_c_tv.setText("当天阅读量:  " + item.getToday_read_c());
+        viewHolder.query_word_c_tv.setText
+                (StringUtil.getEmphasizedSpannableString("当天查词量:  " +
+                                item.getToday_query_word_c(), item.getToday_query_word_c() + "",
+                        0, context.getResources().getColor(R.color.english_book_reader), 0));
+        viewHolder.query_word_r_tv.setText(
+                StringUtil.getEmphasizedSpannableString("当天查词率:  " + NumberUtil.doubleDecimals(item.getToday_query_word_r()) + "%"
+                        , NumberUtil.doubleDecimals(item.getToday_query_word_r()) + "%",
+                        0, context.getResources().getColor(R.color.english_book_reader), 0));
+        viewHolder.read_word_c_tv.setText(StringUtil.getEmphasizedSpannableString("当天阅读量:  " + item.getToday_read_c()
+                , item.getToday_read_c() + "",
+                0, context.getResources().getColor(R.color.english_book_reader), 0));
         viewHolder.date_tv.setText(WeekUtil.getDateStringWithDate(item.getCreate_at()));
-        viewHolder.read_progress_tv.setText("当天进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%");
+        viewHolder.read_progress_tv.setText(StringUtil.getEmphasizedSpannableString("当天进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%"
+                , NumberUtil.doubleDecimals(item.getProgress()) + "%",
+                0, context.getResources().getColor(R.color.english_book_reader), 0));
     }
 
 
