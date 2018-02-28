@@ -1,39 +1,18 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
-import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.CalendarStatisticsListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
-import com.warrior.hangsu.administrator.strangerbookreader.business.main.MainActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnCalendarMonthChangeClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.layout.CalendarViewLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * 个人信息页

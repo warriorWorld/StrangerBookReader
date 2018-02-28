@@ -1,8 +1,6 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -10,16 +8,12 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.warrior.hangsu.administrator.strangerbookreader.R;
-import com.warrior.hangsu.administrator.strangerbookreader.adapter.CalendarStatisticsListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnCalendarMonthChangeClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.widget.layout.CalendarViewLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;

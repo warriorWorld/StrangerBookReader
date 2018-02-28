@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,8 +30,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginA
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.CalendarStatisticsActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.test.TestActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
