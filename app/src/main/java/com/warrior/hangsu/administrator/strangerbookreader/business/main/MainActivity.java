@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -93,6 +94,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 //        navWidth = DisplayUtil.dip2px(this, 266);
         doGetVersionInfo();
         handleIntent();
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            ToastUtils.showSingleToast("登录后可以记录并查看看书的统计数据(未登录时不记录)");
+        }
     }
 
     @Override

@@ -14,7 +14,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragmentActi
  * 资金记录页
  */
 public class StatisticsActivity extends BaseFragmentActivity {
-    private CalendarStatisticsFragment calendarListFragment, bookBreaklineFragment;
+    private CalendarStatisticsFragment calendarListFragment;
+    private BookStatisticsFragment  bookBreaklineFragment;
     //    private CalendarBreaklineStatisticsFragment calendarBreaklineFragment;
     private TabLayout tabLayout;
     private ViewPager vp;
@@ -30,7 +31,7 @@ public class StatisticsActivity extends BaseFragmentActivity {
     private void initFragment() {
         calendarListFragment = new CalendarStatisticsFragment();
 //        calendarBreaklineFragment = new CalendarBreaklineStatisticsFragment();
-        bookBreaklineFragment = new CalendarStatisticsFragment();
+        bookBreaklineFragment = new BookStatisticsFragment();
     }
 
     private void initUI() {

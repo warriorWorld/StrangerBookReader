@@ -59,7 +59,7 @@ public class BookStatisticsListAdapter extends RecyclerView.Adapter<BookStatisti
         viewHolder.read_word_c_tv.setText(StringUtil.getEmphasizedSpannableString("阅读量:  " + item.getRead_c()
                 , item.getRead_c() + "",
                 0, context.getResources().getColor(R.color.english_book_reader), 0));
-        viewHolder.date_tv.setText(item.getDateStart() + "-" + item.getDateEnd());
+        viewHolder.date_tv.setText(item.getDateStart() + "至" + item.getDateEnd());
         viewHolder.read_progress_tv.setText(StringUtil.getEmphasizedSpannableString("进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%"
                 , NumberUtil.doubleDecimals(item.getProgress()) + "%",
                 0, context.getResources().getColor(R.color.english_book_reader), 0));
