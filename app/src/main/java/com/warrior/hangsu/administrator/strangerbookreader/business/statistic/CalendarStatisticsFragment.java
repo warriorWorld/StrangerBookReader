@@ -1,6 +1,5 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,50 +16,12 @@ import java.util.ArrayList;
 /**
  * 个人信息页
  */
-public class CalendarStatisticsActivity extends BaseStatisticsActivity implements View.OnClickListener {
+public class CalendarStatisticsFragment extends BaseStatisticsFragment implements View.OnClickListener {
     private ArrayList<CalendarStatisticsBean> handled_list = new ArrayList<>();
     private CalendarViewLayout calendarCvl;
     private RecyclerView calendarStatisticsRcv;
     private View emptyView;
     private CalendarStatisticsListAdapter adapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initUI();
-    }
-
-    private void initUI() {
-        calendarCvl = (CalendarViewLayout) findViewById(R.id.calendar_cvl);
-        calendarCvl.setCurrentMonth(currentYear, currentMonth);
-        calendarCvl.setOnCalendarMonthChangeClickListener(new OnCalendarMonthChangeClickListener() {
-            @Override
-            public void onChange(int year, int month) {
-                currentYear = year;
-                currentMonth = month;
-                doGetData();
-            }
-        });
-        calendarStatisticsRcv = (RecyclerView) findViewById(R.id.calendar_statistics_rcv);
-        calendarStatisticsRcv.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean canScrollVertically() {
-                return true;
-            }
-        });
-        calendarStatisticsRcv.setFocusableInTouchMode(false);
-        calendarStatisticsRcv.setFocusable(false);
-        calendarStatisticsRcv.setHasFixedSize(true);
-        emptyView = findViewById(R.id.empty_view);
-
-        baseTopBar.setTitle("数据统计");
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_calendar_statistics;
-    }
 
     private void initDateRv() {
         try {
@@ -70,7 +31,7 @@ public class CalendarStatisticsActivity extends BaseStatisticsActivity implement
                 emptyView.setVisibility(View.GONE);
             }
             if (null == adapter) {
-                adapter = new CalendarStatisticsListAdapter(this, handled_list);
+                adapter = new CalendarStatisticsListAdapter(getActivity(), handled_list);
                 calendarStatisticsRcv.setAdapter(adapter);
             } else {
                 adapter.setList(handled_list);
@@ -79,6 +40,37 @@ public class CalendarStatisticsActivity extends BaseStatisticsActivity implement
         } catch (Exception e) {
             emptyView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_calendar_statistics;
+    }
+
+    @Override
+    protected void initUI(View v) {
+        calendarCvl = (CalendarViewLayout) v.findViewById(R.id.calendar_cvl);
+        calendarCvl.setCurrentMonth(currentYear, currentMonth);
+        calendarCvl.setOnCalendarMonthChangeClickListener(new OnCalendarMonthChangeClickListener() {
+            @Override
+            public void onChange(int year, int month) {
+                currentYear = year;
+                currentMonth = month;
+                doGetData();
+            }
+        });
+        calendarStatisticsRcv = (RecyclerView) v.findViewById(R.id.calendar_statistics_rcv);
+        calendarStatisticsRcv.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        calendarStatisticsRcv.setFocusableInTouchMode(false);
+        calendarStatisticsRcv.setFocusable(false);
+        calendarStatisticsRcv.setHasFixedSize(true);
+        emptyView = v.findViewById(R.id.empty_view);
     }
 
     @Override

@@ -2,12 +2,16 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.statistic;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
@@ -23,24 +27,31 @@ import java.util.List;
 /**
  * 个人信息页
  */
-public abstract class BaseStatisticsActivity extends BaseActivity implements View.OnClickListener {
+public abstract class BaseStatisticsFragment extends BaseFragment implements View.OnClickListener {
     protected ArrayList<CalendarStatisticsBean> data_list = new ArrayList<>();
     protected int currentYear, currentMonth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View v = inflater.inflate(getLayout(), container, false);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
         currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        initUI(v);
         doGetData();
+        return v;
     }
 
+    protected abstract int getLayout();
+
+    protected abstract void initUI(View v);
+
     protected void doGetData() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            this.finish();
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(getActivity()))) {
+            getActivity().finish();
             return;
         }
-        SingleLoadBarUtil.getInstance().showLoadBar(BaseStatisticsActivity.this);
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         AVQuery<AVObject> ownerQuery = new AVQuery<>("Statistics");
         ownerQuery.whereEqualTo("owner", LoginBean.getInstance().getUserName());
 
@@ -64,7 +75,7 @@ public abstract class BaseStatisticsActivity extends BaseActivity implements Vie
             @Override
             public void done(List<AVObject> list, AVException e) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(BaseStatisticsActivity.this, e)) {
+                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
                     data_list = new ArrayList<CalendarStatisticsBean>();
                     if (null != list && list.size() > 0) {
                         CalendarStatisticsBean item;
