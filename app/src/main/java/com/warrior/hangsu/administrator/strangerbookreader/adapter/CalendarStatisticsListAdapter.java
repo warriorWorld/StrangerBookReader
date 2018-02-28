@@ -56,7 +56,7 @@ public class CalendarStatisticsListAdapter extends RecyclerView.Adapter<Calendar
         CalendarStatisticsBean item = list.get(position);
         viewHolder.book_title_tv.setText(item.getBook_name());
         viewHolder.query_word_c_tv.setText("当天查词量:  " + item.getToday_query_word_c());
-        viewHolder.query_word_r_tv.setText("当天查词率:  " + item.getToday_query_word_r() + "%");
+        viewHolder.query_word_r_tv.setText("当天查词率:  " + NumberUtil.doubleDecimals(item.getToday_query_word_r()) + "%");
         viewHolder.read_word_c_tv.setText("当天阅读量:  " + item.getToday_read_c());
         viewHolder.date_tv.setText(WeekUtil.getDateStringWithDate(item.getCreate_at()));
         viewHolder.read_progress_tv.setText("当天进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%");

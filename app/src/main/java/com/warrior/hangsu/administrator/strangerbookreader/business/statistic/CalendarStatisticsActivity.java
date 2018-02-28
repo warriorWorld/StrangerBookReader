@@ -101,7 +101,7 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
         startDateQuery.whereGreaterThanOrEqualTo("createdAt", WeekUtil.getDateWithDateString(currentYear + "-" + currentMonth + "-1"));
 
         final AVQuery<AVObject> endDateQuery = new AVQuery<>("Statistics");
-        endDateQuery.whereLessThan("createdAt", WeekUtil.getDateWithDateString(currentYear + "-" + currentMonth + "-" + calendarCvl.getMaxDay()));
+        endDateQuery.whereLessThan("createdAt", WeekUtil.getDateWithDateString(currentYear + "-" + currentMonth + "-" + calendarCvl.getMaxDay() + 1));
 
         AVQuery<AVObject> query = AVQuery.and(Arrays.asList(ownerQuery, startDateQuery, endDateQuery));
 
@@ -117,7 +117,7 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
                         for (int i = 0; i < list.size(); i++) {
                             item = new CalendarStatisticsBean();
                             item.setBook_name(list.get(i).getString("book_name"));
-                            item.setProgress(list.get(i).getLong("progress"));
+                            item.setProgress((float) list.get(i).getDouble("progress"));
                             item.setCreate_at(list.get(i).getCreatedAt());
                             item.setQuery_word_c(list.get(i).getInt("query_word_c"));
                             item.setWord_c(list.get(i).getInt("word_c"));
@@ -157,10 +157,47 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
         }
         calendarCvl.setSelecties(selecteds);
 
-        handled_list = handleList(data_list);
+        handled_list = handleBookList(data_list);
         initDateRv();
     }
 
+    /**
+     * 获取书的列表
+     *
+     * @param list
+     * @return
+     */
+    private ArrayList<CalendarStatisticsBean> handleBookList(ArrayList<CalendarStatisticsBean> list) {
+        ArrayList<String> bookList = new ArrayList<>();
+        //获取书名列表
+        for (int i = 0; i < list.size(); i++) {
+            if (!bookList.contains(list.get(i).getBook_name())) {
+                bookList.add(list.get(i).getBook_name());
+            }
+        }
+
+
+        ArrayList<CalendarStatisticsBean> finalRes = new ArrayList<>();//总体统计数据
+        while (bookList.size() > 0) {
+            ArrayList<CalendarStatisticsBean> res = new ArrayList<>();//一本书的统计数据
+            String bookName = bookList.get(0);
+            for (int i = 0; i < list.size(); i++) {
+                if (bookName.equals(list.get(i).getBook_name())) {
+                    res.add(list.get(i));
+                }
+            }
+            finalRes.addAll(handleList(res));
+            bookList.remove(0);
+        }
+        return finalRes;
+    }
+
+    /**
+     * 某本书的处理 纵向比对
+     *
+     * @param list 具体某本书的统计数据
+     * @return
+     */
     private ArrayList<CalendarStatisticsBean> handleList(ArrayList<CalendarStatisticsBean> list) {
         ArrayList<CalendarStatisticsBean> res = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
@@ -178,12 +215,12 @@ public class CalendarStatisticsActivity extends BaseActivity implements View.OnC
                     todayQueryC = itemOri.getQuery_word_c();
                 }
                 item.setToday_query_word_c(todayQueryC);
-                int todayReadC = (int) ((float)((itemOri.getProgress() - itemLast.getProgress())/100) * item.getWord_c());
+                int todayReadC = (int) (((itemOri.getProgress() - itemLast.getProgress()) / 100) * itemOri.getWord_c()) / 5;//英文单词平均为5个字符
                 item.setToday_read_c(todayReadC);
-                if (todayReadC==0){
+                if (todayReadC == 0) {
                     item.setToday_query_word_r(0);
-                }else {
-                    item.setToday_query_word_r((todayQueryC / todayReadC) * 100);
+                } else {
+                    item.setToday_query_word_r(((float) todayQueryC * 100 / (float) todayReadC));
                 }
 
                 res.add(item);
