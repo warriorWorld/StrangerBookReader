@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.warrior.hangsu.administrator.strangerbookreader.widget.layout.CalendarViewLayout
+        android:id="@+id/calendar_cvl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.warrior.hangsu.administrator.strangerbookreader.widget.layout.CalendarViewLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/calendar_cvl">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.warrior.hangsu.administrator.strangerbookreader.widget.breakline.BrokenLineView
+                android:id="@+id/read_count_breakline"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                app:axle_type="halfxy" />
+
+            <com.warrior.hangsu.administrator.strangerbookreader.widget.breakline.BrokenLineView
+                android:id="@+id/query_rate_breakline"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                app:axle_type="halfxy" />
+        </LinearLayout>
+    </ScrollView>
+
+
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/statistics_emptyview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/calendar_cvl"
+        android:layout_centerInParent="true"
+        android:visibility="gone"></include>
+</RelativeLayout>

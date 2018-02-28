@@ -17,4 +17,22 @@
         <attr name="title_textColor" format="color" />
         <attr name="title_src" format="reference|color"></attr>
     </declare-styleable>
+    <declare-styleable name="broken_line">
+        <attr name="axle_type">
+            <flag name="fullxy" value="0"></flag>
+            <flag name="halfx" value="1"></flag>
+            <flag name="halfxy" value="2"></flag>
+        </attr>
+        <attr name="arrows_size" format="integer"></attr>
+        <attr name="number_mark_size" format="integer"></attr>
+        <attr name="number_size" format="integer"></attr>
+        <attr name="origin_x" format="float"></attr>
+        <attr name="origin_y" format="float"></attr>
+        <attr name="x_d_value" format="float"></attr>
+        <attr name="y_d_value" format="float"></attr>
+        <attr name="x_count" format="integer"></attr>
+        <attr name="y_count" format="integer"></attr>
+        <attr name="x_text" format="string"></attr>
+        <attr name="y_text" format="string"></attr>
+    </declare-styleable>
 </resources>

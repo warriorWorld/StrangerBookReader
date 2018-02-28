@@ -35,4 +35,8 @@
     <color name="divide_line">#e1e1e1</color>
     <color name="transparency">#00FF4081</color>
     <color name="english_gray">#c7c7c7</color>
+    //折线图
+    <color name="line">#FFFF00</color>
+    <color name="axle">#000000</color>
+    <color name="mark">#ffffff</color>
 </resources>

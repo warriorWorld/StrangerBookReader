@@ -14,7 +14,8 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragmentActi
  * 资金记录页
  */
 public class StatisticsActivity extends BaseFragmentActivity {
-    private CalendarStatisticsFragment calendarListFragment, calendarBreaklineFragment, bookBreaklineFragment;
+    private CalendarStatisticsFragment calendarListFragment, bookBreaklineFragment;
+    //    private CalendarBreaklineStatisticsFragment calendarBreaklineFragment;
     private TabLayout tabLayout;
     private ViewPager vp;
     private MyFragmentPagerAdapter adapter;
@@ -28,7 +29,7 @@ public class StatisticsActivity extends BaseFragmentActivity {
 
     private void initFragment() {
         calendarListFragment = new CalendarStatisticsFragment();
-        calendarBreaklineFragment = new CalendarStatisticsFragment();
+//        calendarBreaklineFragment = new CalendarBreaklineStatisticsFragment();
         bookBreaklineFragment = new CalendarStatisticsFragment();
     }
 
@@ -59,8 +60,8 @@ public class StatisticsActivity extends BaseFragmentActivity {
    调用了一个新增的虚函数 getItem()，因此，我们还至少需要实现一个 getItem()。因此，总体上来说，相对于继承自
    PagerAdapter，更方便一些。*/
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-        private final int PAGE_COUNT = 3;
-        private String[] pageTitle = new String[]{"日历-列表", "日历-折线", "书-折线"};
+        private final int PAGE_COUNT = 2;
+        private String[] pageTitle = new String[]{"以日期为单位", "以书为单位"};
 
         public MyFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -72,8 +73,6 @@ public class StatisticsActivity extends BaseFragmentActivity {
                 case 0:
                     return calendarListFragment;
                 case 1:
-                    return calendarBreaklineFragment;
-                case 2:
                     return bookBreaklineFragment;
                 default:
                     return null;
