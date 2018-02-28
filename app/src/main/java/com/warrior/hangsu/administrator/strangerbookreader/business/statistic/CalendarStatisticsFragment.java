@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.CalendarStatisticsListAdapter;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnCalendarMonthChangeClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.layout.CalendarViewLayout;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
  * 个人信息页
  */
 public class CalendarStatisticsFragment extends BaseStatisticsFragment implements View.OnClickListener {
-    private ArrayList<CalendarStatisticsBean> handled_list = new ArrayList<>();
+    private ArrayList<StatisticsBean> handled_list = new ArrayList<>();
     private CalendarViewLayout calendarCvl;
     private RecyclerView calendarStatisticsRcv;
     private View emptyView;
@@ -91,7 +90,7 @@ public class CalendarStatisticsFragment extends BaseStatisticsFragment implement
      * @param list
      * @return
      */
-    private ArrayList<CalendarStatisticsBean> handleBookList(ArrayList<CalendarStatisticsBean> list) {
+    private ArrayList<StatisticsBean> handleBookList(ArrayList<StatisticsBean> list) {
         ArrayList<String> bookList = new ArrayList<>();
         //获取书名列表
         for (int i = 0; i < list.size(); i++) {
@@ -101,9 +100,9 @@ public class CalendarStatisticsFragment extends BaseStatisticsFragment implement
         }
 
 
-        ArrayList<CalendarStatisticsBean> finalRes = new ArrayList<>();//总体统计数据
+        ArrayList<StatisticsBean> finalRes = new ArrayList<>();//总体统计数据
         while (bookList.size() > 0) {
-            ArrayList<CalendarStatisticsBean> res = new ArrayList<>();//一本书的统计数据
+            ArrayList<StatisticsBean> res = new ArrayList<>();//一本书的统计数据
             String bookName = bookList.get(0);
             for (int i = 0; i < list.size(); i++) {
                 if (bookName.equals(list.get(i).getBook_name())) {
@@ -122,14 +121,14 @@ public class CalendarStatisticsFragment extends BaseStatisticsFragment implement
      * @param list 具体某本书的统计数据
      * @return
      */
-    private ArrayList<CalendarStatisticsBean> handleList(ArrayList<CalendarStatisticsBean> list) {
-        ArrayList<CalendarStatisticsBean> res = new ArrayList<>();
+    private ArrayList<StatisticsBean> handleList(ArrayList<StatisticsBean> list) {
+        ArrayList<StatisticsBean> res = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             if (i > 0 && list.get(i).getProgress() > list.get(i - 1).getProgress()) {
                 //每月第一条不统计 因为这些是比对出来的数据 每月第一条没得比对  并且进度得向前才行
-                CalendarStatisticsBean itemOri = list.get(i);
-                CalendarStatisticsBean itemLast = list.get(i - 1);
-                CalendarStatisticsBean item = new CalendarStatisticsBean();
+                StatisticsBean itemOri = list.get(i);
+                StatisticsBean itemLast = list.get(i - 1);
+                StatisticsBean item = new StatisticsBean();
                 item.setBook_name(itemOri.getBook_name());
                 item.setProgress(itemOri.getProgress());
                 item.setCreate_at(itemOri.getCreate_at());

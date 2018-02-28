@@ -10,11 +10,8 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.CalendarStatisticsBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.WeekUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
@@ -28,7 +25,7 @@ import java.util.List;
  * 个人信息页
  */
 public abstract class BaseStatisticsFragment extends BaseFragment implements View.OnClickListener {
-    protected ArrayList<CalendarStatisticsBean> data_list = new ArrayList<>();
+    protected ArrayList<StatisticsBean> data_list = new ArrayList<>();
     protected int currentYear, currentMonth;
 
     @Override
@@ -76,11 +73,11 @@ public abstract class BaseStatisticsFragment extends BaseFragment implements Vie
             public void done(List<AVObject> list, AVException e) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-                    data_list = new ArrayList<CalendarStatisticsBean>();
+                    data_list = new ArrayList<StatisticsBean>();
                     if (null != list && list.size() > 0) {
-                        CalendarStatisticsBean item;
+                        StatisticsBean item;
                         for (int i = 0; i < list.size(); i++) {
-                            item = new CalendarStatisticsBean();
+                            item = new StatisticsBean();
                             item.setBook_name(list.get(i).getString("book_name"));
                             item.setProgress((float) list.get(i).getDouble("progress"));
                             item.setCreate_at(list.get(i).getCreatedAt());
