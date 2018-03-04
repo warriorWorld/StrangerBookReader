@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragmentActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
 
 /**
@@ -26,6 +27,7 @@ public class StatisticsActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
         initUI();
         initFragment();
+        ToastUtils.showSingleToast("epub格式的不参与统计");
     }
 
     private void initFragment() {
