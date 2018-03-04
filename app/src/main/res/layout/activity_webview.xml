@@ -4,8 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView
-    android:id="@+id/epub_web_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"></com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView>
+
+    <RelativeLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/english_book_reader">
+
+        <TextView
+            android:id="@+id/top_bar_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/top_bar_right"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="name"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/top_bar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:gravity="center_vertical"
+            android:text="0%"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView
+        android:id="@+id/epub_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar"></com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView>
 </RelativeLayout>
