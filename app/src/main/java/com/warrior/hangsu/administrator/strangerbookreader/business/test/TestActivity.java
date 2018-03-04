@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
@@ -35,9 +36,10 @@ import nl.siegmann.epublib.service.MediatypeService;
 
 public class TestActivity extends BaseActivity {
     private String bookPath;
-    private TextView testTv;
+//    private TextView testTv;
     private int page = 0;
     private boolean is_includeTag = false;
+    private WebView epubWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,28 +58,35 @@ public class TestActivity extends BaseActivity {
     }
 
     private void initUI() {
-        testTv = (TextView) findViewById(R.id.test_tv);
-        testTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                page++;
-                test();
-            }
-        });
-        testTv.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                is_includeTag = !is_includeTag;
-                test();
-                return true;
-            }
-        });
+//        testTv = (TextView) findViewById(R.id.test_tv);
+//        testTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                page++;
+//                test();
+//            }
+//        });
+//        testTv.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                is_includeTag = !is_includeTag;
+//                test();
+//                return true;
+//            }
+//        });
+        epubWebView= (WebView) findViewById(R.id.epub_web_view);
         hideBaseTopBar();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_test;
+        return R.layout.activity_webview;
+    }
+
+    @Override
+    public void onBackPressed() {
+        page++;
+        test();
     }
 
     private void test() {
@@ -92,14 +101,17 @@ public class TestActivity extends BaseActivity {
                     MediatypeService.MP4};
             String fileName =bookPath;
             Book book = epubReader.readEpubLazy(fileName,"UTF-8", Arrays.asList(lazyTypes));
-            List<Resource> contents = book.getContents();
+//            List<Resource> contents = book.getContents();
+            String baseUrl="file://"+bookPath;
+            String data = new String(book.getContents().get(page).getData());
 
-            try {
-              String  strParagraph = new String(contents.get(page).getData(), "UTF-8");//转成UTF-8
-                testTv.setText(strParagraph);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
+//            try {
+//              String  strParagraph = new String(contents.get(page).getData(), "UTF-8");//转成UTF-8
+//                testTv.setText(strParagraph);
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
             // Log the tale of contents
 //            logTableOfContents(book.getTableOfContents().getTocReferences(), 0);
 
@@ -124,7 +136,7 @@ public class TestActivity extends BaseActivity {
             }
             tocString.append(tocReference.getTitle());
             Log.i("epublib", tocString.toString());
-            testTv.setText(tocString.toString());
+//            testTv.setText(tocString.toString());
             logTableOfContents(tocReference.getChildren(), depth + 1);
         }
     }
