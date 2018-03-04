@@ -55,6 +55,7 @@ public class TranslateWebView extends WebView implements OnLongClickListener, Te
     private String lastURL1 = "";//用于只设置一遍颜色
     private OnWebViewLongClickListener onWebViewLongClickListener;
     private String urlTitle;
+    public ScrollInterface mScrollInterface;
 
     public TranslateWebView(Context context) {
         super(context);
@@ -209,5 +210,20 @@ public class TranslateWebView extends WebView implements OnLongClickListener, Te
 
     public interface OnWebViewLongClickListener {
         void onImgLongClick(String imgUrl);
+    }
+
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        mScrollInterface.onSChanged(l, t, oldl, oldt);
+    }
+
+    public void setOnCustomScroolChangeListener(ScrollInterface scrollInterface) {
+        this.mScrollInterface = scrollInterface;
+    }
+
+    public interface ScrollInterface {
+        public void onSChanged(int l, int t, int oldl, int oldt);
     }
 }

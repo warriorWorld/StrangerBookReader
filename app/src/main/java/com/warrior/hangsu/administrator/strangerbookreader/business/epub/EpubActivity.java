@@ -1,12 +1,15 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.epub;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
@@ -32,6 +35,7 @@ public class EpubActivity extends BaseActivity {
     private TranslateWebView epubWebView;
     private EpubReader epubReader;
     private Book book;
+    private boolean is_show_bottom = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,22 @@ public class EpubActivity extends BaseActivity {
                 ToastUtils.showSingleToast(word);
             }
         });
-
+        epubWebView.setOnCustomScroolChangeListener(new TranslateWebView.ScrollInterface() {
+            @Override
+            public void onSChanged(int l, int t, int oldl, int oldt) {
+                //WebView的总高度
+                float webViewContentHeight = epubWebView.getContentHeight() * epubWebView.getScale();
+                //WebView的现高度
+                float webViewCurrentHeight = (epubWebView.getHeight() + epubWebView.getScrollY());
+                System.out.println("webViewContentHeight=" + webViewContentHeight);
+                System.out.println("webViewCurrentHeight=" + webViewCurrentHeight);
+                if ((webViewContentHeight - webViewCurrentHeight) < 50 && !is_show_bottom) {
+                    System.out.println("WebView滑动到了底端");
+                    ToastUtils.showSingleToast("可以用音量键翻到下一章");
+                    is_show_bottom = true;
+                }
+            }
+        });
         hideBaseTopBar();
     }
 
@@ -116,6 +135,7 @@ public class EpubActivity extends BaseActivity {
     }
 
     private void loadChapter() {
+        is_show_bottom=false;
         try {
             String baseUrl = "file://" + bookPath;
             String data = new String(book.getContents().get(currentChapter).getData());
