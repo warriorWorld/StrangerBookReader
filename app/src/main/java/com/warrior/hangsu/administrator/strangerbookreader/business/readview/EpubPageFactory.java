@@ -16,15 +16,6 @@
 //package com.warrior.hangsu.administrator.strangerbookreader.business.readview;
 //
 //import android.content.Context;
-//import android.content.res.AssetManager;
-//import android.graphics.Bitmap;
-//import android.graphics.BitmapFactory;
-//import android.util.Log;
-//
-//import com.github.mertakdut.BookSection;
-//import com.github.mertakdut.Reader;
-//import com.github.mertakdut.exception.OutOfPagesException;
-//import com.github.mertakdut.exception.ReadingException;
 //import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 //import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 //import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
@@ -54,7 +45,6 @@
 //    private static org.jsoup.nodes.Document doc;
 //    private Vector<String> currentPageContents = new Vector<>();
 //    private boolean isPageDone = false;
-//    private Reader epubReader;
 //
 //    public EpubPageFactory(Context context, String bookPath) {
 //        super(context, bookPath);

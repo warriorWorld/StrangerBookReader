@@ -18,11 +18,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 
 import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.MediaType;
+import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
+import nl.siegmann.epublib.service.MediatypeService;
 
 /**
  * Created by Administrator on 2018/2/12.
@@ -76,5 +81,51 @@ public class TestActivity extends BaseActivity {
     }
 
     private void test() {
+        try {
+            EpubReader epubReader = new EpubReader();
+
+            MediaType[] lazyTypes = {
+                    MediatypeService.CSS,
+                    MediatypeService.GIF, MediatypeService.JPG,
+                    MediatypeService.PNG,
+                    MediatypeService.MP3,
+                    MediatypeService.MP4};
+            String fileName =bookPath;
+            Book book = epubReader.readEpubLazy(fileName,"UTF-8", Arrays.asList(lazyTypes));
+            List<Resource> contents = book.getContents();
+
+            try {
+              String  strParagraph = new String(contents.get(page).getData(), "UTF-8");//转成UTF-8
+                testTv.setText(strParagraph);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            // Log the tale of contents
+//            logTableOfContents(book.getTableOfContents().getTocReferences(), 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Recursively Log the Table of Contents
+     *
+     * @param tocReferences
+     * @param depth
+     */
+    private void logTableOfContents(List<TOCReference> tocReferences, int depth) {
+        if (tocReferences == null) {
+            return;
+        }
+        for (TOCReference tocReference : tocReferences) {
+            StringBuilder tocString = new StringBuilder();
+            for (int i = 0; i < depth; i++) {
+                tocString.append("\t");
+            }
+            tocString.append(tocReference.getTitle());
+            Log.i("epublib", tocString.toString());
+            testTv.setText(tocString.toString());
+            logTableOfContents(tocReference.getChildren(), depth + 1);
+        }
     }
 }

@@ -32,6 +32,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutA
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.CalendarStatisticsFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.test.TestActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
@@ -294,9 +295,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
-//                        if (booksList.get(position).getFormat().equals("EPUB") ) {
-//                            intent = new Intent(MainActivity.this, TestActivity.class);
-//                        }
+                        if (booksList.get(position).getFormat().equals("EPUB") ) {
+                            intent = new Intent(MainActivity.this, TestActivity.class);
+                        }
                         intent.putExtra("bookPath", booksList.get(position).getPath());
                         intent.putExtra("bookFormat", booksList.get(position).getFormat());
                         startActivity(intent);
@@ -324,8 +325,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     private void showFileChooser() {
         ToastUtils.showSingleToast("目前仅支持txt格式");
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/plain");//设置类型和后缀 txt
-//        intent.setType("*/*");//设置类型和后缀  全部文件
+//        intent.setType("text/plain");//设置类型和后缀 txt
+        intent.setType("*/*");//设置类型和后缀  全部文件
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, 1);
     }
