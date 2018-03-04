@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<WebView
+<com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView
     android:id="@+id/epub_web_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"></WebView>
+    android:layout_height="match_parent"></com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView>
 </RelativeLayout>

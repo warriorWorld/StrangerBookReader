@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,10 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +40,10 @@ import nl.siegmann.epublib.service.MediatypeService;
 
 public class TestActivity extends BaseActivity {
     private String bookPath;
-//    private TextView testTv;
+    //    private TextView testTv;
     private int page = 0;
     private boolean is_includeTag = false;
-    private WebView epubWebView;
+    private TranslateWebView epubWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,25 @@ public class TestActivity extends BaseActivity {
 //                return true;
 //            }
 //        });
-        epubWebView= (WebView) findViewById(R.id.epub_web_view);
+        epubWebView = (TranslateWebView) findViewById(R.id.epub_web_view);
+        epubWebView.setTextSelectionListener(new TextSelectionListener() {
+            @Override
+            public void seletedWord(String word) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        /**
+                         *为了取消复制弹窗
+                         */
+                        epubWebView.clearFocus();
+                    }
+                }, 150);//n秒后执行Runnable中的run方法
+//                translation(word);
+                ToastUtils.showSingleToast(word);
+            }
+        });
+
         hideBaseTopBar();
     }
 
@@ -96,14 +118,14 @@ public class TestActivity extends BaseActivity {
             MediaType[] lazyTypes = {
                     MediatypeService.CSS,
                     MediatypeService.GIF,
-//                    MediatypeService.JPG,
-//                    MediatypeService.PNG,
+                    MediatypeService.JPG,
+                    MediatypeService.PNG,
                     MediatypeService.MP3,
                     MediatypeService.MP4};
-            String fileName =bookPath;
-            Book book = epubReader.readEpubLazy(fileName,"UTF-8", Arrays.asList(lazyTypes));
+            String fileName = bookPath;
+            Book book = epubReader.readEpubLazy(fileName, "UTF-8", Arrays.asList(lazyTypes));
 //            List<Resource> contents = book.getContents();
-            String baseUrl="file://"+bookPath;
+            String baseUrl = "file://" + bookPath;
             String data = new String(book.getContents().get(page).getData());
 
             epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
@@ -120,6 +142,7 @@ public class TestActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+
     /**
      * Recursively Log the Table of Contents
      *
