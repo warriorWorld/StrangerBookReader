@@ -324,7 +324,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
      * 调用文件选择软件来选择文件
      **/
     private void showFileChooser() {
-        ToastUtils.showSingleToast("目前仅支持txt格式");
+        ToastUtils.showSingleToast("目前仅支持txt和epub格式");
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        intent.setType("text/plain");//设置类型和后缀 txt
         intent.setType("*/*");//设置类型和后缀  全部文件

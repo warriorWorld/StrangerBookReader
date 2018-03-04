@@ -48,6 +48,7 @@ public class EpubActivity extends BaseActivity {
         initUI();
         initEpubLib();
         loadChapter();
+        ToastUtils.showSingleToast("epub格式仅支持长按翻译");
     }
 
 
