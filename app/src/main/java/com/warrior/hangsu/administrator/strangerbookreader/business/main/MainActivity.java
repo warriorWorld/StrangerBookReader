@@ -27,6 +27,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyc
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
@@ -295,8 +296,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
-                        if (booksList.get(position).getFormat().equals("EPUB") ) {
-                            intent = new Intent(MainActivity.this, TestActivity.class);
+                        if (booksList.get(position).getFormat().equals("EPUB")) {
+                            intent = new Intent(MainActivity.this, EpubActivity.class);
                         }
                         intent.putExtra("bookPath", booksList.get(position).getPath());
                         intent.putExtra("bookFormat", booksList.get(position).getFormat());
