@@ -13,9 +13,11 @@ import android.widget.AbsListView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
+import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +35,6 @@ public class EpubActivity extends BaseActivity {
     private String bookPath;
     private int currentChapter = 0;
     private TranslateWebView epubWebView;
-    private EpubReader epubReader;
     private Book book;
     private boolean is_show_bottom = false;
 
@@ -53,6 +54,7 @@ public class EpubActivity extends BaseActivity {
         initEpubLib();
         loadChapter();
         ToastUtils.showSingleToast("epub格式仅支持长按翻译");
+        recoverProgress();
     }
 
 
@@ -101,17 +103,17 @@ public class EpubActivity extends BaseActivity {
 
     private void initEpubLib() {
         try {
-            epubReader = new EpubReader();
+            EpubReader epubReader = new EpubReader();
 
-            MediaType[] lazyTypes = {
-//                    MediatypeService.CSS,
-//                    MediatypeService.GIF,
-//                    MediatypeService.JPG,
-//                    MediatypeService.PNG,
-                    MediatypeService.MP3,
-                    MediatypeService.MP4};
-            book = epubReader.readEpubLazy(bookPath, "UTF-8", Arrays.asList(lazyTypes));
-
+//            MediaType[] lazyTypes = {
+////                    MediatypeService.CSS,
+////                    MediatypeService.GIF,
+////                    MediatypeService.JPG,
+////                    MediatypeService.PNG,
+//                    MediatypeService.MP3,
+//                    MediatypeService.MP4};
+//            book = epubReader.readEpubLazy(bookPath, "UTF-8", Arrays.asList(lazyTypes));
+            book = epubReader.readEpub(new FileInputStream(bookPath));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +136,44 @@ public class EpubActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    private void saveProgress() {
+        SettingManager.getInstance().saveReadProgress(bookPath, currentChapter, epubWebView.getScrollY(), 0);
+    }
+
+    private void recoverProgress() {
+        int pos[] = SettingManager.getInstance().getReadProgress(bookPath);
+        currentChapter=pos[0];
+        int currentProgress=pos[1];
+        loadChapter();
+        epubWebView.setScrollY(currentProgress);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveProgress();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveProgress();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveProgress();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        recoverProgress();
+    }
+
     private void loadChapter() {
-        is_show_bottom=false;
+        is_show_bottom = false;
         try {
             String baseUrl = "file://" + bookPath;
             String data = new String(book.getContents().get(currentChapter).getData());
