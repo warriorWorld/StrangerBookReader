@@ -95,8 +95,9 @@ public class TestActivity extends BaseActivity {
 
             MediaType[] lazyTypes = {
                     MediatypeService.CSS,
-                    MediatypeService.GIF, MediatypeService.JPG,
-                    MediatypeService.PNG,
+                    MediatypeService.GIF,
+//                    MediatypeService.JPG,
+//                    MediatypeService.PNG,
                     MediatypeService.MP3,
                     MediatypeService.MP4};
             String fileName =bookPath;
