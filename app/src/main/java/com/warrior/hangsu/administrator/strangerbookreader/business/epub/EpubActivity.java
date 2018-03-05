@@ -398,8 +398,10 @@ public class EpubActivity extends BaseActivity {
                 }
                 return true;
             case 25:
-                currentChapter++;
-                loadChapter();
+                if (currentChapter + 1 < chapterSize) {
+                    currentChapter++;
+                    loadChapter();
+                }
                 return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -449,7 +451,19 @@ public class EpubActivity extends BaseActivity {
             String data = new String(book.getContents().get(currentChapter).getData());
 
             epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
+            if (currentChapter == 0) {
+                //不是第一章没必要管它
+                doc = Jsoup.parseBodyFragment(data, baseUrl);
+                if (null != doc) {
+                    Elements test = doc.select("p");
+                    if (null == test || test.size() == 0) {
+                        //无文字内容
+                        currentChapter++;
+                        loadChapter();
 
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
