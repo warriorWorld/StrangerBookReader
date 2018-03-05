@@ -33,6 +33,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 
 import java.io.File;
@@ -62,28 +63,17 @@ public class EpubActivity extends BaseActivity {
     private DbAdapter db;//数据库
     private ClipboardManager clip;//复制文本用
     private MangaDialog dialog;
-    private TextView topBarRight, topBarLeft;
     private String bookTitle;
-    /**
-     * 时间
-     */
-    private SimpleDateFormat sdf;
-    private Date curDate;
-    private String date;
-    private long lastUpdateTime;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //取消状态栏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         db = new DbAdapter(this);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        sdf = new SimpleDateFormat("HH:mm");
-        curDate = new Date(System.currentTimeMillis());//获取当前时间
-        date = sdf.format(curDate);
 
         Intent intent = getIntent();
         bookPath = intent.getStringExtra("bookPath");
@@ -119,23 +109,32 @@ public class EpubActivity extends BaseActivity {
         epubWebView.setOnCustomScroolChangeListener(new TranslateWebView.ScrollInterface() {
             @Override
             public void onSChanged(int l, int t, int oldl, int oldt) {
-//                if (Math.abs(oldt - t) > 100) {
-                //这么刷新意味着只有用户速滑才能触发
-                refreshTime();
-//                }
                 isWebBottom();
             }
         });
-        topBarLeft = (TextView) findViewById(R.id.top_bar_left);
-        topBarRight = (TextView) findViewById(R.id.top_bar_right);
 
         int separatorPosition = bookPath.lastIndexOf(File.separator);
         int dotPosition = bookPath.lastIndexOf(".");
         bookTitle = bookPath.substring(separatorPosition + 1, dotPosition);
-        topBarLeft.setText(bookTitle);
-        topBarRight.setText("第" + (currentChapter + 1) + "章" + "  " + date);
+        baseTopBar.setTitle(bookTitle);
+        baseTopBar.setLeftBackground(R.drawable.back);
+        baseTopBar.setRightBackground(R.drawable.more);
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                EpubActivity.this.finish();
+            }
 
-        hideBaseTopBar();
+            @Override
+            public void onRightClick() {
+
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
     }
 
     @Override
@@ -143,14 +142,6 @@ public class EpubActivity extends BaseActivity {
         return R.layout.activity_webview;
     }
 
-    private void refreshTime() {
-        if (System.currentTimeMillis() - lastUpdateTime > 30 * 1000) {
-            lastUpdateTime = System.currentTimeMillis();
-            curDate.setTime(lastUpdateTime);//获取当前时间
-            date = sdf.format(curDate);
-            topBarRight.setText("第" + (currentChapter + 1) + "章" + "  " + date);
-        }
-    }
 
     private void isWebBottom() {
         //WebView的总高度
@@ -298,7 +289,6 @@ public class EpubActivity extends BaseActivity {
 
             epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
 
-            refreshTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
