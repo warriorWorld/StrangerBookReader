@@ -31,6 +31,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialog
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
@@ -83,6 +84,7 @@ public class EpubActivity extends BaseActivity {
     private static org.jsoup.nodes.Document doc;
     private ArrayList<String> contents = new ArrayList<>();
     private String txtPath;
+    private TextView progress_explain_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,7 @@ public class EpubActivity extends BaseActivity {
 
 
     private void initUI() {
+        progress_explain_tv = (TextView) findViewById(R.id.progress_explain_tv);
         epubWebView = (TranslateWebView) findViewById(R.id.epub_web_view);
         epubWebView.setTextSelectionListener(new TextSelectionListener() {
             @Override
@@ -166,8 +169,12 @@ public class EpubActivity extends BaseActivity {
         float webViewContentHeight = epubWebView.getContentHeight() * epubWebView.getScale();
         //WebView的现高度
         float webViewCurrentHeight = (epubWebView.getHeight() + epubWebView.getScrollY());
-        System.out.println("webViewContentHeight=" + webViewContentHeight);
-        System.out.println("webViewCurrentHeight=" + webViewCurrentHeight);
+        if (webViewContentHeight == 0) {
+            return;
+        }
+        progress_explain_tv.setText
+                ("第" + (currentChapter + 1) + "章  " + NumberUtil.doubleDecimals((webViewCurrentHeight / webViewContentHeight) * 100) + "%");
+
         if ((webViewContentHeight - webViewCurrentHeight) < 50 && !is_show_bottom) {
             System.out.println("WebView滑动到了底端");
             ToastUtils.showSingleToast("可以用音量键翻到下一章");
@@ -451,6 +458,8 @@ public class EpubActivity extends BaseActivity {
             String data = new String(book.getContents().get(currentChapter).getData());
 
             epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
+
+            progress_explain_tv.setText("第" + (currentChapter + 1) + "章  0%");
             if (currentChapter == 0) {
                 //不是第一章没必要管它
                 doc = Jsoup.parseBodyFragment(data, baseUrl);

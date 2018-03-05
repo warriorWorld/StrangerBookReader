@@ -9,4 +9,15 @@
         android:id="@+id/epub_web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></com.warrior.hangsu.administrator.strangerbookreader.business.epub.TranslateWebView>
+
+    <TextView
+        android:id="@+id/progress_explain_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="12sp" />
 </RelativeLayout>
