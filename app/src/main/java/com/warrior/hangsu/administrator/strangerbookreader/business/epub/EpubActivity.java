@@ -26,12 +26,14 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnJsoupListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
@@ -40,10 +42,17 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.EpubReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
+
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,6 +80,9 @@ public class EpubActivity extends BaseActivity {
     private String bookTitle;
     private EpubReadDialog readDialog;
     private int chapterSize = 0;
+    private static org.jsoup.nodes.Document doc;
+    private ArrayList<String> contents = new ArrayList<>();
+    private String txtPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +246,86 @@ public class EpubActivity extends BaseActivity {
         }
     }
 
+    private void doGetData(final int chapter, final OnJsoupListener listener) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+//                    doc = Jsoup.connect(url)
+//                            .timeout(10000).get();
+                    String baseUrl = "file://" + bookPath;
+                    String data = new String(book.getContents().get(chapter).getData());
+                    doc = Jsoup.parseBodyFragment(data, baseUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (null != doc) {
+                    Elements test = doc.select("p");
+                    String content = "";
+                    for (int i = 0; i < test.size(); i++) {
+                        content += test.get(i).text() + "\n";
+                    }
+                    listener.onSuccess(content);
+                }
+            }
+        }.start();
+    }
+
+    private int tempChapter = 0;
+
+    private void toText() {
+        txtPath = bookPath.replaceAll("\\.epub", "(txt).txt");
+        txtPath = txtPath.replaceAll("\\.EPUB", "(txt).txt");
+
+        File file = new File(txtPath);
+        if (file.exists()) {
+            ToastUtils.showSingleToast("已存在TXT版本");
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+
+        doGetData(tempChapter, new OnJsoupListener() {
+            @Override
+            public void onSuccess(String content) {
+                if (!TextUtils.isEmpty(content)) {
+                    contents.add(content);
+                }
+                if (tempChapter + 1 < chapterSize) {
+                    doGetData(tempChapter++, this);
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                FileWriter fw = new FileWriter(txtPath, true);
+                                for (int i = 0; i < contents.size(); i++) {
+                                    fw.write(contents.get(i));
+                                }
+                                fw.close();
+                                ToastUtils.showSingleToast("转换成功");
+                                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                                addBooks(txtPath, "TXT", null);
+                                EpubActivity.this.finish();
+                            } catch (IOException e) {
+                                ToastUtils.showSingleToast(e + "");
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
+    }
+
+    public void addBooks(String path, String format, String bpPath) {
+        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, bpPath);
+    }
+
     private void showReadDialog() {
         if (null == readDialog) {
             readDialog = new EpubReadDialog(this);
@@ -287,7 +379,7 @@ public class EpubActivity extends BaseActivity {
 
                 @Override
                 public void onToTXTClick() {
-
+                    toText();
                 }
             });
         }
