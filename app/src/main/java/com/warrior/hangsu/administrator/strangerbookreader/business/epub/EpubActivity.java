@@ -67,6 +67,7 @@ public class EpubActivity extends BaseActivity {
     private SimpleDateFormat sdf;
     private Date curDate;
     private String date;
+    private long lastUpdateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +115,10 @@ public class EpubActivity extends BaseActivity {
         epubWebView.setOnCustomScroolChangeListener(new TranslateWebView.ScrollInterface() {
             @Override
             public void onSChanged(int l, int t, int oldl, int oldt) {
-                if (oldt - t > 50) {
-                    refreshTime();
-                }
+//                if (Math.abs(oldt - t) > 100) {
+                //这么刷新意味着只有用户速滑才能触发
+                refreshTime();
+//                }
                 isWebBottom();
             }
         });
@@ -138,9 +140,12 @@ public class EpubActivity extends BaseActivity {
     }
 
     private void refreshTime() {
-        curDate.setTime(System.currentTimeMillis());//获取当前时间
-        date = sdf.format(curDate);
-        topBarRight.setText("第" + (currentChapter + 1) + "章" + "  " + date);
+        if (System.currentTimeMillis() - lastUpdateTime > 30 * 1000) {
+            lastUpdateTime = System.currentTimeMillis();
+            curDate.setTime(lastUpdateTime);//获取当前时间
+            date = sdf.format(curDate);
+            topBarRight.setText("第" + (currentChapter + 1) + "章" + "  " + date);
+        }
     }
 
     private void isWebBottom() {
@@ -289,7 +294,7 @@ public class EpubActivity extends BaseActivity {
 
             epubWebView.loadDataWithBaseURL(baseUrl, data, "text/html", "UTF-8", null);
 
-          refreshTime();
+            refreshTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
