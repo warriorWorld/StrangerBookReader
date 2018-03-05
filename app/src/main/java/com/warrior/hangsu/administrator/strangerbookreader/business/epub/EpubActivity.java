@@ -18,12 +18,15 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
+import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
@@ -34,7 +37,9 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.EpubReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,7 +69,8 @@ public class EpubActivity extends BaseActivity {
     private ClipboardManager clip;//复制文本用
     private MangaDialog dialog;
     private String bookTitle;
-
+    private EpubReadDialog readDialog;
+    private int chapterSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +133,7 @@ public class EpubActivity extends BaseActivity {
 
             @Override
             public void onRightClick() {
-
+                showReadDialog();
             }
 
             @Override
@@ -222,9 +228,72 @@ public class EpubActivity extends BaseActivity {
 //                    MediatypeService.MP4};
 //            book = epubReader.readEpubLazy(bookPath, "UTF-8", Arrays.asList(lazyTypes));
             book = epubReader.readEpub(new FileInputStream(bookPath));
+            chapterSize = book.getContents().size();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showReadDialog() {
+        if (null == readDialog) {
+            readDialog = new EpubReadDialog(this);
+            readDialog.setOnReadDialogClickListener(new OnReadDialogClickListener() {
+                @Override
+                public void onSearchJumpClick() {
+                }
+
+                @Override
+                public void onProgressJumpSelected(int progress) {
+                    currentChapter = progress - 1;
+                    loadChapter();
+                }
+
+                @Override
+                public void onSunMoonToggleClick() {
+                }
+
+                @Override
+                public void onTextSizeClick() {
+                }
+
+                @Override
+                public void onBackgroundStyleClick() {
+                }
+
+                @Override
+                public void onToggleTranslateWayClick() {
+                }
+
+                @Override
+                public void onCloseTranslateClick() {
+                    SharedPreferencesUtils.setSharedPreferencesData
+                            (EpubActivity.this, ShareKeys.CLOSE_TRANSLATE,
+                                    !SharedPreferencesUtils.getBooleanSharedPreferencesData(EpubActivity.this,
+                                            ShareKeys.CLOSE_TRANSLATE, false));
+                }
+
+                @Override
+                public void onUserHeadClick() {
+                    if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+                        Intent intent = new Intent(EpubActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCloseDialogClick() {
+
+                }
+
+                @Override
+                public void onToTXTClick() {
+
+                }
+            });
+        }
+        readDialog.show();
+        readDialog.refreshUI();
+        readDialog.initSeekBar(currentChapter + 1, chapterSize);
     }
 
     @Override

@@ -328,6 +328,11 @@ public class NewReadActivity extends BaseActivity implements
                 public void onCloseDialogClick() {
 
                 }
+
+                @Override
+                public void onToTXTClick() {
+
+                }
             });
         }
         readDialog.show();
