@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -40,11 +41,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.VerticalSeekBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.EpubReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
@@ -162,6 +165,7 @@ public class EpubActivity extends BaseActivity {
         return R.layout.activity_webview;
     }
 
+    private boolean isProgressChange = false;
 
     private void isWebBottom() {
         //WebView的总高度
