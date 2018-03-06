@@ -103,7 +103,6 @@ public class EpubActivity extends BaseActivity {
         initUI();
         initEpubLib();
         loadChapter();
-        ToastUtils.showLongToast("epub格式仅支持长按翻译\nepub是上下翻页的\n可以用音量键跳转章节。");
         recoverProgress();
     }
 
@@ -388,11 +387,23 @@ public class EpubActivity extends BaseActivity {
                 public void onToTXTClick() {
                     toText();
                 }
+
+                @Override
+                public void onHelpClick() {
+                    showHelpDialog();
+                }
             });
         }
         readDialog.show();
         readDialog.refreshUI();
         readDialog.initSeekBar(currentChapter + 1, chapterSize);
+    }
+
+    private void showHelpDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.show();
+        dialog.setTitle("epub格式仅支持长按翻译\nepub是上下翻页的\n可以用音量键跳转章节。\nepub不计入统计数据\n可以将epub转换为TXT阅读");
+        dialog.setOkText("知道了");
     }
 
     @Override

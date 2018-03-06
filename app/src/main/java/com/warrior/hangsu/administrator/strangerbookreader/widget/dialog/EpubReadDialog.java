@@ -39,6 +39,7 @@ public class EpubReadDialog extends Dialog implements View.OnClickListener {
     private RelativeLayout closeDialogRl;
     private LinearLayout headLl;
     private LinearLayout toTXTLl;
+    private LinearLayout helpLl;
     private boolean isProgressChange = false;
 
     public EpubReadDialog(Context context) {
@@ -77,7 +78,9 @@ public class EpubReadDialog extends Dialog implements View.OnClickListener {
         closeDialogRl = (RelativeLayout) findViewById(R.id.close_dialog_rl);
         headLl = (LinearLayout) findViewById(R.id.head_ll);
         toTXTLl = (LinearLayout) findViewById(R.id.to_txt_ll);
+        helpLl= (LinearLayout) findViewById(R.id.help_ll);
 
+        helpLl.setOnClickListener(this);
         toTXTLl.setOnClickListener(this);
         closeTranslateLl.setOnClickListener(this);
         closeDialogRl.setOnClickListener(this);
@@ -146,6 +149,11 @@ public class EpubReadDialog extends Dialog implements View.OnClickListener {
             case R.id.to_txt_ll:
                 if (null != onReadDialogClickListener) {
                     onReadDialogClickListener.onToTXTClick();
+                }
+                break;
+            case R.id.help_ll:
+                if (null != onReadDialogClickListener) {
+                    onReadDialogClickListener.onHelpClick();
                 }
                 break;
             case R.id.close_dialog_rl:

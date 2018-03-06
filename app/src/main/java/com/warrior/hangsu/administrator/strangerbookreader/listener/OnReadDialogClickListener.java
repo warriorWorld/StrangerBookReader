@@ -24,4 +24,6 @@ public interface OnReadDialogClickListener {
     void onCloseDialogClick();
 
     void onToTXTClick();
+
+    void onHelpClick();
 }
