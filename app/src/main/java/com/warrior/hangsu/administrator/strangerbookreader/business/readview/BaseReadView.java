@@ -20,9 +20,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookFormat;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
@@ -61,6 +63,7 @@ public abstract class BaseReadView extends View {
 
     Scroller mScroller;
     protected int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
+    protected int FLIP_VELOCITY_THRESHOD = 6000;//滑动到下一页或上一页的速度阈值
     protected int CANCEL_THRESHOLD = FLIP_THRESHOLD * 2;//取消的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;
@@ -119,11 +122,18 @@ public abstract class BaseReadView extends View {
     private int dx, dy;
     private long et = 0;
     private boolean cancel = false;
+    private VelocityTracker vTracker = null;
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (vTracker == null) {
+                    vTracker = VelocityTracker.obtain();
+                } else {
+                    vTracker.clear();
+                }
+                vTracker.addMovement(e);
                 et = System.currentTimeMillis();
                 dx = (int) e.getX();
                 dy = (int) e.getY();
@@ -140,17 +150,26 @@ public abstract class BaseReadView extends View {
                 setBitmaps(mCurPageBitmap, mNextPageBitmap);
                 break;
             case MotionEvent.ACTION_MOVE:
+                vTracker.addMovement(e);
+                //VelocityTracker获得的速度是有正负之分，computerCurrentVelocity（）可以设置单位。1000 表示每秒多少像素（pix/second),1代表每微秒多少像素（pix/millisecond)。
+                vTracker.computeCurrentVelocity(1000);
+                float xVelocity=vTracker.getXVelocity();
+                if (Globle.isTest) {
+                    ToastUtils.showSingleToast("the x velocity is " + vTracker.getXVelocity());
+                }
                 int mx = (int) e.getX();
                 int my = (int) e.getY();
 //                cancel = (actiondownX < mScreenWidth / 2 && mx < mTouch.x) || (actiondownX > mScreenWidth / 2 && mx > mTouch.x);
-                cancel = Math.abs(touch_down) <= CANCEL_THRESHOLD;
+                cancel = (Math.abs(touch_down) <= CANCEL_THRESHOLD)
+                        &&Math.abs(xVelocity)<=FLIP_VELOCITY_THRESHOD;
                 mTouch.x = mx;
                 mTouch.y = my;
 
 
                 //控制平移动画的
                 touch_down = mTouch.x - actiondownX;
-                if (touch_down < -FLIP_THRESHOLD && !is_threshold) {
+                if ((touch_down < -FLIP_THRESHOLD || xVelocity < -FLIP_VELOCITY_THRESHOD)
+                        && !is_threshold) {
                     is_threshold = true;
                     listener.onFlip();
                     BookStatus status = pagefactory.nextPage();
@@ -163,7 +182,8 @@ public abstract class BaseReadView extends View {
                     } else {
                         return false;
                     }
-                } else if (touch_down > FLIP_THRESHOLD && !is_threshold) {
+                } else if ((touch_down > FLIP_THRESHOLD||xVelocity >FLIP_VELOCITY_THRESHOD)
+                    && !is_threshold) {
                     is_threshold = true;
                     listener.onFlip();
                     BookStatus status = pagefactory.prePage();
@@ -184,7 +204,11 @@ public abstract class BaseReadView extends View {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                try {
+                    vTracker.recycle();
+                } catch (IllegalStateException illegalStateException) {
 
+                }
                 long t = System.currentTimeMillis();
                 int ux = (int) e.getX();
                 int uy = (int) e.getY();
