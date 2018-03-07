@@ -8,8 +8,8 @@ android {
         applicationId "com.warrior.hangsu.administrator.strangerbookreader"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.1.1"
+        versionCode 7
+        versionName "1.1.2"
         multiDexEnabled true
     }
     buildTypes {

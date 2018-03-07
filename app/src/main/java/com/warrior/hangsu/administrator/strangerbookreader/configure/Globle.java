@@ -7,7 +7,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 
 public class Globle {
-    public static final boolean isTest=true;
+    public static final boolean isTest=false;
     //数据库版本号
     public static final int DB_VERSION = 1;
     //版本号

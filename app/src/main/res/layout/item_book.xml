@@ -25,6 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/book_iv"
             android:text="https://www.buzzingandroid.com/tools/android-layout-finder/"
