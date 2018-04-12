@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
@@ -21,6 +22,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.TTSUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
@@ -66,7 +68,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        text2Speech(wordsList.get(nowPosition).getWord());
+        TTSUtil.text2Speech(this, tts, wordsList.get(nowPosition).getWord());
     }
 
     private void refresh() {
@@ -141,7 +143,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener, 
                     WordsBookBean item = wordsList.get(nowPosition);
                     topBarRight.setText("查询次数:" + item.getTime());
                     topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (position + 1));
-                    text2Speech(wordsList.get(position).getWord());
+                    TTSUtil.text2Speech(WordsBookActivity.this, tts, wordsList.get(position).getWord());
                 }
 
                 @Override
@@ -158,7 +160,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener, 
 
     private void translation(final String word) {
         String url = Globle.YOUDAO + word;
-        text2Speech(word);
+        TTSUtil.text2Speech(this, tts, word);
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
 
@@ -190,18 +192,6 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener, 
                 WordsBookActivity.this, url, params,
                 YoudaoResponse.class, callback);
 
-    }
-
-    private void text2Speech(String text) {
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
-                (this, ShareKeys.CLOSE_TTS_KEY, false)) {
-            return;
-        }
-        if (tts != null && !tts.isSpeaking()) {
-            tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
-            tts.speak(text,
-                    TextToSpeech.QUEUE_FLUSH, null);
-        }
     }
 
     @Override

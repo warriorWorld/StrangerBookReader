@@ -9,6 +9,8 @@ public class ShareKeys {
     public static final String FLIP_STYLE = "flipStyle";
     public static final String LOGIN_INFO_KEY = "login_info_key";
     public static final String CLOSE_TRANSLATE = "close_translate";
+    public static final String TTS_TEST_TEXT = "tts_test_text";
+    public static final String TTS_PITCH_KEY = "tts_pitch_key";
     public static final String CLOSE_TTS_KEY = "close_tts_key";
     public static final String DEVICE_KEY = "device_key";
     public static final String DEVICE_TOKEN_KEY = "device_token_key";

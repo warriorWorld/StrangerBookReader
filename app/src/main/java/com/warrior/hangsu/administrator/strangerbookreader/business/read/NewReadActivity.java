@@ -44,6 +44,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.TTSUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
@@ -181,7 +182,7 @@ public class NewReadActivity extends BaseActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
-        text2Speech(word);
+        TTSUtil.text2Speech(this, tts, word);
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();
@@ -227,17 +228,6 @@ public class NewReadActivity extends BaseActivity implements
 
     }
 
-    private void text2Speech(String text) {
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
-                (this, ShareKeys.CLOSE_TTS_KEY, false)) {
-            return;
-        }
-        if (tts != null && !tts.isSpeaking()) {
-            tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
-            tts.speak(text,
-                    TextToSpeech.QUEUE_FLUSH, null);
-        }
-    }
 
     private void updateStatisctics() {
         //初始记录
