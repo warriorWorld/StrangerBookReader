@@ -71,7 +71,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
     private final String[] TRANSLATE_WAY_LIST = {"单击", "双击"};
-
+    private CheckBox closeTTSCb;
+    private RelativeLayout ttsPitchRl;
+    private TextView ttsPitchTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         (AboutActivity.this, ShareKeys.CLOSE_TRANSLATE, isChecked);
             }
         });
+        closeTTSCb = (CheckBox) findViewById(R.id.close_tts_cb);
+        closeTTSCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_TTS_KEY, isChecked);
+            }
+        });
         authorRl = (RelativeLayout) findViewById(R.id.author_rl);
         feedbackRl = (RelativeLayout) findViewById(R.id.feedback_rl);
         logoutTv = (TextView) findViewById(R.id.logout_tv);
@@ -105,13 +115,19 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TRANSLATE, false));
+        closeTTSCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_TTS_KEY, false));
         backgroundStyleRl = (RelativeLayout) findViewById(R.id.background_style_rl);
         backgroundStyleTv = (TextView) findViewById(R.id.background_style_tv);
         translateWayRl = (RelativeLayout) findViewById(R.id.translate_way_rl);
         translateWayTv = (TextView) findViewById(R.id.translate_way_tv);
         textSizeRl = (RelativeLayout) findViewById(R.id.text_size_rl);
         textSizeTv = (TextView) findViewById(R.id.text_size_tv);
+        ttsPitchRl = (RelativeLayout) findViewById(R.id.tts_pitch_rl);
+        ttsPitchTv = (TextView) findViewById(R.id.tts_pitch_tv);
 
+        ttsPitchRl.setOnClickListener(this);
         backgroundStyleRl.setOnClickListener(this);
         translateWayRl.setOnClickListener(this);
         textSizeRl.setOnClickListener(this);

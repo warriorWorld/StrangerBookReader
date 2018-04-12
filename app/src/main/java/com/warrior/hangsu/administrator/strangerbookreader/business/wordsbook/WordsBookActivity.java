@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
@@ -192,6 +193,10 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener, 
     }
 
     private void text2Speech(String text) {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (this, ShareKeys.CLOSE_TTS_KEY, false)) {
+            return;
+        }
         if (tts != null && !tts.isSpeaking()) {
             tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
             tts.speak(text,
