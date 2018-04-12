@@ -24,6 +24,7 @@ import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
@@ -65,7 +66,7 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener,
+public class MainActivity extends TTSActivity implements View.OnClickListener,
         EasyPermissions.PermissionCallbacks {
     private DrawerLayout drawer;
     private SevenFourteenNavigationView navigationView;
@@ -137,7 +138,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onUserInfoClick() {
-
+                text2Speech("你好" + LoginBean.getInstance().getUserName());
             }
 
             @Override

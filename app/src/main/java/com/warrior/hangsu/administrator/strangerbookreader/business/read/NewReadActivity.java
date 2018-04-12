@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -19,6 +18,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
@@ -44,7 +44,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.TTSUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
@@ -59,7 +58,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -68,8 +66,8 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Created by Administrator on 2018/2/12.
  */
 
-public class NewReadActivity extends BaseActivity implements
-        EasyPermissions.PermissionCallbacks, TextToSpeech.OnInitListener {
+public class NewReadActivity extends TTSActivity implements
+        EasyPermissions.PermissionCallbacks{
     private BaseReadView mPageWidget;
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
@@ -88,7 +86,6 @@ public class NewReadActivity extends BaseActivity implements
      */
     private Receiver receiver = new Receiver();
     private IntentFilter intentFilter = new IntentFilter();
-    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +107,6 @@ public class NewReadActivity extends BaseActivity implements
         }
         initUI();
         initPagerWidget();
-        initTTS();
     }
 
     private void initUI() {
@@ -123,9 +119,6 @@ public class NewReadActivity extends BaseActivity implements
         return R.layout.activity_read_new;
     }
 
-    private void initTTS() {
-        tts = new TextToSpeech(this, this); // 参数Context,TextToSpeech.OnInitListener
-    }
 
     @AfterPermissionGranted(111)
     private void initPagerWidget() {
@@ -182,7 +175,7 @@ public class NewReadActivity extends BaseActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
-        TTSUtil.text2Speech(this, tts, word);
+        text2Speech( word);
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();
@@ -452,25 +445,6 @@ public class NewReadActivity extends BaseActivity implements
         dialog.setTitle("查找跳转");
     }
 
-
-    /**
-     * 用来初始化TextToSpeech引擎
-     * status:SUCCESS或ERROR这2个值
-     * setLanguage设置语言，帮助文档里面写了有22种
-     * TextToSpeech.LANG_MISSING_DATA：表示语言的数据丢失。
-     * TextToSpeech.LANG_NOT_SUPPORTED:不支持
-     */
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.ENGLISH);
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                ToastUtils.showSingleToast("数据丢失或不支持");
-            }
-        }
-    }
-
     class Receiver extends BroadcastReceiver {
 
         @Override
@@ -515,8 +489,6 @@ public class NewReadActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         db.closeDb();
-        tts.stop(); // 不管是否正在朗读TTS都被打断
-        tts.shutdown(); // 关闭，释放资源
         try {
             unregisterReceiver(receiver);
         } catch (Exception e) {

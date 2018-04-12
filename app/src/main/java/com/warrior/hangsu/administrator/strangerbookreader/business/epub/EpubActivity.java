@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
@@ -72,7 +73,7 @@ import nl.siegmann.epublib.service.MediatypeService;
  * Created by Administrator on 2018/2/12.
  */
 
-public class EpubActivity extends BaseActivity {
+public class EpubActivity extends TTSActivity {
     private String bookPath;
     private int currentChapter = 0;
     private TranslateWebView epubWebView;
@@ -187,6 +188,7 @@ public class EpubActivity extends BaseActivity {
 
     private void translation(final String word) {
         clip.setText(word);
+        text2Speech(word);
         //记录查过的单词
         db.insertWordsBookTb(word);
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData

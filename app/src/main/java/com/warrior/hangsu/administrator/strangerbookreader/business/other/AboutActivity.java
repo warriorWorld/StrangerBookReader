@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -22,8 +21,8 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
-import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
@@ -37,7 +36,6 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.TTSUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
@@ -47,14 +45,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TTSDial
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class AboutActivity extends BaseActivity implements View.OnClickListener,
-        EasyPermissions.PermissionCallbacks, TextToSpeech.OnInitListener {
+public class AboutActivity extends TTSActivity implements View.OnClickListener,
+        EasyPermissions.PermissionCallbacks {
     private ImageView appIconIv;
     private TextView versionTv;
     private RelativeLayout checkUpdateRl;
@@ -79,13 +76,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private CheckBox closeTTSCb;
     private RelativeLayout ttsPitchRl;
     private TextView ttsPitchTv;
-    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
-        initTTS();
     }
 
     @Override
@@ -463,38 +458,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         dialog.setOnTTSDialogResultListener(new OnTTSDialogResultListener() {
             @Override
             public void onTTSModifyDone(String text, float result) {
-                TTSUtil.text2Speech(AboutActivity.this, tts, text);
+                text2Speech( text);
             }
         });
         dialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        tts.stop(); // 不管是否正在朗读TTS都被打断
-        tts.shutdown(); // 关闭，释放资源
-    }
-
-    /**
-     * 用来初始化TextToSpeech引擎
-     * status:SUCCESS或ERROR这2个值
-     * setLanguage设置语言，帮助文档里面写了有22种
-     * TextToSpeech.LANG_MISSING_DATA：表示语言的数据丢失。
-     * TextToSpeech.LANG_NOT_SUPPORTED:不支持
-     */
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.ENGLISH);
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                ToastUtils.showSingleToast("数据丢失或不支持");
-            }
-        }
-    }
-
-    private void initTTS() {
-        tts = new TextToSpeech(this, this); // 参数Context,TextToSpeech.OnInitListener
     }
 }
