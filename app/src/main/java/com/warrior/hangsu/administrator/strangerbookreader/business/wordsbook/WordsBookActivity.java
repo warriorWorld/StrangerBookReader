@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
 import android.view.View;
@@ -12,11 +13,15 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.voice.TipVoiceManager;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
@@ -24,13 +29,14 @@ import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * /storage/sdcard0/reptile/one-piece
  * <p/>
  * Created by Administrator on 2016/4/4.
  */
-public class WordsBookActivity extends BaseActivity implements OnClickListener {
+public class WordsBookActivity extends BaseActivity implements OnClickListener, TextToSpeech.OnInitListener {
     private WordsBookAdapter adapter;
     private View emptyView;
     private TextView topBarRight, topBarLeft;
@@ -40,7 +46,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
     private int nowPosition = 0;
     private ClipboardManager clip;//复制文本用
     private Button killBtn;
-
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +55,18 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         initUI();
         refresh();
+        initTTS();
     }
 
+    private void initTTS() {
+        tts = new TextToSpeech(this, this); // 参数Context,TextToSpeech.OnInitListener
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        text2Speech(wordsList.get(nowPosition).getWord());
+    }
 
     private void refresh() {
         wordsList = db.queryAllWordsBook();
@@ -110,7 +126,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
             });
             adapter.setList(wordsList);
             vp.setAdapter(adapter);
-
+            recoverState();
             vp.setPageTransformer(true, new DepthPageTransformer());
             vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -124,6 +140,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
                     WordsBookBean item = wordsList.get(nowPosition);
                     topBarRight.setText("查询次数:" + item.getTime());
                     topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (position + 1));
+                    text2Speech(wordsList.get(position).getWord());
                 }
 
                 @Override
@@ -140,6 +157,7 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
 
     private void translation(final String word) {
         String url = Globle.YOUDAO + word;
+        text2Speech(word);
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
 
@@ -173,12 +191,71 @@ public class WordsBookActivity extends BaseActivity implements OnClickListener {
 
     }
 
+    private void text2Speech(String text) {
+        if (tts != null && !tts.isSpeaking()) {
+            tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+            tts.speak(text,
+                    TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         db.closeDb();
+        tts.stop(); // 不管是否正在朗读TTS都被打断
+        tts.shutdown(); // 关闭，释放资源
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveState();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        recoverState();
+    }
+
+    private void saveState() {
+        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.WORDS_BOOK_PROGRESS_KEY,
+                nowPosition);
+    }
+
+    private void recoverState() {
+        int p = SharedPreferencesUtils.getIntSharedPreferencesData(this,
+                ShareKeys.WORDS_BOOK_PROGRESS_KEY);
+        if (p >= 0) {
+            nowPosition = p;
+            vp.setCurrentItem(p);
+        }
+    }
+
+    /**
+     * 用来初始化TextToSpeech引擎
+     * status:SUCCESS或ERROR这2个值
+     * setLanguage设置语言，帮助文档里面写了有22种
+     * TextToSpeech.LANG_MISSING_DATA：表示语言的数据丢失。
+     * TextToSpeech.LANG_NOT_SUPPORTED:不支持
+     */
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.ENGLISH);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                ToastUtils.showSingleToast("数据丢失或不支持");
+            }
+        }
+    }
 
     @Override
     public void onClick(View v) {

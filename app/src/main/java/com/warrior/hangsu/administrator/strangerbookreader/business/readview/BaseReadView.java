@@ -63,7 +63,7 @@ public abstract class BaseReadView extends View {
 
     Scroller mScroller;
     protected int FLIP_THRESHOLD = 80;//滑动到下一页或上一页的阈值
-    protected int FLIP_VELOCITY_THRESHOD = 6000;//滑动到下一页或上一页的速度阈值
+    protected int FLIP_VELOCITY_THRESHOD = 5000;//滑动到下一页或上一页的速度阈值
     protected int CANCEL_THRESHOLD = FLIP_THRESHOLD * 2;//取消的阈值
     private boolean is_threshold = false;//是否超越阈值
     private OnWordClickListener onWordClickListener;

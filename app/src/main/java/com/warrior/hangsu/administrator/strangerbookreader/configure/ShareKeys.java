@@ -15,4 +15,5 @@ public class ShareKeys {
     public static final String LONG_CLICK_TRANSLATE = "long_click_translate";
     public static final String DOUBLE_CLICK_TRANSLATE = "double_click_translate";
     public static final String STATISTICS_UPDATE_KEY="statistics_update_key";
+    public static final String WORDS_BOOK_PROGRESS_KEY="words_book_progress_key";
 }
