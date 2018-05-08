@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.eventbus.EventBusEvent;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
@@ -36,6 +38,10 @@ public abstract class BaseActivity extends Activity {
         // 在oncreate里订阅
         EventBus.getDefault().register(this);
         ActivityPoor.addActivity(this);
+
+        PushAgent.getInstance(this).onAppStart();
+        MobclickAgent.onEvent
+                (this, BaseParameterUtil.getInstance().handleActivityName(getLocalClassName().toString()));
     }
 
     private void initUI() {
@@ -105,6 +111,18 @@ public abstract class BaseActivity extends Activity {
         if (null != intent) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

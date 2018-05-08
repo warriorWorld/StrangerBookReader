@@ -405,8 +405,8 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
                         if (null != qrCodeFile) {
                             doDownloadQRcode();
                         }
-                        if (BaseParameterUtil.getInstance(MainActivity.this).
-                                getAppVersionCode() >= versionCode || SharedPreferencesUtils.
+                        if (BaseParameterUtil.getInstance().
+                                getAppVersionCode(MainActivity.this) >= versionCode || SharedPreferencesUtils.
                                 getBooleanSharedPreferencesData(MainActivity.this,
                                         ShareKeys.IGNORE_THIS_VERSION_KEY + versionName, false)) {
                         } else {

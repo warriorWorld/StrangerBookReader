@@ -13,32 +13,29 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
  */
 
 public class BaseParameterUtil {
-    private Activity context;
     private PackageManager manager;
     private PackageInfo info;
     public String EMPTY = "empty";
 
-    private BaseParameterUtil(Activity context) {
-        this.context = context;
-        init();
+    private BaseParameterUtil() {
     }
 
     private static volatile BaseParameterUtil instance = null;
 
-    public static BaseParameterUtil getInstance(Activity context) {
+    public static BaseParameterUtil getInstance() {
         if (instance == null) {
             //线程锁定
             synchronized (BaseParameterUtil.class) {
                 //双重锁定
                 if (instance == null) {
-                    instance = new BaseParameterUtil(context);
+                    instance = new BaseParameterUtil();
                 }
             }
         }
         return instance;
     }
 
-    private void init() {
+    private void init(Activity context) {
         try {
             manager = context.getPackageManager();
             info = manager.getPackageInfo(context.getPackageName(), 0);
@@ -47,9 +44,9 @@ public class BaseParameterUtil {
         }
     }
 
-    public String getAppVersionName() {
+    public String getAppVersionName(Activity context) {
         if (null == manager || null == info) {
-            init();
+            init(context);
         }
         if (TextUtils.isEmpty(info.versionName)) {
             return EMPTY;
@@ -57,14 +54,14 @@ public class BaseParameterUtil {
         return info.versionName;
     }
 
-    public int getAppVersionCode() {
+    public int getAppVersionCode(Activity context) {
         if (null == manager || null == info) {
-            init();
+            init(context);
         }
         return info.versionCode;
     }
 
-    public String getDevice() {
+    public String getDevice(Activity context) {
         String device = SharedPreferencesUtils.getSharedPreferencesData(context,
                 ShareKeys.DEVICE_KEY);
         if (TextUtils.isEmpty(device)) {
@@ -92,7 +89,7 @@ public class BaseParameterUtil {
 //        return deviceToken;
 //    }
 
-    public void saveDeviceToken(String token) {
+    public void saveDeviceToken(Activity context, String token) {
         SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.DEVICE_TOKEN_KEY,
                 token);
     }
@@ -113,5 +110,17 @@ public class BaseParameterUtil {
 
     public String getSource() {
         return "ANDROID";
+    }
+
+    public String handleActivityName(String str) {
+        try {
+            String res = str;
+            int dotPosition = str.lastIndexOf(".");
+            res = res.substring(dotPosition + 1, res.length());
+            res = res.replaceAll("Activity", "");
+            return res;
+        } catch (Exception e) {
+            return str;
+        }
     }
 }

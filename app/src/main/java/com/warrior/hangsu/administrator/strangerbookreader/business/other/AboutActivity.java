@@ -175,12 +175,12 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
                         forceUpdate = list.get(0).getBoolean("forceUpdate");
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
-                        if (versionCode == BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionCode()) {
-                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                        if (versionCode == BaseParameterUtil.getInstance().getAppVersionCode(AboutActivity.this)) {
+                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
                                     + "(最新版本)");
                             ToastUtils.showSingleToast("已经是最新版本啦~");
                         } else {
-                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
                                     + "(有新版本啦~)");
                             showVersionDialog();
                         }

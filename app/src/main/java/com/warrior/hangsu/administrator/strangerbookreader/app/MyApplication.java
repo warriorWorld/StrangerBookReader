@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.StrictMode;
 
@@ -10,6 +11,11 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.umeng.commonsdk.UMConfigure;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UmengNotificationClickHandler;
+import com.umeng.message.entity.UMessage;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
@@ -36,10 +42,46 @@ public class MyApplication extends Application {
         dealFileUriExposedException();
         initLeanCloud();
         initUserInfo();
+        initUmeng();
     }
+
+    private void initUmeng() {
+        /**
+         注意: 即使您已经在AndroidManifest.xml中配置过appkey和channel值，也需要在App代码中调用初始化接口（如需要使用AndroidManifest.xml中配置好的appkey和channel值，UMConfigure.init调用中appkey和channel参数请置为null）。
+         */
+        UMConfigure.init(getApplicationContext(), 0, "");
+
+        PushAgent mPushAgent = PushAgent.getInstance(this);
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(new IUmengRegisterCallback() {
+
+            @Override
+            public void onSuccess(String deviceToken) {
+                //注册成功会返回device token
+            }
+
+            @Override
+            public void onFailure(String s, String s1) {
+
+            }
+        });
+        mPushAgent.setNotificationClickHandler(new UmengNotificationClickHandler() {
+            @Override
+            public void dealWithCustomAction(Context context, UMessage uMessage) {
+                super.dealWithCustomAction(context, uMessage);
+                //打开详情 TODO
+//                Intent intent = new Intent(getApplicationContext(), TODO.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.putExtra("mangaUrl", uMessage.custom);
+//                startActivity(intent);
+            }
+        });
+    }
+
     private void initUserInfo() {
         LoginBean.getInstance().setLoginInfo(this, LoginBean.getLoginInfo(this));
     }
+
     private void initLeanCloud() {
         // 初始化参数依次为 this, AppId, AppKey
         AVOSCloud.initialize(this, "BBKcJTQVwerDmDbfgVfY0ypM-gzGzoHsz", "urKwS49BYgiF5Rfs593jYiuc");
