@@ -33,6 +33,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialog
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSpeakClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
@@ -53,6 +54,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDi
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TranslateDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -67,7 +69,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 
 public class NewReadActivity extends TTSActivity implements
-        EasyPermissions.PermissionCallbacks{
+        EasyPermissions.PermissionCallbacks {
     private BaseReadView mPageWidget;
     private FrameLayout readWidgetFl;
     private ClipboardManager clip;//复制文本用
@@ -86,6 +88,7 @@ public class NewReadActivity extends TTSActivity implements
      */
     private Receiver receiver = new Receiver();
     private IntentFilter intentFilter = new IntentFilter();
+    private TranslateDialog translateResultDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +178,7 @@ public class NewReadActivity extends TTSActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
-        text2Speech( word);
+        text2Speech(word);
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();
@@ -200,7 +203,7 @@ public class NewReadActivity extends TTSActivity implements
                         for (int i = 0; i < item.getExplains().size(); i++) {
                             t = t + item.getExplains().get(i) + ";";
                         }
-                        showOnlyOkDialog(word, result.getQuery() + " [" + item.getPhonetic() +
+                        showTranslateResultDialog(word, result.getQuery() + " [" + item.getPhonetic() +
                                 "]: " + "\n" + t);
                     } else {
                         ToastUtil.tipShort(NewReadActivity.this, "没查到该词" + word);
@@ -261,14 +264,23 @@ public class NewReadActivity extends TTSActivity implements
         }
     }
 
-    private void showOnlyOkDialog(String title, String msg) {
-        if (null == dialog) {
-            dialog = new MangaDialog(this);
+
+    private void showTranslateResultDialog(final String title, String msg) {
+        if (null == translateResultDialog) {
+            translateResultDialog = new TranslateDialog(this);
+            translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
+                @Override
+                public void onSpeakClick(String word) {
+                    text2Speech(word);
+                }
+            });
         }
-        dialog.show();
-        dialog.setTitle(title);
-        dialog.setMessage(msg);
-        dialog.setOkText("确定");
+        translateResultDialog.show();
+
+        translateResultDialog.setTitle(title);
+        translateResultDialog.setMessage(msg);
+        translateResultDialog.setOkText("确定");
+        translateResultDialog.setCancelable(true);
     }
 
     private void showReadDialog() {
