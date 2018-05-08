@@ -30,6 +30,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.enums.BookStatus;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnJsoupListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSpeakClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.TextSelectionListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
@@ -47,6 +48,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.EpubRea
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TranslateDialog;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.jsoup.Jsoup;
@@ -89,6 +91,7 @@ public class EpubActivity extends TTSActivity {
     private ArrayList<String> contents = new ArrayList<>();
     private String txtPath;
     private TextView progress_explain_tv;
+    private TranslateDialog translateResultDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +211,7 @@ public class EpubActivity extends TTSActivity {
                         for (int i = 0; i < item.getExplains().size(); i++) {
                             t = t + item.getExplains().get(i) + ";";
                         }
-                        showOnlyOkDialog(word, result.getQuery() + " [" + item.getPhonetic() +
+                        showTranslateResultDialog(word, result.getQuery() + " [" + item.getPhonetic() +
                                 "]: " + "\n" + t);
                     } else {
                         ToastUtil.tipShort(EpubActivity.this, "没查到该词" + word);
@@ -229,14 +232,22 @@ public class EpubActivity extends TTSActivity {
 
     }
 
-    private void showOnlyOkDialog(String title, String msg) {
-        if (null == dialog) {
-            dialog = new MangaDialog(this);
+    private void showTranslateResultDialog(final String title, String msg) {
+        if (null == translateResultDialog) {
+            translateResultDialog = new TranslateDialog(this);
+            translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
+                @Override
+                public void onSpeakClick(String word) {
+                    text2Speech(word);
+                }
+            });
         }
-        dialog.show();
-        dialog.setTitle(title);
-        dialog.setMessage(msg);
-        dialog.setOkText("确定");
+        translateResultDialog.show();
+
+        translateResultDialog.setTitle(title);
+        translateResultDialog.setMessage(msg);
+        translateResultDialog.setOkText("确定");
+        translateResultDialog.setCancelable(true);
     }
 
     private void initEpubLib() {

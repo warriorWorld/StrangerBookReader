@@ -34,7 +34,7 @@ public class SettingManager {
 
     private volatile static SettingManager manager;
     public static final String[] FONT_SIZE_LIST = {"超小", "小", "默认", "大", "很大", "巨大", "非常大"};
-    public static final String[] FONT_SIZE_CODE_LIST = {"12", "14", "16", "18", "20", "22", "24"};
+    public static final String[] FONT_SIZE_CODE_LIST = {"12", "16", "20", "24", "28", "32", "36"};
 
     public static SettingManager getInstance() {
         return manager != null ? manager : (manager = new SettingManager());
