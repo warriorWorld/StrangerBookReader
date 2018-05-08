@@ -35,6 +35,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
         }
         if (tts != null && !tts.isSpeaking()) {
             tts.setPitch(SharedPreferencesUtils.getFloatSharedPreferencesData(this, ShareKeys.TTS_PITCH_KEY));// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+            tts.setSpeechRate(SharedPreferencesUtils.getFloatSharedPreferencesData(this, ShareKeys.TTS_PITCH_KEY));
             tts.speak(text,
                     TextToSpeech.QUEUE_FLUSH, null);
         }
