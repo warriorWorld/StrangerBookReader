@@ -8,8 +8,8 @@ android {
         applicationId "com.warrior.hangsu.administrator.strangerbookreader"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 8
-        versionName "1.1.3"
+        versionCode 9
+        versionName "2.0.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -48,4 +48,9 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.3'
     implementation files('libs/epublib-core-latest.jar')
     implementation files('libs/slf4j-android-1.6.1-RC1.jar')
+    //UMENG
+    //PushSDK
+    compile 'com.umeng.sdk:push:4.1.0'
+    compile 'com.umeng.sdk:common:latest.integration'
+    compile 'com.umeng.sdk:analytics:latest.integration'
 }
