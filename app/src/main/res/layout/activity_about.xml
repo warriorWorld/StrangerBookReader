@@ -154,7 +154,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="发音音调"
+                    android:text="发音语速"
                     android:textColor="@color/main_text_color"
                     android:textSize="@dimen/main_text_size" />
 

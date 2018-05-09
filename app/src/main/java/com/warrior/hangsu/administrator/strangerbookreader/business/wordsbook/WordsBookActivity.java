@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,15 +15,21 @@ import com.android.volley.VolleyError;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +39,7 @@ import java.util.HashMap;
  * <p/>
  * Created by Administrator on 2016/4/4.
  */
-public class WordsBookActivity extends TTSActivity implements OnClickListener{
+public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private WordsBookAdapter adapter;
     private View emptyView;
     private TextView topBarRight, topBarLeft;
@@ -42,6 +49,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
     private int nowPosition = 0;
     private ClipboardManager clip;//复制文本用
     private Button killBtn;
+    private TextView jumpTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +64,23 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        text2Speech(wordsList.get(nowPosition).getWord());
     }
 
     private void refresh() {
         wordsList = db.queryAllWordsBook();
         if (null == wordsList || wordsList.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
+            topBarLeft.setText("没有生词");
             killBtn.setVisibility(View.GONE);
         } else {
             emptyView.setVisibility(View.GONE);
             killBtn.setVisibility(View.VISIBLE);
         }
+        refreshPositionInfo();
+        initViewPager();
+    }
+
+    private void refreshPositionInfo() {
         try {
             WordsBookBean item = wordsList.get(nowPosition);
             topBarRight.setText("查询次数:" + item.getTime());
@@ -75,9 +88,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
         } catch (IndexOutOfBoundsException e) {
 
         }
-        initViewPager();
     }
-
 
     private void initUI() {
         vp = (ViewPager) findViewById(R.id.words_viewpager);
@@ -85,7 +96,10 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
         killBtn = (Button) findViewById(R.id.kill_btn);
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
+        jumpTv = (TextView) findViewById(R.id.jump_tv);
+
         hideBaseTopBar();
+        jumpTv.setOnClickListener(this);
         killBtn.setOnClickListener(this);
     }
 
@@ -131,7 +145,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
                     WordsBookBean item = wordsList.get(nowPosition);
                     topBarRight.setText("查询次数:" + item.getTime());
                     topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (position + 1));
-                    text2Speech( wordsList.get(position).getWord());
+                    text2Speech(wordsList.get(position).getWord());
                 }
 
                 @Override
@@ -148,7 +162,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
 
     private void translation(final String word) {
         String url = Globle.YOUDAO + word;
-       text2Speech(word);
+        text2Speech(word);
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
 
@@ -217,9 +231,35 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
         if (p >= 0) {
             nowPosition = p;
             vp.setCurrentItem(p);
+            refreshPositionInfo();
         }
     }
 
+    private void showJumpDialog() {
+        MangaEditDialog dialog = new MangaEditDialog(this);
+        dialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                int position = Integer.valueOf(text) - 1;
+                if (position < 0) {
+                    position = 0;
+                }
+                if (position > wordsList.size() - 1) {
+                    position = wordsList.size() - 1;
+                }
+                vp.setCurrentItem(position);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setHint("输入要跳转的位置");
+        dialog.setInputType(InputType.TYPE_CLASS_NUMBER);
+        dialog.setTitle("跳转");
+    }
 
     @Override
     public void onClick(View v) {
@@ -236,6 +276,9 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener{
                 } catch (IndexOutOfBoundsException e) {
                     WordsBookActivity.this.finish();
                 }
+                break;
+            case R.id.jump_tv:
+                showJumpDialog();
                 break;
         }
     }

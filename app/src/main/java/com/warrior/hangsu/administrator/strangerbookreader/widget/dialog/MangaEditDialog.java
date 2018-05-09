@@ -124,6 +124,10 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         imm.hideSoftInputFromWindow(editTextV.getWindowToken(), 0);
     }
 
+    public void setInputType(int type) {
+        editTextV.setInputType(type);
+    }
+
     public void setTitle(String title) {
         titleTv.setVisibility(View.VISIBLE);
         titleTv.setText(title);
