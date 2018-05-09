@@ -53,4 +53,6 @@ dependencies {
     compile 'com.umeng.sdk:push:4.1.0'
     compile 'com.umeng.sdk:common:latest.integration'
     compile 'com.umeng.sdk:analytics:latest.integration'
+    //上下拉刷新
+    compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
 }

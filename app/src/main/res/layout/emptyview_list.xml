@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/divide">
+
+    <ImageView
+        android:id="@+id/empty_list_iv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/empty_box_icon" />
+
+    <TextView
+        android:id="@+id/empty_list_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/empty_list_iv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
+        android:text="暂无数据"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/ok_btn"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/peanut_btn_click"
+        android:text="+  新建地址"
+        android:textColor="@color/white"
+        android:textSize="@dimen/button_text_size"
+        android:visibility="gone" />
+</RelativeLayout>

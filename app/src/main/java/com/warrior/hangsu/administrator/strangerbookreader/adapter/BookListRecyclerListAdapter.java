@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRecyclerAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
@@ -24,8 +25,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2017/11/15.
  */
-public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRecyclerListAdapter.ViewHolder> {
-    private Context context;
+public class BookListRecyclerListAdapter extends BaseRecyclerAdapter {
     private OnRecycleItemClickListener onRecycleItemClickListener;
     private OnRecycleItemLongClickListener onRecycleItemLongClickListener;
 
@@ -36,39 +36,46 @@ public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRe
     private ArrayList<BookBean> list = new ArrayList<>();
 
     public BookListRecyclerListAdapter(Context context) {
-        this(context, null);
+        super(context);
     }
 
-    public BookListRecyclerListAdapter(Context context, ArrayList<BookBean> list) {
-        this.context = context;
-        this.list = list;
-    }
-
-
-    //创建新View，被LayoutManager所调用
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    protected String getEmptyText() {
+        return "书架是空的,点击添加本地书籍";
+    }
+
+    @Override
+    protected String getListEndText() {
+        return "已经到头了~";
+    }
+
+    @Override
+    protected <T> ArrayList<T> getDatas() {
+        return (ArrayList<T>) list;
+    }
+
+    @Override
+    protected RecyclerView.ViewHolder getNormalViewHolder(ViewGroup viewGroup) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_book, viewGroup, false);
-        ViewHolder vh = new ViewHolder(view);
+        NormalViewHolder vh = new NormalViewHolder(view);
         return vh;
     }
 
-    //将数据与界面进行绑定的操作
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    protected void refreshNormalViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         BookBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getBpPath())) {
-            ImageLoader.getInstance().displayImage(item.getBpPath(), viewHolder.book_iv, Globle.normalImageOptions);
+            ImageLoader.getInstance().displayImage(item.getBpPath(), ((NormalViewHolder) viewHolder).book_iv, Globle.normalImageOptions);
         }
-        viewHolder.book_title_tv.setText(item.getName());
+        ((NormalViewHolder) viewHolder).book_title_tv.setText(item.getName());
         if (TextUtils.isEmpty(item.getFormat())) {
-            viewHolder.book_file_format_tv.setText("TXT");
+            ((NormalViewHolder) viewHolder).book_file_format_tv.setText("TXT");
         } else {
-            viewHolder.book_file_format_tv.setText(item.getFormat());
+            ((NormalViewHolder) viewHolder).book_file_format_tv.setText(item.getFormat());
         }
-        viewHolder.read_progress_tv.setText("阅读进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%");
+        ((NormalViewHolder) viewHolder).read_progress_tv.setText("阅读进度:  " + NumberUtil.doubleDecimals(item.getProgress()) + "%");
 
-        viewHolder.item_book_rl.setOnClickListener(new View.OnClickListener() {
+        ((NormalViewHolder) viewHolder).item_book_rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != onRecycleItemClickListener) {
@@ -76,7 +83,7 @@ public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRe
                 }
             }
         });
-        viewHolder.item_book_rl.setOnLongClickListener(new View.OnLongClickListener() {
+        ((NormalViewHolder) viewHolder).item_book_rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (null != onRecycleItemLongClickListener) {
@@ -87,27 +94,17 @@ public class BookListRecyclerListAdapter extends RecyclerView.Adapter<BookListRe
         });
     }
 
-
-    //获取数据的数量
-    @Override
-    public int getItemCount() {
-        if (null == list) {
-            return 0;
-        }
-        return list.size();
-    }
-
     public void setOnRecycleItemLongClickListener(OnRecycleItemLongClickListener onRecycleItemLongClickListener) {
         this.onRecycleItemLongClickListener = onRecycleItemLongClickListener;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class NormalViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout item_book_rl;
         public ImageView book_iv;
         public TextView book_title_tv, read_progress_tv, book_file_format_tv;
 
-        public ViewHolder(View view) {
+        public NormalViewHolder(View view) {
             super(view);
             item_book_rl = (RelativeLayout) view.findViewById(R.id.item_book_rl);
             book_iv = (ImageView) view
