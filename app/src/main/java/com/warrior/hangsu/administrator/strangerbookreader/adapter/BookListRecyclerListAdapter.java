@@ -50,6 +50,11 @@ public class BookListRecyclerListAdapter extends BaseRecyclerAdapter {
     }
 
     @Override
+    protected String getEmptyBtnText() {
+        return "+  点击添加本地书籍";
+    }
+
+    @Override
     protected <T> ArrayList<T> getDatas() {
         return (ArrayList<T>) list;
     }

@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     private final int TYPE_EMPTY = 1;
     private final int TYPE_END = 2;
     protected boolean noMoreData = false;//上下拉刷新的列表不一定最后一位就是真正的最后一位
+    private OnEmptyBtnListener onEmptyBtnListener;
 
     public BaseRecyclerAdapter(Context context) {
         this.context = context;
@@ -49,6 +52,15 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) viewHolder).emptyText.setText(getEmptyText());
+            ((EmptyViewHolder) viewHolder).emptyBtn.setText(getEmptyBtnText());
+            ((EmptyViewHolder) viewHolder).emptyBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != onEmptyBtnListener) {
+                        onEmptyBtnListener.onEmptyBtnClick();
+                    }
+                }
+            });
         } else if (viewHolder instanceof ListEndViewHolder) {
             ((ListEndViewHolder) viewHolder).listEndTv.setText(getListEndText());
         } else {
@@ -79,17 +91,22 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
         }
     }
 
+    public void setOnEmptyBtnListener(OnEmptyBtnListener onEmptyBtnListener) {
+        this.onEmptyBtnListener = onEmptyBtnListener;
+    }
+
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class EmptyViewHolder extends RecyclerView.ViewHolder {
         private ImageView emptyImage;
         private TextView emptyText;
+        private Button emptyBtn;
 
         public EmptyViewHolder(View view) {
             super(view);
             emptyImage = (ImageView) view.findViewById(R.id.empty_list_iv);
             emptyText = (TextView) view.findViewById(R.id.empty_list_tv);
+            emptyBtn = (Button) view.findViewById(R.id.ok_btn);
         }
-
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
@@ -105,6 +122,8 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     protected abstract String getEmptyText();
 
     protected abstract String getListEndText();
+
+    protected abstract String getEmptyBtnText();
 
     protected abstract <T> ArrayList<T> getDatas();
 

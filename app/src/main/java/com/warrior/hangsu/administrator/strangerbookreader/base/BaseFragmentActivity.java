@@ -3,12 +3,14 @@ package com.warrior.hangsu.administrator.strangerbookreader.base;/**
  */
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
@@ -36,6 +38,11 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         //状态栏透明
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
 //                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);//此FLAG可使状态栏透明，且当前视图在绘制时，从屏幕顶端开始即top = 0开始绘制，这也是实现沉浸效果的基础
+            this.getWindow().setStatusBarColor(getResources().getColor(R.color.english_book_reader));
+        }
         initUI();
 
         // 在oncreate里订阅

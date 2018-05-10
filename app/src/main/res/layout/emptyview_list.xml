@@ -31,9 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/peanut_btn_click"
-        android:text="+  新建地址"
+        android:background="@drawable/btn_click"
+        android:text="+  添加书籍"
         android:textColor="@color/white"
-        android:textSize="@dimen/button_text_size"
+        android:textSize="18sp"
         android:visibility="gone" />
 </RelativeLayout>

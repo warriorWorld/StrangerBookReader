@@ -49,10 +49,14 @@ public abstract class BaseMultiTabActivity extends TTSFragmentActivity {
 
     protected abstract Fragment getFragmentByPosition(int position);
 
+    protected abstract int getMutiLayoutId();
+
     private void initUI() {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         vp = (ViewPager) findViewById(R.id.view_pager);
-        vp.addOnPageChangeListener(getPageListener());
+        if (null != getPageListener()) {
+            vp.addOnPageChangeListener(getPageListener());
+        }
         notice_num_rl = (RelativeLayout) findViewById(R.id.notice_num_rl);
         notice_num_tv1 = (TextView) findViewById(R.id.notice_num_tv1);
         notice_num_tv2 = (TextView) findViewById(R.id.notice_num_tv2);
@@ -67,7 +71,11 @@ public abstract class BaseMultiTabActivity extends TTSFragmentActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_only_vp;
+        if (getMutiLayoutId() != 0) {
+            return getMutiLayoutId();
+        } else {
+            return R.layout.activity_only_vp;
+        }
     }
 
     protected void showNoticeLayout() {

@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +26,9 @@ import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.base.BaseMultiTabActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.base.TTSFragmentActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
@@ -66,19 +70,13 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends TTSActivity implements View.OnClickListener,
+public class MainActivity extends BaseMultiTabActivity implements View.OnClickListener,
         EasyPermissions.PermissionCallbacks {
     private DrawerLayout drawer;
     private SevenFourteenNavigationView navigationView;
     private RelativeLayout appBarMain;
     //    private int navWidth;
     private TopBar mainTopbar;
-    private RecyclerView bookListRcv;
-    private View emptyView;
-    private TextView emptyTv;
-    private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
-    private BookListRecyclerListAdapter adapter;
-    private DbAdapter db;//数据库
     //版本更新
     private String versionName, msg;
     private int versionCode;
@@ -87,14 +85,13 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
     private String qrFilePath;
-    private final String[] DELETE_LIST = {"从书架中删除", "从文件中删除"};
+    private BooksTableFragment booksTableFragment;
+    private String[] titleList = {"书架"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
-        db = new DbAdapter(this);
-//        navWidth = DisplayUtil.dip2px(this, 266);
         doGetVersionInfo();
         handleIntent();
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
@@ -103,9 +100,66 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
     }
 
     @Override
-    protected void onResume() {
+    protected void initFragment() {
+        booksTableFragment = new BooksTableFragment();
+    }
+
+    @Override
+    protected String getActivityTitle() {
+        return "阅读器";
+    }
+
+    @Override
+    protected int getPageCount() {
+        return 1;
+    }
+
+    @Override
+    protected ViewPager.OnPageChangeListener getPageListener() {
+        return new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+    }
+
+    @Override
+    protected String[] getTabTitleList() {
+        return titleList;
+    }
+
+    @Override
+    protected Fragment getFragmentByPosition(int position) {
+        switch (position) {
+            case 0:
+                return booksTableFragment;
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    protected int getMutiLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-        refreshBooks();
+        if (null != booksTableFragment) {
+            booksTableFragment.onResume();
+        }
         navigationView.setUserName(LoginBean.getInstance().getUserName());
     }
 
@@ -209,7 +263,7 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
 
             @Override
             public void onRightClick() {
-                showFileChooser();
+                booksTableFragment.showFileChooser();
             }
 
             @Override
@@ -217,145 +271,6 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
 
             }
         });
-        bookListRcv = (RecyclerView) findViewById(R.id.book_list_rcv);
-        bookListRcv.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean canScrollVertically() {
-                return true;
-            }
-        });
-        bookListRcv.setFocusableInTouchMode(false);
-        bookListRcv.setFocusable(false);
-        bookListRcv.setHasFixedSize(true);
-        emptyView = findViewById(R.id.empty_view);
-        emptyTv = (TextView) findViewById(R.id.empty_tv);
-        emptyTv.setText("书架是空的!点击添加!");
-
-        emptyView.setOnClickListener(this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
-
-    public void refreshBooks() {
-        booksList = db.queryAllBooks();
-
-        initDateRv();
-    }
-
-    public void addBooks(String path, String format, String bpPath) {
-        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, bpPath);
-        refreshBooks();
-    }
-
-    public void deleteBooks(String bookName) {
-        db.deleteBookByBookName(bookName);
-        refreshBooks();
-    }
-
-    private void showDeleteSelectorDialog(final int deletePosition) {
-        ListDialog listDialog = new ListDialog(this);
-        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
-            @Override
-            public void onItemClick(String selectedRes, String selectedCodeRes) {
-            }
-
-            @Override
-            public void onItemClick(String selectedRes) {
-
-            }
-
-            @Override
-            public void onItemClick(int position) {
-                switch (position) {
-                    case 0:
-                        deleteBooks(booksList.get(deletePosition).getName());
-                        break;
-                    case 1:
-                        showDeleteDialog(deletePosition);
-                        break;
-                }
-            }
-        });
-        listDialog.show();
-        listDialog.setOptionsList(DELETE_LIST);
-    }
-
-    private void initDateRv() {
-        try {
-            if (null == booksList || booksList.size() <= 0) {
-                emptyView.setVisibility(View.VISIBLE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-            }
-            if (null == adapter) {
-                adapter = new BookListRecyclerListAdapter(this, booksList);
-                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        Intent intent = new Intent(MainActivity.this, NewReadActivity.class);
-                        if (booksList.get(position).getFormat().equals("EPUB")) {
-                            intent = new Intent(MainActivity.this, EpubActivity.class);
-                        }
-                        intent.putExtra("bookPath", booksList.get(position).getPath());
-                        intent.putExtra("bookFormat", booksList.get(position).getFormat());
-                        startActivity(intent);
-                    }
-                });
-                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
-                    @Override
-                    public void onItemLongClick(int position) {
-                        showDeleteSelectorDialog(position);
-                    }
-                });
-                bookListRcv.setAdapter(adapter);
-            } else {
-                adapter.setList(booksList);
-                adapter.notifyDataSetChanged();
-            }
-        } catch (Exception e) {
-            emptyView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * 调用文件选择软件来选择文件
-     **/
-    private void showFileChooser() {
-        ToastUtils.showSingleToast("目前仅支持txt和epub格式");
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("text/plain");//设置类型和后缀 txt
-        intent.setType("*/*");//设置类型和后缀  全部文件
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 1);
-    }
-
-    private void showDeleteDialog(final int position) {
-        MangaDialog dialog = new MangaDialog(this);
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                try {
-                    FileUtils.deleteFile(new File(booksList.get(position).getPath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                deleteBooks(booksList.get(position).getName());
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-        dialog.show();
-        dialog.setTitle("是否从文件中删除该书?");
-        dialog.setMessage("从文件中移除后无法恢复");
-        dialog.setOkText("是");
-        dialog.setCancelText("否");
     }
 
     @Override
@@ -385,7 +300,7 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
             } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
                 format = "EPUB";
             }
-            addBooks(path, format, null);
+            booksTableFragment.addBooks(path, format, null);
         }
     }
 
@@ -582,17 +497,9 @@ public class MainActivity extends TTSActivity implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.empty_view:
-                showFileChooser();
-                break;
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        db.closeDb();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
