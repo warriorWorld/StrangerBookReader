@@ -15,11 +15,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/white"
+            android:layout_marginTop="1px"
+            android:background="@color/english_book_reader_shallow"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="Fiction Press"
-            android:textColor="@color/english_book_reader"
+            android:textColor="@color/white"
             android:textSize="@dimen/main_text_size"
             android:textStyle="italic" />
 
@@ -75,11 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
-            android:background="@color/white"
+            android:background="@color/english_book_reader_shallow"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="Classic Reader"
-            android:textColor="@color/english_book_reader"
+            android:textColor="@color/white"
             android:textSize="@dimen/main_text_size"
             android:textStyle="italic" />
 
@@ -101,11 +102,11 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
-            android:background="@color/white"
+            android:background="@color/english_book_reader_shallow"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="Fan Fiction"
-            android:textColor="@color/english_book_reader"
+            android:textColor="@color/white"
             android:textSize="@dimen/main_text_size"
             android:textStyle="italic" />
 
