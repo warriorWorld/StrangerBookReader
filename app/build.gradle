@@ -55,4 +55,6 @@ dependencies {
     compile 'com.umeng.sdk:analytics:latest.integration'
     //上下拉刷新
     compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
+    //google的flexbox
+    compile 'com.google.android:flexbox:0.3.0'
 }
