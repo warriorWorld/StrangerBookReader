@@ -26,10 +26,6 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     @Override
     protected void onCreateInit() {
-        Intent intent = getActivity().getIntent();
-        url = intent.getStringExtra("url");
-        bookType = intent.getStringExtra("type");
-
         initSpider("FictionPress");
     }
 
@@ -116,5 +112,13 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     public String getBookType() {
         return bookType;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setBookType(String bookType) {
+        this.bookType = bookType;
     }
 }

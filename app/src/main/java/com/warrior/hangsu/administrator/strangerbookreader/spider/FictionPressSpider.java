@@ -31,7 +31,7 @@ public class FictionPressSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaListElements = doc.select("z-list zhover zpointer");
+                    Elements mangaListElements = doc.select("a.stitle");
                     MainBookBean mainBookBean = new MainBookBean();
                     BookBean item;
                     ArrayList<BookBean> bookList = new ArrayList<>();
