@@ -53,6 +53,11 @@ public class BooksTableFragment extends BaseRefreshListFragment {
     }
 
     @Override
+    protected boolean initRcvLayoutManger() {
+        return false;
+    }
+
+    @Override
     protected void initRec() {
         try {
             if (null == adapter) {

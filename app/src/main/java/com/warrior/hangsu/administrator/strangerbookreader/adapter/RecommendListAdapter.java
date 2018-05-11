@@ -46,7 +46,7 @@ public class RecommendListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getListEndText() {
-        return "已经到头了~";
+        return "";
     }
 
     @Override

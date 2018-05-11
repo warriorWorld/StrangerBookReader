@@ -38,12 +38,16 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
 
     protected abstract String getType();
 
+    protected abstract boolean initRcvLayoutManger();
+
     private void initUI(View v) {
         swipeToLoadLayout = (SwipeToLoadLayout) v.findViewById(R.id.swipeToLoadLayout);
         refreshRcv = (RecyclerView) v.findViewById(R.id.swipe_target);
-        refreshRcv.setLayoutManager
-                (new LinearLayoutManager
-                        (getActivity(), LinearLayoutManager.VERTICAL, false));
+        if (!initRcvLayoutManger()) {
+            refreshRcv.setLayoutManager
+                    (new LinearLayoutManager
+                            (getActivity(), LinearLayoutManager.VERTICAL, false));
+        }
         refreshRcv.setFocusableInTouchMode(false);
         refreshRcv.setFocusable(false);
         refreshRcv.setHasFixedSize(true);
