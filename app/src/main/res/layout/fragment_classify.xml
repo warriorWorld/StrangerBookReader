@@ -8,10 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/white"
-        android:paddingBottom="20dp"
-   >
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,7 +18,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
-            android:text="FictionPress"
+            android:text="Fiction Press"
             android:textColor="@color/english_book_reader"
             android:textSize="@dimen/main_text_size"
             android:textStyle="italic" />
@@ -44,7 +43,119 @@
             android:layout_marginRight="20dp"
             app:dividerDrawable="@drawable/divider"
             app:flexWrap="wrap"
-            app:showDivider="beginning|middle|end"></com.google.android.flexbox.FlexboxLayout>
+            app:showDivider="beginning|middle|end">
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:text="诗"
+            android:textColor="@color/english_book_reader"
+            android:textSize="@dimen/main_text_size"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fiction_press_fbl1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login_btn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:showDivider="beginning|middle|end">
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="Classic Reader"
+            android:textColor="@color/english_book_reader"
+            android:textSize="@dimen/main_text_size"
+            android:textStyle="italic" />
+
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/classic_reader_fbl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login_btn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:showDivider="beginning|middle|end">
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="Fan Fiction"
+            android:textColor="@color/english_book_reader"
+            android:textSize="@dimen/main_text_size"
+            android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:text="同人小说"
+            android:textColor="@color/english_book_reader"
+            android:textSize="@dimen/main_text_size"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fan_fiction_fbl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login_btn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:showDivider="beginning|middle|end">
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:text="交叉同人"
+            android:textColor="@color/english_book_reader"
+            android:textSize="@dimen/main_text_size"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fan_fiction_fbl1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login_btn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:dividerDrawable="@drawable/divider"
+            app:flexWrap="wrap"
+            app:showDivider="beginning|middle|end">
+
+        </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 
 </ScrollView>
