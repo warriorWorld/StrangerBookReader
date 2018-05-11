@@ -58,6 +58,7 @@ public class BooksTableFragment extends BaseRefreshListFragment {
             if (null == adapter) {
                 adapter = new BookListRecyclerListAdapter(getActivity());
                 adapter.setList(booksList);
+                adapter.setNoMoreData(true);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
@@ -79,7 +80,7 @@ public class BooksTableFragment extends BaseRefreshListFragment {
                 adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {
                     @Override
                     public void onEmptyBtnClick() {
-
+                        showFileChooser();
                     }
                 });
                 refreshRcv.setAdapter(adapter);
@@ -97,7 +98,6 @@ public class BooksTableFragment extends BaseRefreshListFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        doGetData();
     }
 
     /**

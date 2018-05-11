@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.base;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,12 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) viewHolder).emptyText.setText(getEmptyText());
-            ((EmptyViewHolder) viewHolder).emptyBtn.setText(getEmptyBtnText());
+            if (TextUtils.isEmpty(getEmptyBtnText())) {
+                ((EmptyViewHolder) viewHolder).emptyBtn.setVisibility(View.GONE);
+            } else {
+                ((EmptyViewHolder) viewHolder).emptyBtn.setVisibility(View.VISIBLE);
+                ((EmptyViewHolder) viewHolder).emptyBtn.setText(getEmptyBtnText());
+            }
             ((EmptyViewHolder) viewHolder).emptyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

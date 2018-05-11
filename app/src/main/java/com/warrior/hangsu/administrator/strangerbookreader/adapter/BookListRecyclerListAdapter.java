@@ -41,7 +41,7 @@ public class BookListRecyclerListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getEmptyText() {
-        return "书架是空的,点击添加本地书籍";
+        return "书架是空的";
     }
 
     @Override

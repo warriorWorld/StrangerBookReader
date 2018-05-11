@@ -33,7 +33,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/btn_click"
         android:text="+  添加书籍"
-        android:textColor="@color/white"
+        android:textColor="@drawable/btn_text_click_rewrite"
         android:textSize="18sp"
         android:visibility="gone" />
 </RelativeLayout>
