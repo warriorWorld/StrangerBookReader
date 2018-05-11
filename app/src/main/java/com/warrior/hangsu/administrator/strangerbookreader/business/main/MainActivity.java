@@ -87,7 +87,8 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     private String qrFilePath;
     private BooksTableFragment booksTableFragment;
     private ClassifyFragment classifyFragment;
-    private String[] titleList = {"书架","分类"};
+    private RecommendFragment recommendFragment;
+    private String[] titleList = {"推荐", "书架", "分类"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     protected void initFragment() {
         booksTableFragment = new BooksTableFragment();
         classifyFragment = new ClassifyFragment();
+        recommendFragment = new RecommendFragment();
     }
 
     @Override
@@ -113,7 +115,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
 
     @Override
     protected int getPageCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -145,8 +147,10 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     protected Fragment getFragmentByPosition(int position) {
         switch (position) {
             case 0:
-                return booksTableFragment;
+                return recommendFragment;
             case 1:
+                return booksTableFragment;
+            case 2:
                 return classifyFragment;
             default:
                 return null;
