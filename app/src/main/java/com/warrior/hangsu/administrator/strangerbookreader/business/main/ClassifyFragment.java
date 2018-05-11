@@ -1,5 +1,6 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.ClassifyListBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.online.OnlineBookListActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.tag.ToggleTag;
@@ -339,7 +341,10 @@ public class ClassifyFragment extends BaseFragment {
         tagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showSingleToast(item.getUrl());
+                Intent intent = new Intent(getActivity(), OnlineBookListActivity.class);
+                intent.putExtra("url", item.getUrl());
+                intent.putExtra("type", item.getTag());
+                startActivity(intent);
             }
         });
         tagBtn.setItem(item);

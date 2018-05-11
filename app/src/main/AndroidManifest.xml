@@ -79,6 +79,9 @@
             android:name=".business.statistic.StatisticsActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".business.online.OnlineBookListActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".business.login.LoginActivity"
             android:launchMode="singleTask"></activity>
         <activity
