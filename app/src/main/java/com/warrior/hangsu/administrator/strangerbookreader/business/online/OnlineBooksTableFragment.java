@@ -6,21 +6,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
-import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
-import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -29,19 +21,53 @@ import java.util.ArrayList;
 public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
     private BookListRecyclerListAdapter adapter;
-    private DbAdapter db;//数据库
-    private final String[] DELETE_LIST = {"从书架中删除", "从文件中删除"};
+    private String url, bookType;
+    private SpiderBase spider;
 
     @Override
     protected void onCreateInit() {
-        db = new DbAdapter(getActivity());
+        Intent intent = getActivity().getIntent();
+        url = intent.getStringExtra("url");
+        bookType = intent.getStringExtra("type");
+
+        initSpider("FictionPress");
+    }
+
+    private void initSpider(String spiderName) {
+        try {
+            spider = (SpiderBase) Class.forName
+                    ("com.warrior.hangsu.administrator.strangerbookreader.spider." + spiderName + "Spider").newInstance();
+        } catch (ClassNotFoundException e) {
+            ToastUtils.showSingleToast(e + "");
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            ToastUtils.showSingleToast(e + "");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            ToastUtils.showSingleToast(e + "");
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void doGetData() {
-        booksList = db.queryAllBooks();
+        spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
+            @Override
+            public void loadSucceed(final MainBookBean result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        booksList = result.getBook_list();
+                        initRec();
+                    }
+                });
+            }
 
-        initRec();
+            @Override
+            public void loadFailed(String error) {
+
+            }
+        });
     }
 
     @Override
@@ -64,25 +90,11 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        Intent intent = new Intent(getActivity(), NewReadActivity.class);
-                        if (booksList.get(position).getFormat().equals("EPUB")) {
-                            intent = new Intent(getActivity(), EpubActivity.class);
-                        }
-                        intent.putExtra("bookPath", booksList.get(position).getPath());
-                        intent.putExtra("bookFormat", booksList.get(position).getFormat());
-                        startActivity(intent);
                     }
                 });
                 adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
                     @Override
                     public void onItemLongClick(int position) {
-                        showDeleteSelectorDialog(position);
-                    }
-                });
-                adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {
-                    @Override
-                    public void onEmptyBtnClick() {
-                        showFileChooser();
                     }
                 });
                 refreshRcv.setAdapter(adapter);
@@ -102,84 +114,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
         super.onResume();
     }
 
-    /**
-     * 调用文件选择软件来选择文件
-     **/
-    public void showFileChooser() {
-        ToastUtils.showSingleToast("目前仅支持txt和epub格式");
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("text/plain");//设置类型和后缀 txt
-        intent.setType("*/*");//设置类型和后缀  全部文件
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 1);
-    }
-
-    private void showDeleteDialog(final int position) {
-        MangaDialog dialog = new MangaDialog(getActivity());
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                try {
-                    FileUtils.deleteFile(new File(booksList.get(position).getPath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                deleteBooks(booksList.get(position).getName());
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-        dialog.show();
-        dialog.setTitle("是否从文件中删除该书?");
-        dialog.setMessage("从文件中移除后无法恢复");
-        dialog.setOkText("是");
-        dialog.setCancelText("否");
-    }
-
-    public void addBooks(String path, String format, String bpPath) {
-        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, bpPath);
-        doGetData();
-    }
-
-    public void deleteBooks(String bookName) {
-        db.deleteBookByBookName(bookName);
-        doGetData();
-    }
-
-    private void showDeleteSelectorDialog(final int deletePosition) {
-        ListDialog listDialog = new ListDialog(getActivity());
-        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
-            @Override
-            public void onItemClick(String selectedRes, String selectedCodeRes) {
-            }
-
-            @Override
-            public void onItemClick(String selectedRes) {
-
-            }
-
-            @Override
-            public void onItemClick(int position) {
-                switch (position) {
-                    case 0:
-                        deleteBooks(booksList.get(deletePosition).getName());
-                        break;
-                    case 1:
-                        showDeleteDialog(deletePosition);
-                        break;
-                }
-            }
-        });
-        listDialog.show();
-        listDialog.setOptionsList(DELETE_LIST);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        db.closeDb();
+    public String getBookType() {
+        return bookType;
     }
 }

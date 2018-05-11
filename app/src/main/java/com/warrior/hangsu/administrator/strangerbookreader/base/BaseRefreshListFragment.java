@@ -20,7 +20,7 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
         OnLoadMoreListener {
     protected RecyclerView refreshRcv;
     protected SwipeToLoadLayout swipeToLoadLayout;
-    protected int page = 0;
+    protected int page = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
 
     @Override
     public void onRefresh() {
-        page = 0;
+        page = 1;
         doGetData();
     }
 
