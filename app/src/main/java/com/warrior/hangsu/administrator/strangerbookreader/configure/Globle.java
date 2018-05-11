@@ -3,8 +3,12 @@ package com.warrior.hangsu.administrator.strangerbookreader.configure;
 import android.graphics.Bitmap;
 import android.os.Environment;
 
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.imageloader.AuthImageDownloader;
 
 public class Globle {
     public static final boolean isTest=false;
