@@ -11,16 +11,16 @@
         android:orientation="vertical"
         android:background="@color/white"
         android:paddingBottom="20dp"
-        android:paddingTop="20dp">
+   >
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/english_book_reader"
+            android:background="@color/white"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="FictionPress"
-            android:textColor="@color/white"
+            android:textColor="@color/english_book_reader"
             android:textSize="@dimen/main_text_size"
             android:textStyle="italic" />
 
@@ -40,6 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/login_btn"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             app:dividerDrawable="@drawable/divider"
             app:flexWrap="wrap"
             app:showDivider="beginning|middle|end"></com.google.android.flexbox.FlexboxLayout>
