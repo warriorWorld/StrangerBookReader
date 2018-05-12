@@ -72,6 +72,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
             @Override
             public void loadFailed(String error) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
+                noMoreDate();
             }
         });
     }

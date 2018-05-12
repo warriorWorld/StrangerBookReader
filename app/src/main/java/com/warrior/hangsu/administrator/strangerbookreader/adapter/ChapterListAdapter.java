@@ -56,8 +56,8 @@ public class ChapterListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected RecyclerView.ViewHolder getNormalViewHolder(ViewGroup viewGroup) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_book, viewGroup, false);
-        BookListRecyclerListAdapter.NormalViewHolder vh = new BookListRecyclerListAdapter.NormalViewHolder(view);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_chapter, viewGroup, false);
+        NormalViewHolder vh = new NormalViewHolder(view);
         return vh;
     }
 

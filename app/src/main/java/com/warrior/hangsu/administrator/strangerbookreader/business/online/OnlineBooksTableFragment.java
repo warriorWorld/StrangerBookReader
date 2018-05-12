@@ -105,7 +105,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(getActivity(), OnlineBookDetailActivity.class);
-                        intent.putExtra("url", url);
+                        intent.putExtra("url", booksList.get(position).getPath());
                         intent.putExtra("spider", spiderName);
                         startActivity(intent);
                     }

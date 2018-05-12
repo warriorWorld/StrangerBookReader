@@ -9,6 +9,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class FictionPressSpider extends SpiderBase {
                         for (int i = 0; i < mangaListElements.size(); i++) {
                             item = new BookBean();
                             item.setName(mangaListElements.get(i).text());
-                            item.setPath(mangaListElements.get(i).attr("href"));
+                            item.setPath(getWebUrl() + mangaListElements.get(i).attr("href"));
                             item.setBpPath(mangaListElements.get(i).getElementsByClass("lazy cimage").attr("src"));
                             if (elements1.get(i).select("a").size() == 4) {
                                 item.setAuthor(elements1.get(i).select("a").get(2).text());
@@ -101,13 +102,21 @@ public class FictionPressSpider extends SpiderBase {
                 }
                 if (null != doc) {
                     try {
-                        Elements elements1 = doc.select("chap_select");
+                        Element element = doc.getElementById("chap_select");
+                        Elements elements1 = element.children();
                         BookBean item;
                         item = new BookBean();
                         ArrayList<ChapterListBean> chapterList = new ArrayList<>();
                         for (int i = 0; i < elements1.size(); i++) {
                             ChapterListBean chapterListBean = new ChapterListBean();
-                            chapterListBean.setTitle(elements1.text());
+                            chapterListBean.setTitle(elements1.get(i).text());
+                            String[] urls = url.split("/");
+                            urls[urls.length - 2] = (i + 1) + "";
+                            String finalUrl = "";
+                            for (int j = 0; j < urls.length; j++) {
+                                finalUrl += urls[j] + "/";
+                            }
+                            chapterListBean.setUrl(finalUrl);
                             chapterList.add(chapterListBean);
                         }
                         item.setChapterList(chapterList);
