@@ -82,6 +82,9 @@
             android:name=".business.online.OnlineBookListActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".business.online.OnlineBookDetailActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".business.login.LoginActivity"
             android:launchMode="singleTask"></activity>
         <activity

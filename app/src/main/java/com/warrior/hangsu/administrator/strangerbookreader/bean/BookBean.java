@@ -2,6 +2,8 @@ package com.warrior.hangsu.administrator.strangerbookreader.bean;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2016/4/3.
  */
@@ -19,6 +21,7 @@ public class BookBean {
     private String words;//字数
     private String updateDate;
     private String publishDate;
+    private ArrayList<ChapterListBean> chapterList;
 
     public String getAuthor() {
         return author;
@@ -127,5 +130,13 @@ public class BookBean {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public ArrayList<ChapterListBean> getChapterList() {
+        return chapterList;
+    }
+
+    public void setChapterList(ArrayList<ChapterListBean> chapterList) {
+        this.chapterList = chapterList;
     }
 }

@@ -36,6 +36,11 @@ public class BooksTableFragment extends BaseRefreshListFragment {
     private final String[] DELETE_LIST = {"从书架中删除", "从文件中删除"};
 
     @Override
+    protected int getReFreshFragmentLayoutId() {
+        return 0;
+    }
+
+    @Override
     protected void onCreateInit() {
         db = new DbAdapter(getActivity());
     }

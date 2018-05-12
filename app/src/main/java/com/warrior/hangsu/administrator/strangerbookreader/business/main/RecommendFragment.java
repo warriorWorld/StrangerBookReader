@@ -33,6 +33,11 @@ public class RecommendFragment extends BaseRefreshListFragment {
 
 
     @Override
+    protected int getReFreshFragmentLayoutId() {
+        return 0;
+    }
+
+    @Override
     protected void onCreateInit() {
     }
 

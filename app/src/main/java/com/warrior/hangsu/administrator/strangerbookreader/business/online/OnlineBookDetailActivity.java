@@ -9,19 +9,20 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContaine
  * 个人信息页
  */
 public class OnlineBookDetailActivity extends FragmentContainerActivity {
-    private OnlineBooksTableFragment onlineBooksTableFragment;
-    private String url;
+    private OnlineBookDetailFragment onlineBookDetailFragment;
+    private String url, spider;
 
     @Override
     protected void createInit() {
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
-        onlineBooksTableFragment = new OnlineBooksTableFragment();
+        spider = intent.getStringExtra("spider");
+        onlineBookDetailFragment = new OnlineBookDetailFragment();
     }
 
     @Override
     protected BaseFragment getFragment() {
-        return onlineBooksTableFragment;
+        return onlineBookDetailFragment;
     }
 
     @Override

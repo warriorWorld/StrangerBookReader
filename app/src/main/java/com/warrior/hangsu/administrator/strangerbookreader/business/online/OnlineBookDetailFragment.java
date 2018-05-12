@@ -1,12 +1,13 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
-import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 
-import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.ChapterListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.OnlineBookRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.ChapterListBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
@@ -20,16 +21,16 @@ import java.util.ArrayList;
 /**
  * 个人信息页
  */
-public class OnlineBooksTableFragment extends BaseRefreshListFragment {
-    private MainBookBean mainBookBean;
-    private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
-    private OnlineBookRecyclerListAdapter adapter;
-    private String url, bookType, spiderName;
+public class OnlineBookDetailFragment extends BaseRefreshListFragment {
+    private BookBean mainBean;
+    private ArrayList<ChapterListBean> chapterList = new ArrayList<>();
+    private ChapterListAdapter adapter;
+    private String url, spiderName;
     private SpiderBase spider;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
-        return 0;
+        return R.layout.fragment_book_detail;
     }
 
     @Override
@@ -56,14 +57,14 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     @Override
     protected void doGetData() {
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
-        spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
+        spider.getBookDetail(url, new JsoupCallBack<BookBean>() {
             @Override
-            public void loadSucceed(final MainBookBean result) {
+            public void loadSucceed(final BookBean result) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainBookBean = result;
+                        mainBean = result;
                         initRec();
                     }
                 });
@@ -90,35 +91,20 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     protected void initRec() {
         SingleLoadBarUtil.getInstance().dismissLoadBar();
         try {
-            if (page > 1) {
-                //如果不是首页 那就加上之后的
-                booksList.addAll(mainBookBean.getBook_list());
-            } else {
-                booksList = mainBookBean.getBook_list();
-            }
-
             if (null == adapter) {
-                adapter = new OnlineBookRecyclerListAdapter(getActivity());
-                adapter.setList(booksList);
-                adapter.setNoMoreData(false);
+                adapter = new ChapterListAdapter(getActivity());
+                adapter.setList(chapterList);
+                adapter.setNoMoreData(true);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        Intent intent = new Intent(getActivity(), OnlineBookDetailActivity.class);
-                        intent.putExtra("url", url);
-                        intent.putExtra("spider", spiderName);
-                        startActivity(intent);
-                    }
-                });
-                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
-                    @Override
-                    public void onItemLongClick(int position) {
+                        ToastUtils.showSingleToast(chapterList.get(position).getUrl());
                     }
                 });
                 refreshRcv.setAdapter(adapter);
                 refreshRcv.setItemAnimator(new DefaultItemAnimator());
             } else {
-                adapter.setList(booksList);
+                adapter.setList(chapterList);
                 adapter.notifyDataSetChanged();
             }
             swipeToLoadLayout.setRefreshing(false);
@@ -132,16 +118,8 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
         super.onResume();
     }
 
-    public String getBookType() {
-        return bookType;
-    }
-
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public void setBookType(String bookType) {
-        this.bookType = bookType;
     }
 
     public void setSpiderName(String spiderName) {

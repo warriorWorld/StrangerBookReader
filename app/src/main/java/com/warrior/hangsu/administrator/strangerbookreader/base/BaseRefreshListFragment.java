@@ -25,12 +25,19 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.activity_only_refresh_recycler, container, false);
+        View v;
+        if (getReFreshFragmentLayoutId() == 0) {
+            v = inflater.inflate(R.layout.activity_only_refresh_recycler, container, false);
+        } else {
+            v = inflater.inflate(getReFreshFragmentLayoutId(), container, false);
+        }
         onCreateInit();
         initUI(v);
         doGetData();
         return v;
     }
+
+    protected abstract int getReFreshFragmentLayoutId();
 
     protected abstract void onCreateInit();
 
