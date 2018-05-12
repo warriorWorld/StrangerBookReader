@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
 import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.util.Log;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.ChapterListAdapter;
@@ -84,9 +85,13 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
 
             @Override
             public void loadFailed(String error) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                initRec();
-                noMoreDate();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                        initRec();
+                    }
+                });
             }
         });
     }
@@ -196,6 +201,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
             swipeToLoadLayout.setRefreshing(false);
             swipeToLoadLayout.setLoadingMore(false);
         } catch (Exception e) {
+            Log.e("tds", "fdsafd");
         }
     }
 
