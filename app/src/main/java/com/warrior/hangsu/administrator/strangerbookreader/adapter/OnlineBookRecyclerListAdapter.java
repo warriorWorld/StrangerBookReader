@@ -78,8 +78,12 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
                 "    语言:  " + item.getLanguage() + "    章节数:  " + item.getChapters() +
                 "    单词量:  " + item.getWords());
         ((NormalViewHolder) viewHolder).bookIntroductionTv.setText(item.getIntroduction());
+        String updateString = item.getUpdateDate();
+        if (TextUtils.isEmpty(item.getUpdateDate())) {
+            updateString = "无";
+        }
         ((NormalViewHolder) viewHolder).bookDateTv.setText("公布日期:  " + item.getPublishDate() +
-                "    最后更新:  " + item.getUpdateDate());
+                "    最后更新:  " + updateString);
 
         ((NormalViewHolder) viewHolder).itemBookRl.setOnClickListener(new View.OnClickListener() {
             @Override

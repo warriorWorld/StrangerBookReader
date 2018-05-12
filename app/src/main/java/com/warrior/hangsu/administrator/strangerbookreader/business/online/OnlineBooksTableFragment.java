@@ -13,6 +13,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleIte
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     @Override
     protected void doGetData() {
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
             @Override
             public void loadSucceed(final MainBookBean result) {
@@ -80,6 +82,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     @Override
     protected void initRec() {
+        SingleLoadBarUtil.getInstance().dismissLoadBar();
         try {
             if (page > 1) {
                 //如果不是首页 那就加上之后的
