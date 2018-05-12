@@ -408,8 +408,19 @@
                     android:textColor="@color/main_text_color"
                     android:textSize="@dimen/main_text_size" />
 
+                <TextView
+                    android:id="@+id/cache_size_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/cache_iv"
+                    android:text="0MB"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="12sp" />
 
                 <ImageView
+                    android:id="@+id/cache_iv"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"

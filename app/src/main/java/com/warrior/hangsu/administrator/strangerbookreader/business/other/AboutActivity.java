@@ -32,8 +32,10 @@ import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.FileSizeUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
@@ -78,6 +80,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
     private RelativeLayout ttsPitchRl;
     private TextView ttsPitchTv;
     private RelativeLayout clean_cache_rl;
+    private TextView cache_size_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         ttsPitchRl = (RelativeLayout) findViewById(R.id.tts_pitch_rl);
         ttsPitchTv = (TextView) findViewById(R.id.tts_pitch_tv);
         clean_cache_rl = (RelativeLayout) findViewById(R.id.clean_cache_rl);
+        cache_size_tv = (TextView) findViewById(R.id.cache_size_tv);
 
         clean_cache_rl.setOnClickListener(this);
         ttsPitchRl.setOnClickListener(this);
@@ -163,6 +167,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         } else {
             translateWayTv.setText("单击查词");
         }
+        cache_size_tv.setText(NumberUtil.cutNum(FileSizeUtil.getFileOrFilesSize(Globle.CACHE_PATH, FileSizeUtil.SIZETYPE_MB)) + "MB");
     }
 
     private void doGetVersionInfo() {
@@ -398,6 +403,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
                 try {
                     FileUtils.deleteFile(new File(Globle.CACHE_PATH));
                     ToastUtils.showSingleToast("清理完成");
+                    refreshUI();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
