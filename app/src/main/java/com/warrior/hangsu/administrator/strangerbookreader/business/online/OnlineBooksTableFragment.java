@@ -95,6 +95,8 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
+                        ToastUtils.showSingleToast(spider.getWebUrl() + booksList.get(position)
+                                .getPath() + "\n图片地址:  " + booksList.get(position).getBpPath());
                     }
                 });
                 adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {

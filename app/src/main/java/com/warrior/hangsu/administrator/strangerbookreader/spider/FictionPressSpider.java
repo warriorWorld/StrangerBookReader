@@ -31,6 +31,7 @@ public class FictionPressSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
+                    Elements elements1 = doc.getElementsByClass("z-list zhover zpointer ");
                     Elements mangaListElements = doc.select("a.stitle");
                     MainBookBean mainBookBean = new MainBookBean();
                     BookBean item;
@@ -38,8 +39,17 @@ public class FictionPressSpider extends SpiderBase {
                     for (int i = 0; i < mangaListElements.size(); i++) {
                         item = new BookBean();
                         item.setName(mangaListElements.get(i).text());
-                        item.setPath("fasdfas");
-                        item.setBpPath("fsdaf");
+                        item.setPath(mangaListElements.get(i).attr("href"));
+                        item.setBpPath(mangaListElements.get(i).getElementsByClass("lazy cimage").attr("src"));
+                        if (elements1.get(i).select("a").size()==4){
+                            item.setAuthor(elements1.get(i).select("a").get(2).text());
+                        }else  if (elements1.get(i).select("a").size()==2){
+                            item.setAuthor(elements1.get(i).select("a").get(1).text());
+                        }else  if (elements1.get(i).select("a").size()==3){
+                            item.setAuthor(elements1.get(i).select("a").get(2).text());
+                        }
+                        item.setIntroduction(elements1.get(i).getElementsByClass("z-indent z-padtop").text());
+                        item.setRate(elements1.get(i).select("div.z-indent z-padtop").select("div.z-padtop2 xgray").text());
                         bookList.add(item);
                     }
                     mainBookBean.setBook_list(bookList);
@@ -69,5 +79,10 @@ public class FictionPressSpider extends SpiderBase {
     @Override
     public int nextPageNeedAddCount() {
         return 0;
+    }
+
+    @Override
+    public String getWebUrl() {
+        return "https://www.fictionpress.com";
     }
 }
