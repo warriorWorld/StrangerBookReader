@@ -17,8 +17,9 @@
             android:id="@+id/book_iv"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:padding="10dp"
-            android:src="@drawable/book_icon" />
+            android:padding="5dp"
+            android:src="@drawable/book_icon"
+            android:visibility="visible" />
 
         <LinearLayout
             android:layout_width="match_parent"

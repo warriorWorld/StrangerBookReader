@@ -54,6 +54,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
         spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
             @Override
             public void loadSucceed(final MainBookBean result) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -65,7 +66,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
             @Override
             public void loadFailed(String error) {
-
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
             }
         });
     }
