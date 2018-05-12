@@ -315,20 +315,20 @@ public class ClassifyFragment extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        addTags(fictionPressFbl, fictionPressTagList);
-                        addTags(fictionPressFbl1, fictionPressTagList1);
-                        addTags(fanFictionFbl, fanFictionTagList);
-                        addTags(fanFictionFbl1, fanFictionTagList1);
-                        addTags(classicReaderFbl, classicTagList);
+                        addTags(fictionPressFbl, fictionPressTagList, "FictionPress");
+                        addTags(fictionPressFbl1, fictionPressTagList1, "FictionPress");
+                        addTags(fanFictionFbl, fanFictionTagList, "FanFiction");
+                        addTags(fanFictionFbl1, fanFictionTagList1, "FanFiction");
+                        addTags(classicReaderFbl, classicTagList, "ClassicReader");
                     }
                 });
             }
         }).run();
     }
 
-    private void addTags(FlexboxLayout flexboxLayout, ArrayList<ClassifyListBean> list) {
+    private void addTags(FlexboxLayout flexboxLayout, ArrayList<ClassifyListBean> list, final String spiderName) {
         for (int i = 0; i < list.size(); i++) {
-            addOneNewTag(flexboxLayout, list.get(i));
+            addOneNewTag(flexboxLayout, list.get(i), spiderName);
         }
         SingleLoadBarUtil.getInstance().dismissLoadBar();
     }
@@ -336,7 +336,7 @@ public class ClassifyFragment extends BaseFragment {
     /**
      * 在页面中添加一个标签
      */
-    private void addOneNewTag(FlexboxLayout flexboxLayout, final ClassifyListBean item) {
+    private void addOneNewTag(FlexboxLayout flexboxLayout, final ClassifyListBean item, final String spiderName) {
         ToggleTag tagBtn = new ToggleTag(getActivity());
         tagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,6 +344,7 @@ public class ClassifyFragment extends BaseFragment {
                 Intent intent = new Intent(getActivity(), OnlineBookListActivity.class);
                 intent.putExtra("url", item.getUrl());
                 intent.putExtra("type", item.getTag());
+                intent.putExtra("spider", spiderName);
                 startActivity(intent);
             }
         });

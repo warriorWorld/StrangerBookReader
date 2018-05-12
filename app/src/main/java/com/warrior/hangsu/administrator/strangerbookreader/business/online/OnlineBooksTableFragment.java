@@ -24,12 +24,12 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     private MainBookBean mainBookBean;
     private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
     private OnlineBookRecyclerListAdapter adapter;
-    private String url, bookType;
+    private String url, bookType,spiderName;
     private SpiderBase spider;
 
     @Override
     protected void onCreateInit() {
-        initSpider("FictionPress");
+        initSpider(spiderName);
     }
 
     private void initSpider(String spiderName) {
@@ -135,5 +135,9 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     public void setBookType(String bookType) {
         this.bookType = bookType;
+    }
+
+    public void setSpiderName(String spiderName) {
+        this.spiderName = spiderName;
     }
 }

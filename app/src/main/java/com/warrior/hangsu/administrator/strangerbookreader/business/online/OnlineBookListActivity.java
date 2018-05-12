@@ -24,16 +24,18 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDi
  */
 public class OnlineBookListActivity extends FragmentContainerActivity {
     private OnlineBooksTableFragment onlineBooksTableFragment;
-    private String url, bookType;
+    private String url, bookType, spider;
 
     @Override
     protected void createInit() {
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         bookType = intent.getStringExtra("type");
+        spider = intent.getStringExtra("spider");
         onlineBooksTableFragment = new OnlineBooksTableFragment();
         onlineBooksTableFragment.setUrl(url);
         onlineBooksTableFragment.setBookType(bookType);
+        onlineBooksTableFragment.setSpiderName(spider);
     }
 
     @Override
