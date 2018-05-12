@@ -401,7 +401,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
             @Override
             public void onOkClick() {
                 try {
-                    FileUtils.deleteFile(new File(Globle.CACHE_PATH));
+                    FileUtils.deleteFile(new File(Globle.CACHE_PATH+"/"));
                     ToastUtils.showSingleToast("清理完成");
                     refreshUI();
                 } catch (IOException e) {
