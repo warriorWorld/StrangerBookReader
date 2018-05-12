@@ -1,5 +1,6 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
@@ -9,13 +10,23 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListF
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.ChapterListBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -24,8 +35,9 @@ import java.util.ArrayList;
 public class OnlineBookDetailFragment extends BaseRefreshListFragment {
     private ArrayList<ChapterListBean> chapterList = new ArrayList<>();
     private ChapterListAdapter adapter;
-    private String url, spiderName;
+    private String url, spiderName, title;
     private SpiderBase spider;
+    private static org.jsoup.nodes.Document doc;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
@@ -77,6 +89,54 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
         });
     }
 
+    private void doGetChapterContent(final String chapterUrl, final int chapter) {
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    doc = Jsoup.connect(chapterUrl)
+                            .timeout(10000).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (null != doc) {
+                    Elements test = doc.select("p");
+                    String urlContent = "";
+                    for (int i = 0; i < test.size(); i++) {
+                        urlContent += test.get(i).text() + "\n";
+                    }
+
+                    File file = new File(Globle.DOWNLOAD_PATH);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    final String bookPath = Globle.DOWNLOAD_PATH + File.separator
+                            + title + "弟" + chapter + "章.txt";
+                    try {
+                        FileWriter fw = new FileWriter(bookPath, true);
+                        fw.write(urlContent);
+                        fw.close();
+                    } catch (IOException e) {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SingleLoadBarUtil.getInstance().dismissLoadBar();
+                            Intent intent = new Intent(getActivity(), NewReadActivity.class);
+                            intent.putExtra("bookPath", bookPath);
+                            intent.putExtra("bookFormat", "TXT");
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
     @Override
     protected String getType() {
         return "";
@@ -98,7 +158,12 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        ToastUtils.showSingleToast(chapterList.get(position).getUrl());
+                        SharedPreferencesUtils.setSharedPreferencesData(getActivity(),
+                                ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title, position);
+                        adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
+                                (getActivity(),
+                                        ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title));
+                        doGetChapterContent(chapterList.get(position).getUrl(), position + 1);
                     }
                 });
                 refreshRcv.setAdapter(adapter);
@@ -107,6 +172,9 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                 adapter.setList(chapterList);
                 adapter.notifyDataSetChanged();
             }
+            adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
+                    (getActivity(),
+                            ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title));
             swipeToLoadLayout.setRefreshing(false);
             swipeToLoadLayout.setLoadingMore(false);
         } catch (Exception e) {
@@ -124,5 +192,9 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
 
     public void setSpiderName(String spiderName) {
         this.spiderName = spiderName;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

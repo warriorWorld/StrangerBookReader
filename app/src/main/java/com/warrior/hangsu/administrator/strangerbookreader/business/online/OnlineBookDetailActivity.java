@@ -10,16 +10,18 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContaine
  */
 public class OnlineBookDetailActivity extends FragmentContainerActivity {
     private OnlineBookDetailFragment onlineBookDetailFragment;
-    private String url, spider;
+    private String url, spider,title;
 
     @Override
     protected void createInit() {
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         spider = intent.getStringExtra("spider");
+        title=intent.getStringExtra("title");
         onlineBookDetailFragment = new OnlineBookDetailFragment();
         onlineBookDetailFragment.setUrl(url);
         onlineBookDetailFragment.setSpiderName(spider);
+        onlineBookDetailFragment.setTitle(title);
     }
 
     @Override
