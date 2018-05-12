@@ -44,6 +44,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleL
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TTSDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -76,6 +77,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
     private CheckBox closeTTSCb;
     private RelativeLayout ttsPitchRl;
     private TextView ttsPitchTv;
+    private RelativeLayout clean_cache_rl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +130,9 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         textSizeTv = (TextView) findViewById(R.id.text_size_tv);
         ttsPitchRl = (RelativeLayout) findViewById(R.id.tts_pitch_rl);
         ttsPitchTv = (TextView) findViewById(R.id.tts_pitch_tv);
+        clean_cache_rl = (RelativeLayout) findViewById(R.id.clean_cache_rl);
 
+        clean_cache_rl.setOnClickListener(this);
         ttsPitchRl.setOnClickListener(this);
         backgroundStyleRl.setOnClickListener(this);
         translateWayRl.setOnClickListener(this);
@@ -386,6 +390,30 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         listDialog.setOptionsList(TRANSLATE_WAY_LIST);
     }
 
+    private void showCleanCacheDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                try {
+                    FileUtils.deleteFile(new File(Globle.CACHE_PATH));
+                    ToastUtils.showSingleToast("清理完成");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("是否清理缓存");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -413,6 +441,9 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
                 break;
             case R.id.tts_pitch_rl:
                 showTTSDialog();
+                break;
+            case R.id.clean_cache_rl:
+                showCleanCacheDialog();
                 break;
         }
         if (null != intent) {
@@ -458,7 +489,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         dialog.setOnTTSDialogResultListener(new OnTTSDialogResultListener() {
             @Override
             public void onTTSModifyDone(String text, float result) {
-                text2Speech( text);
+                text2Speech(text);
             }
         });
         dialog.show();

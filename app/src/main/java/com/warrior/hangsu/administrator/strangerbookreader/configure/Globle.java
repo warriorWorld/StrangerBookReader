@@ -19,6 +19,8 @@ public class Globle {
             "strangerbookreader&key=1903646178&type=data&doctype=json&version=1.1&q=";
     final public static String DOWNLOAD_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + "english_book_reader";
+    final public static String CACHE_PATH = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/" + "english_book_reader/cache";
     final public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
             .cacheOnDisk(true)

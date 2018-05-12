@@ -91,6 +91,13 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
 
     private void doGetChapterContent(final String chapterUrl, final int chapter) {
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+        final String bookPath = Globle.CACHE_PATH + File.separator
+                + title + "弟" + chapter + "章.txt";
+        File bookFile = new File(bookPath);
+        if (bookFile.exists()) {
+            openBook(bookPath);
+            return;
+        }
         new Thread() {
             @Override
             public void run() {
@@ -108,12 +115,11 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                         urlContent += test.get(i).text() + "\n";
                     }
 
-                    File file = new File(Globle.DOWNLOAD_PATH);
+                    File file = new File(Globle.CACHE_PATH);
                     if (!file.exists()) {
                         file.mkdirs();
                     }
-                    final String bookPath = Globle.DOWNLOAD_PATH + File.separator
-                            + title + "弟" + chapter + "章.txt";
+
                     try {
                         FileWriter fw = new FileWriter(bookPath, true);
                         fw.write(urlContent);
@@ -125,16 +131,20 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            SingleLoadBarUtil.getInstance().dismissLoadBar();
-                            Intent intent = new Intent(getActivity(), NewReadActivity.class);
-                            intent.putExtra("bookPath", bookPath);
-                            intent.putExtra("bookFormat", "TXT");
-                            startActivity(intent);
+                            openBook(bookPath);
                         }
                     });
                 }
             }
         }.start();
+    }
+
+    private void openBook(String bookPath) {
+        SingleLoadBarUtil.getInstance().dismissLoadBar();
+        Intent intent = new Intent(getActivity(), NewReadActivity.class);
+        intent.putExtra("bookPath", bookPath);
+        intent.putExtra("bookFormat", "TXT");
+        startActivity(intent);
     }
 
     @Override
