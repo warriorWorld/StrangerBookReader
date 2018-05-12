@@ -14,6 +14,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewRead
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
@@ -84,6 +85,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
             @Override
             public void loadFailed(String error) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
+                initRec();
                 noMoreDate();
             }
         });
@@ -174,6 +176,12 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                                 (getActivity(),
                                         ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title));
                         doGetChapterContent(chapterList.get(position).getUrl(), position + 1);
+                    }
+                });
+                adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {
+                    @Override
+                    public void onEmptyBtnClick() {
+                        doGetChapterContent(url, 1);
                     }
                 });
                 refreshRcv.setAdapter(adapter);

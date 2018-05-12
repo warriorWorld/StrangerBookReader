@@ -36,7 +36,7 @@ public class ChapterListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getEmptyText() {
-        return "没有章节";
+        return "本书只有一章 点击下方按钮直接阅读";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ChapterListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getEmptyBtnText() {
-        return "";
+        return "开始阅读";
     }
 
     @Override
