@@ -22,7 +22,6 @@ import java.util.ArrayList;
  * 个人信息页
  */
 public class OnlineBookDetailFragment extends BaseRefreshListFragment {
-    private BookBean mainBean;
     private ArrayList<ChapterListBean> chapterList = new ArrayList<>();
     private ChapterListAdapter adapter;
     private String url, spiderName;
@@ -64,7 +63,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainBean = result;
+                        chapterList = result.getChapterList();
                         initRec();
                     }
                 });

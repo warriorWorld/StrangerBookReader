@@ -18,6 +18,8 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity {
         url = intent.getStringExtra("url");
         spider = intent.getStringExtra("spider");
         onlineBookDetailFragment = new OnlineBookDetailFragment();
+        onlineBookDetailFragment.setUrl(url);
+        onlineBookDetailFragment.setSpiderName(spider);
     }
 
     @Override
