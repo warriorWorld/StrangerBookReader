@@ -11,6 +11,78 @@ public class BookBean {
     private String name;
     private float progress;
     private String format;
+    private String author;
+    private String rate;
+    private String introduction;
+    private String language;
+    private String chapters;//章节数量
+    private String words;//字数
+    private String updateDate;
+    private String publishDate;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(String chapters) {
+        this.chapters = chapters;
+    }
+
+    public String getWords() {
+        return words;
+    }
+
+    public void setWords(String words) {
+        this.words = words;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(String publishDate) {
+        this.publishDate = publishDate;
+    }
 
     public String getBpPath() {
         if (TextUtils.isEmpty(bpPath)) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.OnlineBookRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
@@ -19,8 +20,9 @@ import java.util.ArrayList;
  * 个人信息页
  */
 public class OnlineBooksTableFragment extends BaseRefreshListFragment {
+    private MainBookBean mainBookBean;
     private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
-    private BookListRecyclerListAdapter adapter;
+    private OnlineBookRecyclerListAdapter adapter;
     private String url, bookType;
     private SpiderBase spider;
 
@@ -53,7 +55,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        booksList = result.getBook_list();
+                        mainBookBean = result;
                         initRec();
                     }
                 });
@@ -79,10 +81,17 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     @Override
     protected void initRec() {
         try {
+            if (page > 1) {
+                //如果不是首页 那就加上之后的
+                booksList.addAll(mainBookBean.getBook_list());
+            } else {
+                booksList = mainBookBean.getBook_list();
+            }
+
             if (null == adapter) {
-                adapter = new BookListRecyclerListAdapter(getActivity());
+                adapter = new OnlineBookRecyclerListAdapter(getActivity());
                 adapter.setList(booksList);
-                adapter.setNoMoreData(true);
+                adapter.setNoMoreData(false);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
