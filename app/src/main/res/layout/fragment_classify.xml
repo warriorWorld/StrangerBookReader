@@ -108,7 +108,8 @@
             android:text="Fan Fiction"
             android:textColor="@color/white"
             android:textSize="@dimen/main_text_size"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -119,7 +120,8 @@
             android:text="同人小说"
             android:textColor="@color/english_book_reader"
             android:textSize="@dimen/main_text_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/fan_fiction_fbl"
@@ -128,6 +130,7 @@
             android:layout_above="@+id/login_btn"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:visibility="gone"
             app:dividerDrawable="@drawable/divider"
             app:flexWrap="wrap"
             app:showDivider="beginning|middle|end">
@@ -143,7 +146,8 @@
             android:text="交叉同人"
             android:textColor="@color/english_book_reader"
             android:textSize="@dimen/main_text_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/fan_fiction_fbl1"
@@ -152,6 +156,7 @@
             android:layout_above="@+id/login_btn"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:visibility="gone"
             app:dividerDrawable="@drawable/divider"
             app:flexWrap="wrap"
             app:showDivider="beginning|middle|end">

@@ -317,8 +317,10 @@ public class ClassifyFragment extends BaseFragment {
                     public void run() {
                         addTags(fictionPressFbl, fictionPressTagList, "FictionPress");
                         addTags(fictionPressFbl1, fictionPressTagList1, "FictionPress");
-                        addTags(fanFictionFbl, fanFictionTagList, "FanFiction");
-                        addTags(fanFictionFbl1, fanFictionTagList1, "FanFiction");
+
+//                        addTags(fanFictionFbl, fanFictionTagList, "FanFiction");
+//                        addTags(fanFictionFbl1, fanFictionTagList1, "FanFiction");
+
                         addTags(classicReaderFbl, classicTagList, "ClassicReader");
                     }
                 });
