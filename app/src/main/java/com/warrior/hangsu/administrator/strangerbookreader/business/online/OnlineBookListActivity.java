@@ -14,6 +14,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContainerActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.search.SearchActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
@@ -76,6 +77,10 @@ public class OnlineBookListActivity extends FragmentContainerActivity {
             @Override
             public void onItemClick(int position) {
                 switch (position) {
+                    case 0:
+                        Intent intent = new Intent(OnlineBookListActivity.this, SearchActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });

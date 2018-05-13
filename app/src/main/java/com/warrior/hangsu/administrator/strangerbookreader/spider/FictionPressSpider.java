@@ -28,13 +28,16 @@ public class FictionPressSpider extends SpiderBase {
                 try {
                     doc = Jsoup.connect(url  + page)
                             .timeout(10000).get();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
                     try {
                         Elements elements1 = doc.getElementsByClass("z-list zhover zpointer ");
+                        if (elements1==null||elements1.size()==0){
+                            elements1=doc.getElementsByClass("z-list");
+                        }
                         Elements mangaListElements = doc.select("a.stitle");
                         MainBookBean mainBookBean = new MainBookBean();
                         BookBean item;

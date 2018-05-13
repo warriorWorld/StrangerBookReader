@@ -27,4 +27,5 @@ public class Globle {
             .considerExifParams(true)
             .bitmapConfig(Bitmap.Config.ARGB_8888)
             .build();
+    public final static String[] websList = {"FictionPress", "ClassicReader"};
 }

@@ -7,6 +7,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContainerActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.business.search.SearchActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
@@ -86,6 +87,12 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
                     case 2:
                         break;
                     case 3:
+                        Intent intent = new Intent(OnlineBookDetailActivity.this, SearchActivity.class);
+                        intent.putExtra("selectedWebSite", spider);
+                        intent.putExtra("searchType", "author");
+                        intent.putExtra("keyWord", onlineBookDetailFragment.getMainBean().getAuthor());
+                        intent.putExtra("immediateSearch", true);
+                        startActivity(intent);
                         break;
                 }
             }

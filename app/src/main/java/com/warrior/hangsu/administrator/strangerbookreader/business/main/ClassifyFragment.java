@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.ClassifyListBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.online.OnlineBookListActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.search.SearchActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.tag.ToggleTag;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 /**
  * 个人信息页
  */
-public class ClassifyFragment extends BaseFragment {
+public class ClassifyFragment extends BaseFragment implements View.OnClickListener {
     private FlexboxLayout fictionPressFbl;
     private ArrayList<ClassifyListBean> fictionPressTagList = new ArrayList<>();
     private ArrayList<ClassifyListBean> fictionPressTagList1 = new ArrayList<>();
@@ -31,6 +33,7 @@ public class ClassifyFragment extends BaseFragment {
     private FlexboxLayout classicReaderFbl;
     private FlexboxLayout fanFictionFbl;
     private FlexboxLayout fanFictionFbl1;
+    private LinearLayout search_ll;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +55,9 @@ public class ClassifyFragment extends BaseFragment {
         classicReaderFbl = (FlexboxLayout) v.findViewById(R.id.classic_reader_fbl);
         fanFictionFbl = (FlexboxLayout) v.findViewById(R.id.fan_fiction_fbl);
         fanFictionFbl1 = (FlexboxLayout) v.findViewById(R.id.fan_fiction_fbl1);
+        search_ll = (LinearLayout) v.findViewById(R.id.search_ll);
+
+        search_ll.setOnClickListener(this);
     }
 
 
@@ -62,149 +68,149 @@ public class ClassifyFragment extends BaseFragment {
                 fictionPressTagList = new ArrayList<>();
                 ClassifyListBean item = new ClassifyListBean();
                 item.setTag("战斗");
-                item.setUrl("https://www.fictionpress.com/fiction/Action/"+ "?&srt=1&r=103&p=");
+                item.setUrl("https://www.fictionpress.com/fiction/Action/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item);
                 ClassifyListBean item1 = new ClassifyListBean();
                 item1.setTag("恐怖");
-                item1.setUrl("https://www.fictionpress.com/fiction/Horror/"+ "?&srt=1&r=103&p=");
+                item1.setUrl("https://www.fictionpress.com/fiction/Horror/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item1);
                 ClassifyListBean item2 = new ClassifyListBean();
                 item2.setTag("浪漫");
-                item2.setUrl("https://www.fictionpress.com/fiction/Romance/"+ "?&srt=1&r=103&p=");
+                item2.setUrl("https://www.fictionpress.com/fiction/Romance/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item2);
                 ClassifyListBean item3 = new ClassifyListBean();
                 item3.setTag("传记");
-                item3.setUrl("https://www.fictionpress.com/fiction/Biography/"+ "?&srt=1&r=103&p=");
+                item3.setUrl("https://www.fictionpress.com/fiction/Biography/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item3);
                 ClassifyListBean item4 = new ClassifyListBean();
                 item4.setTag("搞笑");
-                item4.setUrl("https://www.fictionpress.com/fiction/Humor/"+ "?&srt=1&r=103&p=");
+                item4.setUrl("https://www.fictionpress.com/fiction/Humor/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item4);
                 ClassifyListBean item20 = new ClassifyListBean();
                 item20.setTag("科幻");
-                item20.setUrl("https://www.fictionpress.com/fiction/Sci-Fi/"+ "?&srt=1&r=103&p=");
+                item20.setUrl("https://www.fictionpress.com/fiction/Sci-Fi/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item20);
                 ClassifyListBean item5 = new ClassifyListBean();
                 item5.setTag("散文");
-                item5.setUrl("https://www.fictionpress.com/fiction/Essay/"+ "?&srt=1&r=103&p=");
+                item5.setUrl("https://www.fictionpress.com/fiction/Essay/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item5);
                 ClassifyListBean item6 = new ClassifyListBean();
                 item6.setTag("儿童读物");
-                item6.setUrl("https://www.fictionpress.com/fiction/Kids/"+ "?&srt=1&r=103&p=");
+                item6.setUrl("https://www.fictionpress.com/fiction/Kids/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item6);
                 ClassifyListBean item7 = new ClassifyListBean();
                 item7.setTag("灵异");
-                item7.setUrl("https://www.fictionpress.com/fiction/Spiritual/"+ "?&srt=1&r=103&p=");
+                item7.setUrl("https://www.fictionpress.com/fiction/Spiritual/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item7);
                 ClassifyListBean item8 = new ClassifyListBean();
                 item8.setTag("寓言");
-                item8.setUrl("https://www.fictionpress.com/fiction/Fable/"+ "?&srt=1&r=103&p=");
+                item8.setUrl("https://www.fictionpress.com/fiction/Fable/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item8);
                 ClassifyListBean item9 = new ClassifyListBean();
                 item9.setTag("日本漫画");
-                item9.setUrl("https://www.fictionpress.com/fiction/Manga/"+ "?&srt=1&r=103&p=");
+                item9.setUrl("https://www.fictionpress.com/fiction/Manga/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item9);
                 ClassifyListBean item10 = new ClassifyListBean();
                 item10.setTag("超自然");
-                item10.setUrl("https://www.fictionpress.com/fiction/Supernatural/"+ "?&srt=1&r=103&p=");
+                item10.setUrl("https://www.fictionpress.com/fiction/Supernatural/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item10);
                 ClassifyListBean item11 = new ClassifyListBean();
                 item11.setTag("幻想");
-                item11.setUrl("https://www.fictionpress.com/fiction/Fantasy/"+ "?&srt=1&r=103&p=");
+                item11.setUrl("https://www.fictionpress.com/fiction/Fantasy/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item11);
                 ClassifyListBean item12 = new ClassifyListBean();
                 item12.setTag("神秘");
-                item12.setUrl("https://www.fictionpress.com/fiction/Mystery/"+ "?&srt=1&r=103&p=");
+                item12.setUrl("https://www.fictionpress.com/fiction/Mystery/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item12);
                 ClassifyListBean item13 = new ClassifyListBean();
                 item13.setTag("惊悚");
-                item13.setUrl("https://www.fictionpress.com/fiction/Thriller/"+ "?&srt=1&r=103&p=");
+                item13.setUrl("https://www.fictionpress.com/fiction/Thriller/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item13);
                 ClassifyListBean item14 = new ClassifyListBean();
                 item14.setTag("综合");
-                item14.setUrl("https://www.fictionpress.com/fiction/General/"+ "?&srt=1&r=103&p=");
+                item14.setUrl("https://www.fictionpress.com/fiction/General/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item14);
                 ClassifyListBean item15 = new ClassifyListBean();
                 item15.setTag("神话");
-                item15.setUrl("https://www.fictionpress.com/fiction/Mythology/"+ "?&srt=1&r=103&p=");
+                item15.setUrl("https://www.fictionpress.com/fiction/Mythology/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item15);
                 ClassifyListBean item16 = new ClassifyListBean();
                 item16.setTag("西部");
-                item16.setUrl("https://www.fictionpress.com/fiction/Western/"+ "?&srt=1&r=103&p=");
+                item16.setUrl("https://www.fictionpress.com/fiction/Western/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item16);
                 ClassifyListBean item17 = new ClassifyListBean();
                 item17.setTag("历史");
-                item17.setUrl("https://www.fictionpress.com/fiction/Historical/"+ "?&srt=1&r=103&p=");
+                item17.setUrl("https://www.fictionpress.com/fiction/Historical/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item17);
                 ClassifyListBean item18 = new ClassifyListBean();
                 item18.setTag("竞技");
-                item18.setUrl("https://www.fictionpress.com/fiction/Play/"+ "?&srt=1&r=103&p=");
+                item18.setUrl("https://www.fictionpress.com/fiction/Play/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item18);
                 ClassifyListBean item19 = new ClassifyListBean();
                 item19.setTag("青年读物");
-                item19.setUrl("https://www.fictionpress.com/fiction/Young-Adult/"+ "?&srt=1&r=103&p=");
+                item19.setUrl("https://www.fictionpress.com/fiction/Young-Adult/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item19);
 
 
                 ClassifyListBean item21 = new ClassifyListBean();
                 item21.setTag("家庭");
-                item21.setUrl("https://www.fictionpress.com/poetry/Family/"+ "?&srt=1&r=103&p=");
+                item21.setUrl("https://www.fictionpress.com/poetry/Family/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item21);
                 ClassifyListBean item22 = new ClassifyListBean();
                 item22.setTag("幽默");
-                item22.setUrl("https://www.fictionpress.com/poetry/Humor/"+ "?&srt=1&r=103&p=");
+                item22.setUrl("https://www.fictionpress.com/poetry/Humor/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item22);
                 ClassifyListBean item23 = new ClassifyListBean();
                 item23.setTag("宗教");
-                item23.setUrl("https://www.fictionpress.com/poetry/Religion/"+ "?&srt=1&r=103&p=");
+                item23.setUrl("https://www.fictionpress.com/poetry/Religion/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item23);
                 ClassifyListBean item24 = new ClassifyListBean();
                 item24.setTag("幻想");
-                item24.setUrl("https://www.fictionpress.com/poetry/Fantasy/"+ "?&srt=1&r=103&p=");
+                item24.setUrl("https://www.fictionpress.com/poetry/Fantasy/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item24);
                 ClassifyListBean item25 = new ClassifyListBean();
                 item25.setTag("生活");
-                item25.setUrl("https://www.fictionpress.com/poetry/Life/"+ "?&srt=1&r=103&p=");
+                item25.setUrl("https://www.fictionpress.com/poetry/Life/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item25);
                 ClassifyListBean item26 = new ClassifyListBean();
                 item26.setTag("校园");
-                item26.setUrl("https://www.fictionpress.com/poetry/School/"+ "?&srt=1&r=103&p=");
+                item26.setUrl("https://www.fictionpress.com/poetry/School/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item26);
                 ClassifyListBean item27 = new ClassifyListBean();
                 item27.setTag("友谊");
-                item27.setUrl("https://www.fictionpress.com/poetry/Friendship/"+ "?&srt=1&r=103&p=");
+                item27.setUrl("https://www.fictionpress.com/poetry/Friendship/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item27);
                 ClassifyListBean item28 = new ClassifyListBean();
                 item28.setTag("爱情");
-                item28.setUrl("https://www.fictionpress.com/poetry/Love/"+ "?&srt=1&r=103&p=");
+                item28.setUrl("https://www.fictionpress.com/poetry/Love/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item28);
                 ClassifyListBean item29 = new ClassifyListBean();
                 item29.setTag("诗歌");
-                item29.setUrl("https://www.fictionpress.com/poetry/Song/"+ "?&srt=1&r=103&p=");
+                item29.setUrl("https://www.fictionpress.com/poetry/Song/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item29);
                 ClassifyListBean item30 = new ClassifyListBean();
                 item30.setTag("综合");
-                item30.setUrl("https://www.fictionpress.com/poetry/General/"+ "?&srt=1&r=103&p=");
+                item30.setUrl("https://www.fictionpress.com/poetry/General/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item30);
                 ClassifyListBean item31 = new ClassifyListBean();
                 item31.setTag("大自然");
-                item31.setUrl("https://www.fictionpress.com/poetry/Nature/"+ "?&srt=1&r=103&p=");
+                item31.setUrl("https://www.fictionpress.com/poetry/Nature/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item31);
                 ClassifyListBean item32 = new ClassifyListBean();
                 item32.setTag("战争");
-                item32.setUrl("https://www.fictionpress.com/poetry/War/"+ "?&srt=1&r=103&p=");
+                item32.setUrl("https://www.fictionpress.com/poetry/War/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item32);
                 ClassifyListBean item33 = new ClassifyListBean();
                 item33.setTag("三行俳句诗");
-                item33.setUrl("https://www.fictionpress.com/poetry/Haiku/"+ "?&srt=1&r=103&p=");
+                item33.setUrl("https://www.fictionpress.com/poetry/Haiku/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item33);
                 ClassifyListBean item34 = new ClassifyListBean();
                 item34.setTag("政治");
-                item34.setUrl("https://www.fictionpress.com/poetry/Politics/"+ "?&srt=1&r=103&p=");
+                item34.setUrl("https://www.fictionpress.com/poetry/Politics/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item34);
                 ClassifyListBean item35 = new ClassifyListBean();
                 item35.setTag("工作");
-                item35.setUrl("https://www.fictionpress.com/poetry/Work/"+ "?&srt=1&r=103&p=");
+                item35.setUrl("https://www.fictionpress.com/poetry/Work/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item35);
 
 
@@ -352,5 +358,15 @@ public class ClassifyFragment extends BaseFragment {
         });
         tagBtn.setItem(item);
         flexboxLayout.addView(tagBtn);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.search_ll:
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

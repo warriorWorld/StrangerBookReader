@@ -24,7 +24,7 @@ public abstract class FragmentContainerActivity extends TTSFragmentActivity impl
 
     protected abstract String getTopBarTitle();
 
-    private void initUI() {
+    protected void initUI() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, getFragment());
         transaction.commit();

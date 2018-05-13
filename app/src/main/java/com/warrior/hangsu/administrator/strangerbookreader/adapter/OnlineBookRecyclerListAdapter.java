@@ -18,6 +18,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.UltimateTextSizeUtil;
 
 import java.util.ArrayList;
 
@@ -72,12 +73,16 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
         if (!TextUtils.isEmpty(item.getBpPath())) {
             ImageLoader.getInstance().displayImage(item.getBpPath(), ((NormalViewHolder) viewHolder).bookIv, Globle.normalImageOptions);
         }
-        ((NormalViewHolder) viewHolder).bookTitleTv.setText(item.getName());
+        ((NormalViewHolder) viewHolder).bookTitleTv.setText
+                (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getName(), keyWord, 0,
+                        context.getResources().getColor(R.color.english_book_reader), 0));
         ((NormalViewHolder) viewHolder).bookAuthorTv.setText("作者:  " + item.getAuthor());
         ((NormalViewHolder) viewHolder).bookOtherInfoTv.setText("等级:  " + item.getRate() +
                 "    语言:  " + item.getLanguage() + "    章节数:  " + item.getChapters() +
                 "    单词量:  " + item.getWords());
-        ((NormalViewHolder) viewHolder).bookIntroductionTv.setText(item.getIntroduction());
+        ((NormalViewHolder) viewHolder).bookIntroductionTv.setText
+                (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getIntroduction(), keyWord, 0,
+                context.getResources().getColor(R.color.english_book_reader), 0));
         String updateString = item.getUpdateDate();
         if (TextUtils.isEmpty(item.getUpdateDate())) {
             updateString = "无";

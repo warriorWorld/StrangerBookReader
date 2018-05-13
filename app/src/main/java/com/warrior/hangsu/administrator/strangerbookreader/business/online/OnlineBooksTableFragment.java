@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
 import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     private MainBookBean mainBookBean;
     private ArrayList<BookBean> booksList = new ArrayList<BookBean>();
     private OnlineBookRecyclerListAdapter adapter;
-    private String url, bookType, spiderName;
+    private String url, bookType, spiderName, keyWord;
     private SpiderBase spider;
     private TextView currentPageTv;
 
@@ -46,6 +47,11 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     protected void initUI(View v) {
         super.initUI(v);
         currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
+    }
+
+    public void refreshData() {
+        initSpider(spiderName);
+        doGetData();
     }
 
     private void initSpider(String spiderName) {
@@ -66,26 +72,29 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     @Override
     protected void doGetData() {
-        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
-        spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
-            @Override
-            public void loadSucceed(final MainBookBean result) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        currentPageTv.setText(page + "");
-                        mainBookBean = result;
-                        initRec();
-                    }
-                });
-            }
+        try {
+            SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+            spider.getBookList(url, page + "", new JsoupCallBack<MainBookBean>() {
+                @Override
+                public void loadSucceed(final MainBookBean result) {
+                    SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentPageTv.setText(page + "");
+                            mainBookBean = result;
+                            initRec();
+                        }
+                    });
+                }
 
-            @Override
-            public void loadFailed(String error) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-            }
-        });
+                @Override
+                public void loadFailed(String error) {
+                    SingleLoadBarUtil.getInstance().dismissLoadBar();
+                }
+            });
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -113,6 +122,9 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 adapter = new OnlineBookRecyclerListAdapter(getActivity());
                 adapter.setList(booksList);
                 adapter.setNoMoreData(false);
+                if (!TextUtils.isEmpty(keyWord)) {
+                    adapter.setKeyWord(keyWord);
+                }
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
@@ -158,5 +170,9 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     public void setSpiderName(String spiderName) {
         this.spiderName = spiderName;
+    }
+
+    public void setKeyWord(String keyWord) {
+        this.keyWord = keyWord;
     }
 }
