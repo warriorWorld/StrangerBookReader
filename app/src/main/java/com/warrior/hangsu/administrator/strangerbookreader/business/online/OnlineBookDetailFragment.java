@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /**
  * 个人信息页
  */
-public class OnlineBookDetailFragment extends BaseRefreshListFragment {
+public class OnlineBookDetailFragment extends BaseRefreshListFragment implements View.OnClickListener {
     private ArrayList<ChapterListBean> chapterList = new ArrayList<>();
     private ChapterListAdapter adapter;
     private String spiderName;
@@ -46,6 +46,8 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
     private TextView bookIntroductionTv;
     private TextView bookDateTv;
     private BookBean mainBean;
+    private boolean chooseing = false;//判断是否在选择状态
+    private boolean firstChoose = true;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
@@ -65,6 +67,8 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
         bookOtherInfoTv = (TextView) v.findViewById(R.id.book_other_info_tv);
         bookIntroductionTv = (TextView) v.findViewById(R.id.book_introduction_tv);
         bookDateTv = (TextView) v.findViewById(R.id.book_date_tv);
+
+        bookIntroductionTv.setOnClickListener(this);
     }
 
     private void initSpider(String spiderName) {
@@ -289,5 +293,35 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
 
     public void setMainBean(BookBean mainBean) {
         this.mainBean = mainBean;
+    }
+
+    public BookBean getMainBean() {
+        return mainBean;
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.book_introduction_tv:
+                text2Speech(mainBean.getIntroduction());
+                break;
+        }
+    }
+
+    public boolean isChooseing() {
+        return chooseing;
+    }
+
+    public void setChooseing(boolean chooseing) {
+        this.chooseing = chooseing;
+    }
+
+    public boolean isFirstChoose() {
+        return firstChoose;
+    }
+
+    public void setFirstChoose(boolean firstChoose) {
+        this.firstChoose = firstChoose;
     }
 }
