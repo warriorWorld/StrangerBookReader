@@ -2,22 +2,22 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
 import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.ChapterListAdapter;
-import com.warrior.hangsu.administrator.strangerbookreader.adapter.OnlineBookRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.ChapterListBean;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
@@ -37,9 +37,15 @@ import java.util.ArrayList;
 public class OnlineBookDetailFragment extends BaseRefreshListFragment {
     private ArrayList<ChapterListBean> chapterList = new ArrayList<>();
     private ChapterListAdapter adapter;
-    private String url, spiderName, title;
+    private String spiderName;
     private SpiderBase spider;
     private static org.jsoup.nodes.Document doc;
+    private TextView bookTitleTv;
+    private TextView bookAuthorTv;
+    private TextView bookOtherInfoTv;
+    private TextView bookIntroductionTv;
+    private TextView bookDateTv;
+    private BookBean mainBean;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
@@ -49,6 +55,16 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
     @Override
     protected void onCreateInit() {
         initSpider(spiderName);
+    }
+
+    @Override
+    protected void initUI(View v) {
+        super.initUI(v);
+        bookTitleTv = (TextView) v.findViewById(R.id.book_title_tv);
+        bookAuthorTv = (TextView) v.findViewById(R.id.book_author_tv);
+        bookOtherInfoTv = (TextView) v.findViewById(R.id.book_other_info_tv);
+        bookIntroductionTv = (TextView) v.findViewById(R.id.book_introduction_tv);
+        bookDateTv = (TextView) v.findViewById(R.id.book_date_tv);
     }
 
     private void initSpider(String spiderName) {
@@ -67,16 +83,34 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
         }
     }
 
+    private void refreshUI() {
+        bookTitleTv.setText(mainBean.getName());
+        bookAuthorTv.setText(mainBean.getAuthor());
+        bookOtherInfoTv.setText("等级:  " + mainBean.getRate() +
+                "    语言:  " + mainBean.getLanguage() + "    章节数:  " + mainBean.getChapters() +
+                "    单词量:  " + mainBean.getWords());
+        bookIntroductionTv.setText(mainBean.getIntroduction());
+
+        String updateString = mainBean.getUpdateDate();
+        if (TextUtils.isEmpty(mainBean.getUpdateDate())) {
+            updateString = "无";
+        }
+        bookDateTv.setText("公布日期:  " + mainBean.getPublishDate() +
+                "    最后更新:  " + updateString);
+    }
+
     @Override
     protected void doGetData() {
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
-        spider.getBookDetail(url, new JsoupCallBack<BookBean>() {
+        spider.getBookDetail(mainBean.getPath(), new JsoupCallBack<BookBean>() {
             @Override
             public void loadSucceed(final BookBean result) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mainBean.setChapterList(result.getChapterList());
+                        refreshUI();
                         chapterList = result.getChapterList();
                         initRec();
                     }
@@ -99,7 +133,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
     private void doGetChapterContent(final String chapterUrl, final int chapter) {
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         final String bookPath = Globle.CACHE_PATH + File.separator
-                + title + "弟" + chapter + "章.txt";
+                + mainBean.getName() + "弟" + chapter + "章.txt";
         File bookFile = new File(bookPath);
         if (bookFile.exists()) {
             openBook(bookPath);
@@ -177,17 +211,17 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                     @Override
                     public void onItemClick(int position) {
                         SharedPreferencesUtils.setSharedPreferencesData(getActivity(),
-                                ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title, position);
+                                ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName(), position);
                         adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
                                 (getActivity(),
-                                        ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title));
+                                        ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName()));
                         doGetChapterContent(chapterList.get(position).getUrl(), position + 1);
                     }
                 });
                 adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {
                     @Override
                     public void onEmptyBtnClick() {
-                        doGetChapterContent(url, 1);
+                        doGetChapterContent(mainBean.getPath(), 1);
                     }
                 });
                 refreshRcv.setAdapter(adapter);
@@ -198,7 +232,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
             }
             adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
                     (getActivity(),
-                            ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + title));
+                            ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName()));
             swipeToLoadLayout.setRefreshing(false);
             swipeToLoadLayout.setLoadingMore(false);
         } catch (Exception e) {
@@ -211,15 +245,11 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
         super.onResume();
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public void setSpiderName(String spiderName) {
         this.spiderName = spiderName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMainBean(BookBean mainBean) {
+        this.mainBean = mainBean;
     }
 }

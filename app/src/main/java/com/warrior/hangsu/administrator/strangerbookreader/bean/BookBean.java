@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2016/4/3.
  */
-public class BookBean {
+public class BookBean extends BaseBean{
     private String path;
     private String bpPath;
     private String name;

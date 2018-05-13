@@ -102,10 +102,11 @@ public class FictionPressSpider extends SpiderBase {
                 }
                 if (null != doc) {
                     try {
-                        Element element = doc.getElementById("chap_select");
-                        Elements elements1 = element.children();
                         BookBean item;
                         item = new BookBean();
+
+                        Element element = doc.getElementById("chap_select");
+                        Elements elements1 = element.children();
                         ArrayList<ChapterListBean> chapterList = new ArrayList<>();
                         for (int i = 0; i < elements1.size(); i++) {
                             ChapterListBean chapterListBean = new ChapterListBean();

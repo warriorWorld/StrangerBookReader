@@ -47,7 +47,7 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
 
     protected abstract boolean initRcvLayoutManger();
 
-    private void initUI(View v) {
+    protected void initUI(View v) {
         swipeToLoadLayout = (SwipeToLoadLayout) v.findViewById(R.id.swipeToLoadLayout);
         refreshRcv = (RecyclerView) v.findViewById(R.id.swipe_target);
         if (!initRcvLayoutManger()) {

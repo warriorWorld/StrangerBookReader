@@ -15,6 +15,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -105,9 +106,8 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                     @Override
                     public void onItemClick(int position) {
                         Intent intent = new Intent(getActivity(), OnlineBookDetailActivity.class);
-                        intent.putExtra("url", booksList.get(position).getPath());
                         intent.putExtra("spider", spiderName);
-                        intent.putExtra("title",booksList.get(position).getName());
+                        intent.putExtra("bookBean", (Serializable) booksList.get(position));
                         startActivity(intent);
                     }
                 });

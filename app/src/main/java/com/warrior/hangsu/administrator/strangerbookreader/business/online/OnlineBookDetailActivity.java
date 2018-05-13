@@ -4,24 +4,26 @@ import android.content.Intent;
 
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContainerActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+
+import nl.siegmann.epublib.domain.Book;
 
 /**
  * 个人信息页
  */
 public class OnlineBookDetailActivity extends FragmentContainerActivity {
     private OnlineBookDetailFragment onlineBookDetailFragment;
-    private String url, spider,title;
+    private String spider;
+    private BookBean bookBean;
 
     @Override
     protected void createInit() {
         Intent intent = getIntent();
-        url = intent.getStringExtra("url");
         spider = intent.getStringExtra("spider");
-        title=intent.getStringExtra("title");
+        bookBean = (BookBean) intent.getSerializableExtra("bookBean");
         onlineBookDetailFragment = new OnlineBookDetailFragment();
-        onlineBookDetailFragment.setUrl(url);
         onlineBookDetailFragment.setSpiderName(spider);
-        onlineBookDetailFragment.setTitle(title);
+        onlineBookDetailFragment.setMainBean(bookBean);
     }
 
     @Override
@@ -31,6 +33,6 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity {
 
     @Override
     protected String getTopBarTitle() {
-        return "详情";
+        return bookBean.getName();
     }
 }
