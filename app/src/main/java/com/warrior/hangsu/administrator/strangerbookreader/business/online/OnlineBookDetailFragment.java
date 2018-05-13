@@ -109,7 +109,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mainBean.setChapterList(result.getChapterList());
+                        handleMainBean(result);
                         refreshUI();
                         chapterList = result.getChapterList();
                         initRec();
@@ -123,11 +123,49 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                     @Override
                     public void run() {
                         SingleLoadBarUtil.getInstance().dismissLoadBar();
+                        refreshUI();
                         initRec();
                     }
                 });
             }
         });
+    }
+
+    private void handleMainBean(BookBean item) {
+        if (TextUtils.isEmpty(mainBean.getUpdateDate())) {
+            mainBean.setUpdateDate(item.getUpdateDate());
+        }
+        if (TextUtils.isEmpty(mainBean.getFormat())) {
+            mainBean.setFormat(item.getFormat());
+        }
+        if (TextUtils.isEmpty(mainBean.getBpPath())) {
+            mainBean.setBpPath(item.getBpPath());
+        }
+        if (TextUtils.isEmpty(mainBean.getAuthor())) {
+            mainBean.setAuthor(item.getAuthor());
+        }
+        if (TextUtils.isEmpty(mainBean.getChapters())) {
+            mainBean.setChapters(item.getChapters());
+        }
+        if (TextUtils.isEmpty(mainBean.getIntroduction())) {
+            mainBean.setIntroduction(item.getIntroduction());
+        }
+        if (TextUtils.isEmpty(mainBean.getLanguage())) {
+            mainBean.setLanguage(item.getLanguage());
+        }
+        if (TextUtils.isEmpty(mainBean.getName())) {
+            mainBean.setName(item.getName());
+        }
+        if (TextUtils.isEmpty(mainBean.getPublishDate())) {
+            mainBean.setPublishDate(item.getPublishDate());
+        }
+        if (TextUtils.isEmpty(mainBean.getRate())) {
+            mainBean.setRate(item.getRate());
+        }
+        if (TextUtils.isEmpty(mainBean.getWords())) {
+            mainBean.setWords(item.getWords());
+        }
+        mainBean.setChapterList(item.getChapterList());
     }
 
     private void doGetChapterContent(final String chapterUrl, final int chapter) {
