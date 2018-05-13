@@ -12,10 +12,34 @@
         android:orientation="vertical"
         android:paddingBottom="20dp">
 
+        <LinearLayout
+            android:id="@+id/search_ll"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/divide"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/search_word" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="点击搜索数十万本英文书籍"
+                android:textColor="@color/main_text_color_gray"
+                android:textSize="13sp" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginTop="1px"
+            android:layout_marginTop="10dp"
             android:background="@color/english_book_reader_shallow"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"

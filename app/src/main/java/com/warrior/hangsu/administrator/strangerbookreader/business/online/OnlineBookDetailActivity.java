@@ -28,8 +28,8 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
     private OnlineBookDetailFragment onlineBookDetailFragment;
     private String spider;
     private BookBean bookBean;
-    private String[] optionsList = {"下载全部", "选择起始点下载", "加入收藏", "加入我已看完", "查看该作者其他作品"};
-    private boolean isFinished;
+    private String[] optionsList = {"下载全部", "选择起始点下载", "加入收藏", "查看该作者其他作品"};
+    private boolean isCollected = false;
 
     @Override
     protected void createInit() {
@@ -87,16 +87,14 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
                         break;
                     case 3:
                         break;
-                    case 4:
-                        break;
                 }
             }
         });
         listDialog.show();
-        if (isFinished) {
-            optionsList[3] = "取消我已看完";
+        if (isCollected) {
+            optionsList[2] = "取消收藏";
         } else {
-            optionsList[3] = "加入我已看完";
+            optionsList[2] = "加入收藏";
         }
         listDialog.setOptionsList(optionsList);
     }
@@ -104,7 +102,7 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
     private void downloadAll() {
         try {
             doDownload(0, onlineBookDetailFragment.getMainBean().getChapterList().size() - 1);
-        }catch (Exception e){
+        } catch (Exception e) {
             //只有一章的情况
             doDownload(0, 0);
         }
