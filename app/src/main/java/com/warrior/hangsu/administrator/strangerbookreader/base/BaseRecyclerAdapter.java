@@ -26,6 +26,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     private final int TYPE_EMPTY = 1;
     private final int TYPE_END = 2;
     protected boolean noMoreData = false;//上下拉刷新的列表不一定最后一位就是真正的最后一位
+    private boolean hideEmptyIv = false;
     private OnEmptyBtnListener onEmptyBtnListener;
 
     public BaseRecyclerAdapter(Context context) {
@@ -58,6 +59,9 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
             } else {
                 ((EmptyViewHolder) viewHolder).emptyBtn.setVisibility(View.VISIBLE);
                 ((EmptyViewHolder) viewHolder).emptyBtn.setText(getEmptyBtnText());
+            }
+            if (hideEmptyIv) {
+                ((EmptyViewHolder) viewHolder).emptyImage.setVisibility(View.GONE);
             }
             ((EmptyViewHolder) viewHolder).emptyBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,6 +103,10 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
 
     public void setOnEmptyBtnListener(OnEmptyBtnListener onEmptyBtnListener) {
         this.onEmptyBtnListener = onEmptyBtnListener;
+    }
+
+    public void setHideEmptyIv(boolean hideEmptyIv) {
+        this.hideEmptyIv = hideEmptyIv;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

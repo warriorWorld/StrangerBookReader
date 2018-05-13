@@ -172,6 +172,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment {
                 adapter = new ChapterListAdapter(getActivity());
                 adapter.setList(chapterList);
                 adapter.setNoMoreData(true);
+                adapter.setHideEmptyIv(true);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
