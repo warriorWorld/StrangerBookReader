@@ -26,7 +26,7 @@ public class FictionPressSpider extends SpiderBase {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect(url + "?&srt=1&r=103&p=" + page)
+                    doc = Jsoup.connect(url  + page)
                             .timeout(10000).get();
                 } catch (IOException e) {
                     e.printStackTrace();
