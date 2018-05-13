@@ -2,7 +2,10 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.online;
 
 import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.view.View;
+import android.widget.TextView;
 
+import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.OnlineBookRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
@@ -27,15 +30,22 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
     private OnlineBookRecyclerListAdapter adapter;
     private String url, bookType, spiderName;
     private SpiderBase spider;
+    private TextView currentPageTv;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
-        return 0;
+        return R.layout.fragment_online_book_list;
     }
 
     @Override
     protected void onCreateInit() {
         initSpider(spiderName);
+    }
+
+    @Override
+    protected void initUI(View v) {
+        super.initUI(v);
+        currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
     }
 
     private void initSpider(String spiderName) {
@@ -64,6 +74,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        currentPageTv.setText(page + "");
                         mainBookBean = result;
                         initRec();
                     }

@@ -14,9 +14,12 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.base.FragmentContainerActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 
 /**
@@ -25,6 +28,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDi
 public class OnlineBookListActivity extends FragmentContainerActivity {
     private OnlineBooksTableFragment onlineBooksTableFragment;
     private String url, bookType, spider;
+    private String[] optionsList = {"搜索", "跳转"};
 
     @Override
     protected void createInit() {
@@ -36,6 +40,47 @@ public class OnlineBookListActivity extends FragmentContainerActivity {
         onlineBooksTableFragment.setUrl(url);
         onlineBooksTableFragment.setBookType(bookType);
         onlineBooksTableFragment.setSpiderName(spider);
+
+        baseTopBar.setRightBackground(R.drawable.more);
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                OnlineBookListActivity.this.finish();
+            }
+
+            @Override
+            public void onRightClick() {
+                showOptionsSelectorDialog();
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
+    }
+
+    private void showOptionsSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(optionsList);
     }
 
     @Override
