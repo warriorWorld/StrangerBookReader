@@ -26,17 +26,22 @@ public abstract class FragmentContainerActivity extends TTSFragmentActivity impl
 
     private void initUI() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.base_container, getFragment());
+        transaction.replace(R.id.fragment_container, getFragment());
         transaction.commit();
 
         baseTopBar.setTitle(getTopBarTitle());
     }
 
+    protected abstract int getContainerLayoutId();
+
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_base;
+        if (getContainerLayoutId() == 0) {
+            return R.layout.activity_container;
+        } else {
+            return getContainerLayoutId();
+        }
     }
-
 
     @Override
     public void onClick(View v) {

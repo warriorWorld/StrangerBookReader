@@ -132,6 +132,11 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
     }
 
     @Override
+    protected int getContainerLayoutId() {
+        return 0;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Forward results to EasyPermissions

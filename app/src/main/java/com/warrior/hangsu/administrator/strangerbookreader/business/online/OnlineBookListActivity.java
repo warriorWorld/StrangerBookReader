@@ -92,4 +92,9 @@ public class OnlineBookListActivity extends FragmentContainerActivity {
     protected String getTopBarTitle() {
         return bookType;
     }
+
+    @Override
+    protected int getContainerLayoutId() {
+        return 0;
+    }
 }
