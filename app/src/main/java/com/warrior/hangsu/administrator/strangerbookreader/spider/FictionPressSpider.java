@@ -147,7 +147,7 @@ public class FictionPressSpider extends SpiderBase {
 
     @Override
     public int nextPageNeedAddCount() {
-        return 0;
+        return 1;
     }
 
     @Override

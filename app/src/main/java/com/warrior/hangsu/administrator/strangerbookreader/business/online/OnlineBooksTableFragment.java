@@ -13,10 +13,12 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListF
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.MainBookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
 import java.io.Serializable;
@@ -149,6 +151,32 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
             swipeToLoadLayout.setLoadingMore(false);
         } catch (Exception e) {
         }
+    }
+
+    public void showToPageDialog() {
+        MangaEditDialog toPageDialog = new MangaEditDialog(getActivity());
+        toPageDialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                try {
+                    page = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount()+1;
+                    doGetData();
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        toPageDialog.setCancelable(true);
+        toPageDialog.show();
+        toPageDialog.setTitle("跳转");
+        toPageDialog.setHint("输入要跳转的页码");
+        toPageDialog.setOnlyNumInput(true);
+        toPageDialog.clearEdit();
     }
 
     @Override

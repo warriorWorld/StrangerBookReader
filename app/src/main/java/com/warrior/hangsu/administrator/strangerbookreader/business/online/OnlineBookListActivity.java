@@ -81,6 +81,9 @@ public class OnlineBookListActivity extends FragmentContainerActivity {
                         Intent intent = new Intent(OnlineBookListActivity.this, SearchActivity.class);
                         startActivity(intent);
                         break;
+                    case 1:
+                        onlineBooksTableFragment.showToPageDialog();
+                        break;
                 }
             }
         });
