@@ -306,10 +306,10 @@ public class ClassifyFragment extends BaseFragment implements View.OnClickListen
                 item57.setTag("诗");
                 item57.setUrl("http://www.classicreader.com/browse/4/");
                 classicTagList.add(item57);
-                ClassifyListBean item58 = new ClassifyListBean();
-                item58.setTag("短故事");
-                item58.setUrl("http://www.classicreader.com/browse/6/");
-                classicTagList.add(item58);
+//                ClassifyListBean item58 = new ClassifyListBean();
+//                item58.setTag("短故事");
+//                item58.setUrl("http://www.classicreader.com/browse/6/");
+//                classicTagList.add(item58);
                 ClassifyListBean item59 = new ClassifyListBean();
                 item59.setTag("戏剧");
                 item59.setUrl("http://www.classicreader.com/browse/7/");

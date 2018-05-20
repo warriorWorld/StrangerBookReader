@@ -207,5 +207,8 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+        if (null!=adapter){
+            adapter.setKeyWord(keyWord);
+        }
     }
 }

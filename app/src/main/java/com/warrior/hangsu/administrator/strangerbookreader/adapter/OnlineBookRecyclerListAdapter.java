@@ -80,7 +80,7 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
 
         ((NormalViewHolder) viewHolder).bookTitleTv.setText
                 (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getName(), keyWord, 0,
-                        context.getResources().getColor(R.color.english_book_reader), 0));
+                        context.getResources().getColor(R.color.english_book_reader), 0,true));
         if (TextUtils.isEmpty(item.getAuthor())) {
             ((NormalViewHolder) viewHolder).bookAuthorTv.setVisibility(View.GONE);
         } else {
@@ -101,7 +101,7 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
             ((NormalViewHolder) viewHolder).bookIntroductionTv.setVisibility(View.VISIBLE);
             ((NormalViewHolder) viewHolder).bookIntroductionTv.setText
                     (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getIntroduction(), keyWord, 0,
-                            context.getResources().getColor(R.color.english_book_reader), 0));
+                            context.getResources().getColor(R.color.english_book_reader), 0,true));
         }
         String updateString = item.getUpdateDate();
         if (TextUtils.isEmpty(item.getUpdateDate())) {
