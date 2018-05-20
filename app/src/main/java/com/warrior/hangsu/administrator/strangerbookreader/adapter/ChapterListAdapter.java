@@ -19,6 +19,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.NumberUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class ChapterListAdapter extends BaseRecyclerAdapter {
     private int currentItem = -1;
+    private String bookName;
     private ArrayList<ChapterListBean> list = new ArrayList<>();
     private OnRecycleItemClickListener onRecycleItemClickListener;
 
@@ -70,7 +72,14 @@ public class ChapterListAdapter extends BaseRecyclerAdapter {
         } else {
             ((NormalViewHolder) viewHolder).bookmarkIv.setVisibility(View.GONE);
         }
-
+        final String bookPath = Globle.CACHE_PATH + File.separator
+                + bookName + "弟" + (position + 1) + "章.txt";
+        File bookFile = new File(bookPath);
+        if (bookFile.exists()) {
+            ((NormalViewHolder) viewHolder).downloadIv.setVisibility(View.VISIBLE);
+        } else {
+            ((NormalViewHolder) viewHolder).downloadIv.setVisibility(View.GONE);
+        }
         ((NormalViewHolder) viewHolder).itemChapterRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,17 +94,27 @@ public class ChapterListAdapter extends BaseRecyclerAdapter {
         this.onRecycleItemClickListener = onRecycleItemClickListener;
     }
 
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class NormalViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout itemChapterRl;
         private TextView chapterTitleTv;
         private ImageView bookmarkIv;
+        private ImageView downloadIv;
 
         public NormalViewHolder(View view) {
             super(view);
             itemChapterRl = (RelativeLayout) view.findViewById(R.id.item_chapter_rl);
             chapterTitleTv = (TextView) view.findViewById(R.id.chapter_title_tv);
             bookmarkIv = (ImageView) view.findViewById(R.id.bookmark_iv);
+            downloadIv = (ImageView) view.findViewById(R.id.download_iv);
         }
     }
 

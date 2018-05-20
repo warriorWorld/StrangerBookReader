@@ -77,7 +77,7 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
             public void onItemClick(int position) {
                 switch (position) {
                     case 0:
-                        downloadAll();
+                        onlineBookDetailFragment.downloadAll();
                         break;
                     case 1:
                         onlineBookDetailFragment.setChooseing(true);
@@ -104,28 +104,6 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
             optionsList[2] = "加入收藏";
         }
         listDialog.setOptionsList(optionsList);
-    }
-
-    private void downloadAll() {
-        try {
-            doDownload(0, onlineBookDetailFragment.getMainBean().getChapterList().size() - 1);
-        } catch (Exception e) {
-            //只有一章的情况
-            doDownload(0, 0);
-        }
-    }
-
-    @AfterPermissionGranted(111)
-    private void doDownload(int start, int end) {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            // Already have permission, do the thing
-            // ...
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    111, perms);
-        }
     }
 
     @Override

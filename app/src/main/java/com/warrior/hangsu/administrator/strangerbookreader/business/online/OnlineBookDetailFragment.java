@@ -16,11 +16,13 @@ import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewRead
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.JsoupCallBack;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnDownloadChapterEndListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 
 import org.jsoup.Jsoup;
@@ -48,6 +50,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
     private BookBean mainBean;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
+    private int downloadStartPoint = 0;
 
     @Override
     protected int getReFreshFragmentLayoutId() {
@@ -172,13 +175,49 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
         mainBean.setChapterList(item.getChapterList());
     }
 
+    private void resetDownloadState() {
+        firstChoose = false;
+        chooseing = false;
+    }
+
+    public void downloadAll() {
+        doDownload(0, chapterList.size() - 1);
+    }
+
+    private void doDownload(int start, final int end) {
+        resetDownloadState();
+        doGetChapterContent(chapterList.get(start).getUrl(), start + 1, new OnDownloadChapterEndListener() {
+            @Override
+            public void downloadChapterEnd(int chapter) {
+                if (chapter == end + 1) {
+                    adapter.notifyDataSetChanged();
+                    MangaDialog dialog = new MangaDialog(getActivity());
+                    dialog.show();
+                    dialog.setTitle("全部下载完成");
+                    dialog.setOkText("确定");
+                } else {
+                    doGetChapterContent(chapterList.get(chapter).getUrl(), chapter + 1, this);
+                }
+            }
+        });
+    }
+
     private void doGetChapterContent(final String chapterUrl, final int chapter) {
+        doGetChapterContent(chapterUrl, chapter, null);
+    }
+
+    private void doGetChapterContent(final String chapterUrl, final int chapter, final OnDownloadChapterEndListener listener) {
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         final String bookPath = Globle.CACHE_PATH + File.separator
                 + mainBean.getName() + "弟" + chapter + "章.txt";
         File bookFile = new File(bookPath);
         if (bookFile.exists()) {
-            openBook(bookPath);
+            SingleLoadBarUtil.getInstance().dismissLoadBar();
+            if (null != listener) {
+                listener.downloadChapterEnd(chapter);
+            } else {
+                openBook(bookPath);
+            }
             return;
         }
         new Thread() {
@@ -208,13 +247,21 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
                         fw.write(urlContent);
                         fw.close();
                     } catch (IOException e) {
+                        if (null != listener) {
+                            listener.downloadChapterEnd(chapter);
+                        }
                         SingleLoadBarUtil.getInstance().dismissLoadBar();
                     }
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            openBook(bookPath);
+                            SingleLoadBarUtil.getInstance().dismissLoadBar();
+                            if (null != listener) {
+                                listener.downloadChapterEnd(chapter);
+                            } else {
+                                openBook(bookPath);
+                            }
                         }
                     });
                 }
@@ -249,15 +296,25 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
                 adapter.setList(chapterList);
                 adapter.setNoMoreData(true);
                 adapter.setHideEmptyIv(true);
+                adapter.setBookName(mainBean.getName());
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        SharedPreferencesUtils.setSharedPreferencesData(getActivity(),
-                                ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName(), position);
-                        adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
-                                (getActivity(),
-                                        ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName()));
-                        doGetChapterContent(chapterList.get(position).getUrl(), position + 1);
+                        if (chooseing) {
+                            if (firstChoose) {
+                                downloadStartPoint = position;
+                                firstChoose = false;
+                            } else {
+                                doDownload(downloadStartPoint, position);
+                            }
+                        } else {
+                            SharedPreferencesUtils.setSharedPreferencesData(getActivity(),
+                                    ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName(), position);
+                            adapter.setCurrentItem(SharedPreferencesUtils.getIntSharedPreferencesData
+                                    (getActivity(),
+                                            ShareKeys.ONLINE_BOOK_READ_CHAPTER_POSITION + mainBean.getName()));
+                            doGetChapterContent(chapterList.get(position).getUrl(), position + 1);
+                        }
                     }
                 });
                 adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {

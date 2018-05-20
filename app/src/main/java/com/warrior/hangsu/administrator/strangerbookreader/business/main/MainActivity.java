@@ -89,7 +89,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     private BooksTableFragment booksTableFragment;
     private ClassifyFragment classifyFragment;
     //    private RecommendFragment recommendFragment;
-    private String[] titleList = {"书架", "分类"};
+    private String[] titleList = {"书架", "书城"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +99,6 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
         handleIntent();
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             ToastUtils.showSingleToast("登录后可以记录并查看看书的统计数据(未登录时不记录)");
-        }
-        File file = new File(Globle.CACHE_PATH);
-        if (!file.exists()) {
-            file.mkdirs();
         }
     }
 
