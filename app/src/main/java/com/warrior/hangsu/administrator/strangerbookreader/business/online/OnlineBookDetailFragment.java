@@ -125,7 +125,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
                     "    语言:  " + mainBean.getLanguage() + "    章节数:  " + mainBean.getChapters() +
                     "    单词量:  " + mainBean.getWords());
         }
-        if (TextUtils.isEmpty(mainBean.getAuthor())) {
+        if (TextUtils.isEmpty(mainBean.getIntroduction())) {
             bookIntroductionTv.setVisibility(View.GONE);
         } else {
             bookIntroductionTv.setVisibility(View.VISIBLE);

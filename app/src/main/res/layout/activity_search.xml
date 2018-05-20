@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:background="@color/white"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -49,6 +50,7 @@
 
     <RelativeLayout
         android:id="@+id/search_type_rl"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/white"

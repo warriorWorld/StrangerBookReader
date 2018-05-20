@@ -73,22 +73,43 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
         if (!TextUtils.isEmpty(item.getBpPath())) {
             ImageLoader.getInstance().displayImage(item.getBpPath(), ((NormalViewHolder) viewHolder).bookIv, Globle.normalImageOptions);
         }
+
         ((NormalViewHolder) viewHolder).bookTitleTv.setText
                 (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getName(), keyWord, 0,
                         context.getResources().getColor(R.color.english_book_reader), 0));
-        ((NormalViewHolder) viewHolder).bookAuthorTv.setText("作者:  " + item.getAuthor());
-        ((NormalViewHolder) viewHolder).bookOtherInfoTv.setText("等级:  " + item.getRate() +
-                "    语言:  " + item.getLanguage() + "    章节数:  " + item.getChapters() +
-                "    单词量:  " + item.getWords());
-        ((NormalViewHolder) viewHolder).bookIntroductionTv.setText
-                (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getIntroduction(), keyWord, 0,
-                context.getResources().getColor(R.color.english_book_reader), 0));
+        if (TextUtils.isEmpty(item.getAuthor())) {
+            ((NormalViewHolder) viewHolder).bookAuthorTv.setVisibility(View.GONE);
+        } else {
+            ((NormalViewHolder) viewHolder).bookAuthorTv.setVisibility(View.VISIBLE);
+            ((NormalViewHolder) viewHolder).bookAuthorTv.setText("作者:  " + item.getAuthor());
+        }
+        if (TextUtils.isEmpty(item.getRate()) || TextUtils.isEmpty(item.getLanguage())) {
+            ((NormalViewHolder) viewHolder).bookOtherInfoTv.setVisibility(View.GONE);
+        } else {
+            ((NormalViewHolder) viewHolder).bookOtherInfoTv.setVisibility(View.VISIBLE);
+            ((NormalViewHolder) viewHolder).bookOtherInfoTv.setText("等级:  " + item.getRate() +
+                    "    语言:  " + item.getLanguage() + "    章节数:  " + item.getChapters() +
+                    "    单词量:  " + item.getWords());
+        }
+        if (TextUtils.isEmpty(item.getIntroduction())) {
+            ((NormalViewHolder) viewHolder).bookIntroductionTv.setVisibility(View.GONE);
+        } else {
+            ((NormalViewHolder) viewHolder).bookIntroductionTv.setVisibility(View.VISIBLE);
+            ((NormalViewHolder) viewHolder).bookIntroductionTv.setText
+                    (UltimateTextSizeUtil.getEmphasizedSpannableString(item.getIntroduction(), keyWord, 0,
+                            context.getResources().getColor(R.color.english_book_reader), 0));
+        }
         String updateString = item.getUpdateDate();
         if (TextUtils.isEmpty(item.getUpdateDate())) {
             updateString = "无";
         }
-        ((NormalViewHolder) viewHolder).bookDateTv.setText("公布日期:  " + item.getPublishDate() +
-                "    最后更新:  " + updateString);
+        if (TextUtils.isEmpty(item.getPublishDate())) {
+            ((NormalViewHolder) viewHolder).bookDateTv.setVisibility(View.GONE);
+        } else {
+            ((NormalViewHolder) viewHolder).bookDateTv.setVisibility(View.VISIBLE);
+            ((NormalViewHolder) viewHolder).bookDateTv.setText("公布日期:  " + item.getPublishDate() +
+                    "    最后更新:  " + updateString);
+        }
 
         ((NormalViewHolder) viewHolder).itemBookRl.setOnClickListener(new View.OnClickListener() {
             @Override
