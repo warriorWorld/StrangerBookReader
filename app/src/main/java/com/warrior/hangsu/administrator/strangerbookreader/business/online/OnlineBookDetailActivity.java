@@ -29,8 +29,7 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
     private OnlineBookDetailFragment onlineBookDetailFragment;
     private String spider;
     private BookBean bookBean;
-    private String[] optionsList = {"下载全部", "选择起始点下载", "加入收藏", "查看该作者其他作品"};
-    private boolean isCollected = false;
+    private String[] optionsList = {"下载全部", "选择起始点下载"};
 
     @Override
     protected void createInit() {
@@ -84,25 +83,10 @@ public class OnlineBookDetailActivity extends FragmentContainerActivity implemen
                         onlineBookDetailFragment.setFirstChoose(true);
                         ToastUtils.showSingleToast("请先点击起始章然后点击结束章!");
                         break;
-                    case 2:
-                        break;
-                    case 3:
-                        Intent intent = new Intent(OnlineBookDetailActivity.this, SearchActivity.class);
-                        intent.putExtra("selectedWebSite", spider);
-                        intent.putExtra("searchType", "author");
-                        intent.putExtra("keyWord", onlineBookDetailFragment.getMainBean().getAuthor());
-                        intent.putExtra("immediateSearch", true);
-                        startActivity(intent);
-                        break;
                 }
             }
         });
         listDialog.show();
-        if (isCollected) {
-            optionsList[2] = "取消收藏";
-        } else {
-            optionsList[2] = "加入收藏";
-        }
         listDialog.setOptionsList(optionsList);
     }
 

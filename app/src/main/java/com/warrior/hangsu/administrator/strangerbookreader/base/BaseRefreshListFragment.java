@@ -21,6 +21,7 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
     protected RecyclerView refreshRcv;
     protected SwipeToLoadLayout swipeToLoadLayout;
     protected int page = 1;
+    private boolean isAutoBottomLoadMore = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +36,10 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
         initUI(v);
         doGetData();
         return v;
+    }
+
+    public void setAutoBottomLoadMore(boolean autoBottomLoadMore) {
+        isAutoBottomLoadMore = autoBottomLoadMore;
     }
 
     protected abstract int getReFreshFragmentLayoutId();
@@ -68,7 +73,9 @@ public abstract class BaseRefreshListFragment extends BaseFragment implements Vi
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (isSlideToBottom(recyclerView)) {
-                    onLoadMore();
+                    if (isAutoBottomLoadMore) {
+                        onLoadMore();
+                    }
                 }
             }
         });

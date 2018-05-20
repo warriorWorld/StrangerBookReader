@@ -5,13 +5,22 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVCloudQueryResult;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.ChapterListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.ChapterListBean;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
@@ -20,7 +29,9 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnDownloadCh
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.spider.SpiderBase;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
@@ -32,6 +43,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 个人信息页
@@ -51,6 +64,9 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
     private int downloadStartPoint = 0;
+    private ImageView collect_iv;
+    private boolean isCollected = false;
+    private String collectedId = "";
 
     @Override
     protected int getReFreshFragmentLayoutId() {
@@ -60,6 +76,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
     @Override
     protected void onCreateInit() {
         initSpider(spiderName);
+        setAutoBottomLoadMore(false);
     }
 
     @Override
@@ -70,7 +87,9 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
         bookOtherInfoTv = (TextView) v.findViewById(R.id.book_other_info_tv);
         bookIntroductionTv = (TextView) v.findViewById(R.id.book_introduction_tv);
         bookDateTv = (TextView) v.findViewById(R.id.book_date_tv);
+        collect_iv = (ImageView) v.findViewById(R.id.collect_iv);
 
+        collect_iv.setOnClickListener(this);
         bookIntroductionTv.setOnClickListener(this);
     }
 
@@ -92,18 +111,38 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
 
     private void refreshUI() {
         bookTitleTv.setText(mainBean.getName());
-        bookAuthorTv.setText(mainBean.getAuthor());
-        bookOtherInfoTv.setText("等级:  " + mainBean.getRate() +
-                "    语言:  " + mainBean.getLanguage() + "    章节数:  " + mainBean.getChapters() +
-                "    单词量:  " + mainBean.getWords());
-        bookIntroductionTv.setText(mainBean.getIntroduction());
+        if (TextUtils.isEmpty(mainBean.getAuthor())) {
+            bookAuthorTv.setVisibility(View.GONE);
+        } else {
+            bookAuthorTv.setVisibility(View.VISIBLE);
+            bookAuthorTv.setText(mainBean.getAuthor());
+        }
+        if (TextUtils.isEmpty(mainBean.getRate()) || TextUtils.isEmpty(mainBean.getLanguage())) {
+            bookOtherInfoTv.setVisibility(View.GONE);
+        } else {
+            bookOtherInfoTv.setVisibility(View.VISIBLE);
+            bookOtherInfoTv.setText("等级:  " + mainBean.getRate() +
+                    "    语言:  " + mainBean.getLanguage() + "    章节数:  " + mainBean.getChapters() +
+                    "    单词量:  " + mainBean.getWords());
+        }
+        if (TextUtils.isEmpty(mainBean.getAuthor())) {
+            bookIntroductionTv.setVisibility(View.GONE);
+        } else {
+            bookIntroductionTv.setVisibility(View.VISIBLE);
+            bookIntroductionTv.setText(mainBean.getIntroduction());
+        }
 
         String updateString = mainBean.getUpdateDate();
         if (TextUtils.isEmpty(mainBean.getUpdateDate())) {
             updateString = "无";
         }
-        bookDateTv.setText("公布日期:  " + mainBean.getPublishDate() +
-                "    最后更新:  " + updateString);
+        if (TextUtils.isEmpty(mainBean.getPublishDate())) {
+            bookDateTv.setVisibility(View.GONE);
+        } else {
+            bookDateTv.setVisibility(View.VISIBLE);
+            bookDateTv.setText("公布日期:  " + mainBean.getPublishDate() +
+                    "    最后更新:  " + updateString);
+        }
     }
 
     @Override
@@ -120,6 +159,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
                         refreshUI();
                         chapterList = result.getChapterList();
                         initRec();
+                        doGetIsCollected();
                     }
                 });
             }
@@ -132,10 +172,86 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
                         SingleLoadBarUtil.getInstance().dismissLoadBar();
                         refreshUI();
                         initRec();
+                        doGetIsCollected();
                     }
                 });
             }
         });
+    }
+
+    private void doGetIsCollected() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+        query1.whereEqualTo("bookUrl", mainBean.getPath());
+
+        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                    if (null != list && list.size() > 0) {
+                        collectedId = list.get(0).getObjectId();
+                        isCollected = true;
+                    } else {
+                        collectedId = "";
+                        isCollected = false;
+                    }
+                    toggleCollect();
+                }
+            }
+        });
+    }
+
+    private void doCollect() {
+        String userName = LoginBean.getInstance().getUserName(getActivity());
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+        String mangaName = mainBean.getName();
+
+        AVObject object = new AVObject("Collected");
+        object.put("owner", userName);
+        object.put("bookUrl", mainBean.getPath());
+        object.put("bookName", mangaName);
+        object.put("spider", spider);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                    ToastUtils.showSingleToast("收藏成功");
+                    doGetIsCollected();
+                }
+            }
+        });
+    }
+
+    private void deleteCollected() {
+        if (TextUtils.isEmpty(collectedId)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+        // 执行 CQL 语句实现删除一个 Todo 对象
+        AVQuery.doCloudQueryInBackground(
+                "delete from Collected where objectId='" + collectedId + "'"
+                , new CloudQueryCallback<AVCloudQueryResult>() {
+                    @Override
+                    public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                        if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                            ToastUtils.showSingleToast("取消收藏");
+                            isCollected = false;
+                            toggleCollect();
+                        }
+                    }
+                });
     }
 
     private void handleMainBean(BookBean item) {
@@ -339,6 +455,14 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
         }
     }
 
+    private void toggleCollect() {
+        if (isCollected) {
+            collect_iv.setImageResource(R.drawable.collected_icon);
+        } else {
+            collect_iv.setImageResource(R.drawable.collect_icon);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -360,6 +484,13 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.collect_iv:
+                if (isCollected) {
+                    deleteCollected();
+                } else {
+                    doCollect();
+                }
+                break;
             case R.id.book_introduction_tv:
                 text2Speech(mainBean.getIntroduction());
                 break;
