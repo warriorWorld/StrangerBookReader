@@ -89,7 +89,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     private BooksTableFragment booksTableFragment;
     private ClassifyFragment classifyFragment;
     //    private RecommendFragment recommendFragment;
-    private String[] titleList = {"分类", "书架"};
+    private String[] titleList = {"书架", "分类"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,9 +151,9 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     protected Fragment getFragmentByPosition(int position) {
         switch (position) {
             case 0:
-                return classifyFragment;
-            case 1:
                 return booksTableFragment;
+            case 1:
+                return classifyFragment;
             default:
                 return null;
         }

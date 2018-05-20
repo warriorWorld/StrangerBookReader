@@ -67,7 +67,7 @@ public class ClassifyFragment extends BaseFragment implements View.OnClickListen
             public void run() {
                 fictionPressTagList = new ArrayList<>();
                 ClassifyListBean item = new ClassifyListBean();
-                item.setTag("战斗");
+                item.setTag("热血");
                 item.setUrl("https://www.fictionpress.com/fiction/Action/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item);
                 ClassifyListBean item1 = new ClassifyListBean();
@@ -107,7 +107,7 @@ public class ClassifyFragment extends BaseFragment implements View.OnClickListen
                 item8.setUrl("https://www.fictionpress.com/fiction/Fable/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item8);
                 ClassifyListBean item9 = new ClassifyListBean();
-                item9.setTag("日本漫画");
+                item9.setTag("日式");
                 item9.setUrl("https://www.fictionpress.com/fiction/Manga/" + "?&srt=1&r=103&p=");
                 fictionPressTagList.add(item9);
                 ClassifyListBean item10 = new ClassifyListBean();
@@ -157,7 +157,7 @@ public class ClassifyFragment extends BaseFragment implements View.OnClickListen
                 item21.setUrl("https://www.fictionpress.com/poetry/Family/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item21);
                 ClassifyListBean item22 = new ClassifyListBean();
-                item22.setTag("幽默");
+                item22.setTag("笑话");
                 item22.setUrl("https://www.fictionpress.com/poetry/Humor/" + "?&srt=1&r=103&p=");
                 fictionPressTagList1.add(item22);
                 ClassifyListBean item23 = new ClassifyListBean();
