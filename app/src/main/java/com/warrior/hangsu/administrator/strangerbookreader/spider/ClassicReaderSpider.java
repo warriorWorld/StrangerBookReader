@@ -74,19 +74,17 @@ public class ClassicReaderSpider extends SpiderBase {
                         BookBean item;
                         item = new BookBean();
 
-                        Element element = doc.getElementById("chap_select");
-                        Elements elements1 = element.children();
+                        Element element = doc.getElementsByClass("book-header").first();
+                        Element element1 = doc.getElementsByClass("by-line").first();
+                        item.setName(element.text());
+                        item.setAuthor(element1.text());
+
+                        Elements elements1 = doc.getElementsByClass("chapter-title");
                         ArrayList<ChapterListBean> chapterList = new ArrayList<>();
                         for (int i = 0; i < elements1.size(); i++) {
                             ChapterListBean chapterListBean = new ChapterListBean();
                             chapterListBean.setTitle(elements1.get(i).text());
-                            String[] urls = url.split("/");
-                            urls[urls.length - 2] = (i + 1) + "";
-                            String finalUrl = "";
-                            for (int j = 0; j < urls.length; j++) {
-                                finalUrl += urls[j] + "/";
-                            }
-                            chapterListBean.setUrl(finalUrl);
+                            chapterListBean.setUrl(getWebUrl() + elements1.get(i).attr("href"));
                             chapterList.add(chapterListBean);
                         }
                         item.setChapterList(chapterList);
