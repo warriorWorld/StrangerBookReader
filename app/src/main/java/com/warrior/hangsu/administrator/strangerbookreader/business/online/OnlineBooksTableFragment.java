@@ -160,6 +160,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
             public void onResult(String text) {
                 try {
                     page = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount()+1;
+                    booksList.clear();
                     doGetData();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
