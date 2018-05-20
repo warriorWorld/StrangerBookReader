@@ -220,7 +220,7 @@ public class OnlineBookDetailFragment extends BaseRefreshListFragment implements
         object.put("owner", userName);
         object.put("bookUrl", mainBean.getPath());
         object.put("bookName", mangaName);
-        object.put("spider", spider);
+        object.put("spider", spiderName);
         object.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {

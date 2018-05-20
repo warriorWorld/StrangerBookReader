@@ -22,6 +22,7 @@ public class BookBean extends BaseBean{
     private String updateDate;
     private String publishDate;
     private ArrayList<ChapterListBean> chapterList;
+    private String spider;
 
     public String getAuthor() {
         return author;
@@ -138,5 +139,13 @@ public class BookBean extends BaseBean{
 
     public void setChapterList(ArrayList<ChapterListBean> chapterList) {
         this.chapterList = chapterList;
+    }
+
+    public String getSpider() {
+        return spider;
+    }
+
+    public void setSpider(String spider) {
+        this.spider = spider;
     }
 }
