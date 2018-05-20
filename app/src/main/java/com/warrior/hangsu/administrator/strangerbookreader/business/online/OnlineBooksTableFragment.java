@@ -124,6 +124,10 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
                 adapter = new OnlineBookRecyclerListAdapter(getActivity());
                 adapter.setList(booksList);
                 adapter.setNoMoreData(false);
+                if (spiderName.equals("ClassicReader")) {
+                    adapter.setNoMoreData(true);
+                    setAutoBottomLoadMore(false);
+                }
                 if (!TextUtils.isEmpty(keyWord)) {
                     adapter.setKeyWord(keyWord);
                 }
@@ -159,7 +163,7 @@ public class OnlineBooksTableFragment extends BaseRefreshListFragment {
             @Override
             public void onResult(String text) {
                 try {
-                    page = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount()+1;
+                    page = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount() + 1;
                     booksList.clear();
                     doGetData();
                 } catch (NumberFormatException e) {

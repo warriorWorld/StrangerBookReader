@@ -25,7 +25,7 @@ public class ClassicReaderSpider extends SpiderBase {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect(url )
+                    doc = Jsoup.connect(url)
                             .timeout(10000).get();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -33,49 +33,16 @@ public class ClassicReaderSpider extends SpiderBase {
                 }
                 if (null != doc) {
                     try {
-                        Elements elements1 = doc.getElementsByClass("z-list zhover zpointer ");
-                        if (elements1==null||elements1.size()==0){
-                            elements1=doc.getElementsByClass("z-list");
-                        }
-                        Elements mangaListElements = doc.select("a.stitle");
+//                        Elements elements1 = doc.getElementsByClass("titlelist");
+                        Elements elements2 = doc.getElementsByClass("book-title");
                         MainBookBean mainBookBean = new MainBookBean();
                         BookBean item;
                         ArrayList<BookBean> bookList = new ArrayList<>();
-                        for (int i = 0; i < mangaListElements.size(); i++) {
+                        for (int i = 0; i < elements2.size(); i++) {
                             item = new BookBean();
-                            item.setName(mangaListElements.get(i).text());
-                            item.setPath(getWebUrl() + mangaListElements.get(i).attr("href"));
-                            item.setBpPath(mangaListElements.get(i).getElementsByClass("lazy cimage").attr("src"));
-                            if (elements1.get(i).select("a").size() == 4) {
-                                item.setAuthor(elements1.get(i).select("a").get(2).text());
-                            } else if (elements1.get(i).select("a").size() == 2) {
-                                item.setAuthor(elements1.get(i).select("a").get(1).text());
-                            } else if (elements1.get(i).select("a").size() == 3) {
-                                item.setAuthor(elements1.get(i).select("a").get(2).text());
-                            }
-                            String[] introductions = elements1.get(i).getElementsByClass("z-indent z-padtop").text().split("Rated:");
-
-                            item.setIntroduction(introductions[0]);
-                            String[] others = introductions[1].split("-");
-                            item.setRate(others[0]);
-                            item.setLanguage(others[1]);
-                            for (int j = 2; j < others.length; j++) {
-                                if (others[j].contains("Chapters")) {
-                                    item.setChapters(others[j].replace("Chapters:", "")
-                                            .replace(" ", ""));
-                                } else if (others[j].contains("Words")) {
-                                    item.setWords(others[j].replace("Words:", "")
-                                            .replace(" ", ""));
-                                } else if (others[j].contains("Updated")) {
-                                    item.setUpdateDate(others[j].replace("Updated:", "")
-                                            .replace(" ", ""));
-                                } else if (others[j].contains("Complete")) {
-                                    item.setUpdateDate("已完结");
-                                } else if (others[j].contains("Published")) {
-                                    item.setPublishDate(others[j].replace("Published:", "")
-                                            .replace(" ", ""));
-                                }
-                            }
+                            item.setName(elements2.get(i).text());
+                            item.setPath(getWebUrl() + elements2.get(i).attr("href"));
+//                            item.setAuthor(elements2.get(i).text());
                             bookList.add(item);
                         }
                         mainBookBean.setBook_list(bookList);
@@ -151,6 +118,6 @@ public class ClassicReaderSpider extends SpiderBase {
 
     @Override
     public String getWebUrl() {
-        return "https://www.fictionpress.com";
+        return "http://www.classicreader.com";
     }
 }

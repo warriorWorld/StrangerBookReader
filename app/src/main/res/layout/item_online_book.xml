@@ -37,6 +37,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="title"
+                android:layout_marginBottom="5dp"
                 android:textColor="@color/main_text_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -44,8 +45,8 @@
             <TextView
                 android:id="@+id/book_author_tv"
                 android:layout_width="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:text="作者:  xxx"
                 android:textColor="@color/main_text_color_gray"
                 android:textSize="11sp" />
@@ -54,7 +55,7 @@
                 android:id="@+id/book_other_info_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginBottom="5dp"
                 android:text="xxxxxxxxx"
                 android:textColor="@color/main_text_color_gray"
                 android:textSize="11sp" />
@@ -63,8 +64,8 @@
                 android:id="@+id/book_introduction_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:text="xxxxxxxxx"
+                android:layout_marginBottom="10dp"
                 android:textColor="@color/main_text_color"
                 android:textSize="13sp" />
 
@@ -74,7 +75,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="12dp"
                 android:text="2018年5月12日--2018年5月12日"
                 android:textColor="@color/main_text_color_gray"
                 android:textSize="11sp" />

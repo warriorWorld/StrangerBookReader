@@ -47,7 +47,11 @@ public class OnlineBookRecyclerListAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getListEndText() {
-        return "";
+        if (noMoreData) {
+            return "已经到头了~";
+        } else {
+            return "";
+        }
     }
 
     @Override
