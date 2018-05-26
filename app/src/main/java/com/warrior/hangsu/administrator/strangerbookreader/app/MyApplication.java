@@ -43,7 +43,7 @@ public class MyApplication extends Application {
         dealFileUriExposedException();
         initLeanCloud();
         initUserInfo();
-        initUmeng();
+//        initUmeng();
     }
 
     private void initUmeng() {
