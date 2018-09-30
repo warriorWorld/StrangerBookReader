@@ -1,6 +1,7 @@
 package com.warrior.hangsu.administrator.strangerbookreader.base;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
@@ -9,6 +10,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -36,8 +38,11 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
         if (tts != null && !tts.isSpeaking()) {
             tts.setPitch(SharedPreferencesUtils.getFloatSharedPreferencesData(this, ShareKeys.TTS_PITCH_KEY));// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
             tts.setSpeechRate(SharedPreferencesUtils.getFloatSharedPreferencesData(this, ShareKeys.TTS_PITCH_KEY));
+            HashMap<String, String> myHashAlarm = new HashMap();
+            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+                    String.valueOf(AudioManager.STREAM_ALARM));
             tts.speak(text,
-                    TextToSpeech.QUEUE_FLUSH, null);
+                    TextToSpeech.QUEUE_FLUSH, myHashAlarm);
         }
     }
 
@@ -58,7 +63,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.ENGLISH);
+            int result = tts.setLanguage(Locale.US);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 ToastUtils.showSingleToast("数据丢失或不支持");
