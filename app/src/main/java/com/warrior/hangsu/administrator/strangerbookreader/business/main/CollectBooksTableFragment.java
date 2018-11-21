@@ -49,6 +49,12 @@ public class CollectBooksTableFragment extends BaseRefreshListFragment {
     }
 
     @Override
+    protected void initUI(View v) {
+        super.initUI(v);
+        swipeToLoadLayout.setLoadMoreEnabled(false);
+    }
+
+    @Override
     protected void doGetData() {
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             initRec();

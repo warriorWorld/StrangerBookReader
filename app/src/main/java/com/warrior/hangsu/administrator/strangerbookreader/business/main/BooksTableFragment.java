@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.view.View;
 
 
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
@@ -183,6 +184,12 @@ public class BooksTableFragment extends BaseRefreshListFragment {
         });
         listDialog.show();
         listDialog.setOptionsList(DELETE_LIST);
+    }
+
+    @Override
+    protected void initUI(View v) {
+        super.initUI(v);
+        swipeToLoadLayout.setLoadMoreEnabled(false);
     }
 
     @Override
