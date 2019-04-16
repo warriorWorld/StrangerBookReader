@@ -20,4 +20,5 @@ public class ShareKeys {
     public static final String STATISTICS_UPDATE_KEY="statistics_update_key";
     public static final String WORDS_BOOK_PROGRESS_KEY="words_book_progress_key";
     public static final String ONLINE_BOOK_READ_CHAPTER_POSITION="online_book_read_chapter_position";
+    public static final String LAST_PAGE_POSITION = "last_page_position";
 }
