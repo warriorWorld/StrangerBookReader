@@ -9,6 +9,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.VolumeUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -41,6 +42,15 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
             HashMap<String, String> myHashAlarm = new HashMap();
             myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
                     String.valueOf(AudioManager.STREAM_ALARM));
+            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_VOLUME,
+                    VolumeUtil.getMusicVolumeRate(this) + "");
+
+            if (VolumeUtil.getHeadPhoneStatus(this)) {
+                AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+//            mAudioManager.setStreamMute(AudioManager.STREAM_ALARM, true);
+                mAudioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_MUTE, 0);
+                mAudioManager.startBluetoothSco();
+            }
             tts.speak(text,
                     TextToSpeech.QUEUE_FLUSH, myHashAlarm);
         }
