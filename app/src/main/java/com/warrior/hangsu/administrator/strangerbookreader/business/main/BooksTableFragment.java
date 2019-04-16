@@ -11,6 +11,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyc
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.pdf.PdfActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
@@ -76,7 +77,10 @@ public class BooksTableFragment extends BaseRefreshListFragment {
                         Intent intent = new Intent(getActivity(), NewReadActivity.class);
                         if (booksList.get(position).getFormat().equals("EPUB")) {
                             intent = new Intent(getActivity(), EpubActivity.class);
+                        }else if (booksList.get(position).getFormat().equals("PDF")) {
+                            intent = new Intent(getActivity(), PdfActivity.class);
                         }
+                        intent.putExtra("bookName",booksList.get(position).getName());
                         intent.putExtra("bookPath", booksList.get(position).getPath());
                         intent.putExtra("bookFormat", booksList.get(position).getFormat());
                         startActivity(intent);
@@ -115,7 +119,7 @@ public class BooksTableFragment extends BaseRefreshListFragment {
      * 调用文件选择软件来选择文件
      **/
     public void showFileChooser() {
-        ToastUtils.showSingleToast("目前仅支持txt和epub格式");
+        ToastUtils.showSingleToast("目前支持txt,epub,pdf格式");
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        intent.setType("text/plain");//设置类型和后缀 txt
         intent.setType("*/*");//设置类型和后缀  全部文件

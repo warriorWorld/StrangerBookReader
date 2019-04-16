@@ -71,6 +71,9 @@
             android:name=".business.epub.EpubActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".business.pdf.PdfActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
             android:name=".business.test.TestActivity"
             android:screenOrientation="portrait"></activity>
         <activity
