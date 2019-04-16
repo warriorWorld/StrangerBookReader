@@ -67,6 +67,7 @@ public class PdfActivity extends TTSActivity {
                 .pageFling(false) // make a fling change only a single page like ViewPager
                 .nightMode(false) // toggle night mode
                 .load();
+//        mPDFView.setPositionOffset(SharedPreferencesUtils.getIntSharedPreferencesData(this, bookName+ShareKeys.LAST_PAGE_OFFSET));
     }
 
     @Override
@@ -78,6 +79,7 @@ public class PdfActivity extends TTSActivity {
     private void saveLastPosition() {
         try {
             SharedPreferencesUtils.setSharedPreferencesData(this, bookName + ShareKeys.LAST_PAGE_POSITION, mPDFView.getCurrentPage());
+//            SharedPreferencesUtils.setSharedPreferencesData(this, bookName + ShareKeys.LAST_PAGE_OFFSET, mPDFView.getPositionOffset());
         } catch (Exception e) {
             e.printStackTrace();
         }
