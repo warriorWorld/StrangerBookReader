@@ -19,6 +19,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -75,7 +76,14 @@ public class ScreenUtils {
      * @return
      */
     public static int getScreenHeight() {
-        return AppUtils.getAppContext().getResources().getDisplayMetrics().heightPixels;
+        WindowManager wm = (WindowManager) AppUtils.getAppContext().getSystemService(Context.WINDOW_SERVICE);
+        if (wm != null) {
+            Point point = new Point();
+            wm.getDefaultDisplay().getRealSize(point);
+            return point.y;
+        }else {
+            return 0;
+        }
     }
 
     /**

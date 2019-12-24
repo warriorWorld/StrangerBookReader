@@ -8,8 +8,8 @@ android {
         applicationId "com.warrior.hangsu.administrator.strangerbookreader"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 11
-        versionName "2.1.0"
+        versionCode 12
+        versionName "2.1.1"
         multiDexEnabled true
     }
     buildTypes {
@@ -48,7 +48,7 @@ dependencies {
     // LeanCloud 基础包
     implementation 'cn.leancloud.android:avoscloud-sdk:v4.4.3'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'com.android.support:recyclerview-v7:25.0.+'
+    implementation 'com.android.support:recyclerview-v7:25.3.1'
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation files('libs/epublib-core-latest.jar')
     implementation files('libs/slf4j-android-1.6.1-RC1.jar')
