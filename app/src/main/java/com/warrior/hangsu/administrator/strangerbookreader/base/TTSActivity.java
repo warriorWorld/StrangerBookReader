@@ -73,7 +73,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
+            int result = tts.setLanguage(Locale.UK);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 ToastUtils.showSingleToast("数据丢失或不支持");

@@ -10,12 +10,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
@@ -25,45 +22,32 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
-import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyclerListAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseMultiTabActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.base.TTSFragmentActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileChooseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.CalendarStatisticsFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.test.TestActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnRecycleItemLongClickListener;
-import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSevenFourteenListDialogListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
-import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.QrDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.drawer.SevenFourteenNavigationView;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,12 +74,14 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     private ClassifyFragment classifyFragment;
     private CollectBooksTableFragment collectBooksTableFragment;
     //    private RecommendFragment recommendFragment;
-    private String[] titleList = {"书城", "书架","收藏"};
+    private String[] titleList = {"书城", "书架", "收藏"};
+    private DbAdapter db;//数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
+        db = new DbAdapter(this);
         doGetVersionInfo();
         handleIntent();
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
@@ -107,7 +93,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     protected void initFragment() {
         booksTableFragment = new BooksTableFragment();
         classifyFragment = new ClassifyFragment();
-        collectBooksTableFragment=new CollectBooksTableFragment();
+        collectBooksTableFragment = new CollectBooksTableFragment();
     }
 
     @Override
@@ -273,7 +259,9 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
 
             @Override
             public void onRightClick() {
-                booksTableFragment.showFileChooser();
+//                booksTableFragment.showFileChooser();
+                Intent intent = new Intent(MainActivity.this, FileChooseActivity.class);
+                startActivityForResult(intent, 2);
             }
 
             @Override
@@ -286,32 +274,73 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
+            switch (requestCode) {
+                case 2:
+                    final ArrayList<FileBean> resultList = data.getParcelableArrayListExtra("selectedList");
+                    if (null == resultList || resultList.size() == 0) {
+                        return;
+                    }
+                    SingleLoadBarUtil.getInstance().showLoadBar(this);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (FileBean item : resultList) {
+                                String format = "";
+                                String path = item.path;
+                                if (path.endsWith(".txt") || path.endsWith(".TXT")) {
+                                    format = "TXT";
+                                } else if (path.endsWith(".pdf") || path.endsWith(".PDF")) {
+                                    format = "PDF";
+                                } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
+                                    format = "EPUB";
+                                }
+                                db.insertBooksTableTb(path, item.name, 0, format, null);
+                            }
+                            SingleLoadBarUtil.getInstance().dismissLoadBar();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    booksTableFragment.doGetData();
+                                }
+                            });
+                        }
+                    }).start();
+                    break;
+                case 1:
 //            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
 //            Logger.d("地址:" + uri.toString());
 //            String path = data.getDataString();
 //            //得解码下 不然中文乱码
 //            path = Uri.decode(path);
 
-            // Get the Uri of the selected file
-            Uri uri = data.getData();
-            // Get the path
-            String path = null;
-            try {
-                path = FileUtils.getPath(this, uri);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    // Get the path
+                    String path = null;
+                    try {
+                        path = FileUtils.getPath(this, uri);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    ToastUtils.showSingleToast(path);
+                    String format = "";
+                    if (path.endsWith(".txt") || path.endsWith(".TXT")) {
+                        format = "TXT";
+                    } else if (path.endsWith(".pdf") || path.endsWith(".PDF")) {
+                        format = "PDF";
+                    } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
+                        format = "EPUB";
+                    }
+                    booksTableFragment.addBooks(path, format, null);
+                    break;
             }
-            ToastUtils.showSingleToast(path);
-            String format = "";
-            if (path.endsWith(".txt") || path.endsWith(".TXT")) {
-                format = "TXT";
-            } else if (path.endsWith(".pdf") || path.endsWith(".PDF")) {
-                format = "PDF";
-            } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
-                format = "EPUB";
-            }
-            booksTableFragment.addBooks(path, format, null);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDb();
     }
 
     private void doGetVersionInfo() {
@@ -512,7 +541,8 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);

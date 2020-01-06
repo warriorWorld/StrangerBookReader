@@ -19,6 +19,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+
+import com.warrior.hangsu.administrator.strangerbookreader.R;
+import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -48,6 +52,22 @@ import java.util.zip.ZipFile;
  * @date 16/4/9.
  */
 public class FileUtils {
+    /**
+     * 文档类型
+     */
+    public static final int TYPE_DOC = 0;
+    /**
+     * apk类型
+     */
+    public static final int TYPE_APK = 1;
+    /**
+     * 压缩包类型
+     */
+    public static final int TYPE_ZIP = 2;
+    /**
+     * 书类型
+     */
+    public static final int TYPE_BOOK = 3;
 
     public static File getChapterFile(String bookPath) {
         File file = new File(bookPath);
@@ -688,5 +708,83 @@ public class FileUtils {
             return uri.getPath();
         }
         return null;
+    }
+
+    /**
+     * 通过文件类型得到相应文件的集合
+     **/
+    public static ArrayList<FileBean> getFilesByType(Context context, int fileType) {
+        ArrayList<FileBean> files = new ArrayList<FileBean>();
+        // 扫描files文件库
+        Cursor c = null;
+        try {
+            c = context.getContentResolver().query(MediaStore.Files.getContentUri("external"), new String[]{"_id", "_data", "_size", "_display_name"}, null, null, null);
+            int dataindex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+            int sizeindex = c.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
+            int nameindex = c.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
+
+            while (c.moveToNext()) {
+                String path = c.getString(dataindex);
+                String name = c.getString(nameindex);
+                if (FileUtils.getFileType(path) == fileType) {
+                    if (!FileUtils.isExists(path)) {
+                        continue;
+                    }
+                    long size = c.getLong(sizeindex);
+                    FileBean fileBean = new FileBean(path, StringUtil.cutString(path, '/', '.'), FileUtils.getFileIconByPath(path));
+                    files.add(fileBean);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return files;
+    }
+
+    /**
+     * 通过文件名获取文件图标
+     */
+    public static int getFileIconByPath(String path) {
+        path = path.toLowerCase();
+        int iconId = R.drawable.ic_unknown;
+        if (path.endsWith(".txt")) {
+            iconId = R.drawable.ic_txt;
+        } else if (path.endsWith(".pdf")) {
+            iconId = R.drawable.ic_pdf;
+        } else if (path.endsWith(".epub")) {
+            iconId = R.drawable.ic_epub;
+        }
+        return iconId;
+    }
+
+    public static int getFileType(String path) {
+        path = path.toLowerCase();
+        if (path.endsWith(".doc") || path.endsWith(".docx") || path.endsWith(".xls") || path.endsWith(".xlsx")
+                || path.endsWith(".ppt") || path.endsWith(".pptx")) {
+            return TYPE_DOC;
+        } else if (path.endsWith(".apk")) {
+            return TYPE_APK;
+        } else if (path.endsWith(".zip") || path.endsWith(".rar") || path.endsWith(".tar") || path.endsWith(".gz")) {
+            return TYPE_ZIP;
+        } else if (path.endsWith(".pdf") || path.endsWith(".txt") || path.endsWith(".epub")) {
+            return TYPE_BOOK;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param path 文件的路径
+     * @return
+     */
+    public static boolean isExists(String path) {
+        File file = new File(path);
+        return file.exists();
     }
 }
