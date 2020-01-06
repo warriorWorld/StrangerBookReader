@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
@@ -25,6 +26,7 @@ public class FileChooseActivity extends BaseActivity implements View.OnClickList
     private ArrayList<FileBean> fileList = new ArrayList<>();
     private Button doneBtn;
     private RecyclerView fileRcv;
+    private TextView sizeTv;
 
     @Override
     public void onClick(View v) {
@@ -60,6 +62,7 @@ public class FileChooseActivity extends BaseActivity implements View.OnClickList
 
     private void initUI() {
         doneBtn = (Button) findViewById(R.id.ok_btn);
+        sizeTv = (TextView) findViewById(R.id.file_size_tv);
         fileRcv = (RecyclerView) findViewById(R.id.file_rcv);
         fileRcv.setLayoutManager(new LinearLayoutManager(this));
         fileRcv.setFocusableInTouchMode(false);
@@ -99,6 +102,7 @@ public class FileChooseActivity extends BaseActivity implements View.OnClickList
 
     private void doGetData() {
         fileList = FileUtils.getFilesByType(this, FileUtils.TYPE_BOOK);
+        sizeTv.setText(fileList.size() + "");
         initRec();
     }
 
