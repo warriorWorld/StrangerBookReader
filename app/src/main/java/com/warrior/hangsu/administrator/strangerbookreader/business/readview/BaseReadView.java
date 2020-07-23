@@ -153,7 +153,7 @@ public abstract class BaseReadView extends View {
                 vTracker.addMovement(e);
                 //VelocityTracker获得的速度是有正负之分，computerCurrentVelocity（）可以设置单位。1000 表示每秒多少像素（pix/second),1代表每微秒多少像素（pix/millisecond)。
                 vTracker.computeCurrentVelocity(1000);
-                float xVelocity=vTracker.getXVelocity();
+                float xVelocity = vTracker.getXVelocity();
                 if (Globle.isTest) {
                     ToastUtils.showSingleToast("the x velocity is " + vTracker.getXVelocity());
                 }
@@ -161,7 +161,7 @@ public abstract class BaseReadView extends View {
                 int my = (int) e.getY();
 //                cancel = (actiondownX < mScreenWidth / 2 && mx < mTouch.x) || (actiondownX > mScreenWidth / 2 && mx > mTouch.x);
                 cancel = (Math.abs(touch_down) <= CANCEL_THRESHOLD)
-                        &&Math.abs(xVelocity)<=FLIP_VELOCITY_THRESHOD;
+                        && Math.abs(xVelocity) <= FLIP_VELOCITY_THRESHOD;
                 mTouch.x = mx;
                 mTouch.y = my;
 
@@ -182,8 +182,8 @@ public abstract class BaseReadView extends View {
                     } else {
                         return false;
                     }
-                } else if ((touch_down > FLIP_THRESHOLD||xVelocity >FLIP_VELOCITY_THRESHOD)
-                    && !is_threshold) {
+                } else if ((touch_down > FLIP_THRESHOLD || xVelocity > FLIP_VELOCITY_THRESHOD)
+                        && !is_threshold) {
                     is_threshold = true;
                     listener.onFlip();
                     BookStatus status = pagefactory.prePage();
@@ -218,7 +218,9 @@ public abstract class BaseReadView extends View {
 //                        pagefactory.cancelPage();
                         //只有大于阈值才绘制动画 所以这里不需要调用这个了
 //                        restoreAnimation();
-                        onUpFlipListener.onUpFlip();
+                        if (dy - uy > FLIP_THRESHOLD) {
+                            onUpFlipListener.onUpFlip();
+                        }
                     }
                     return true;
                 }
