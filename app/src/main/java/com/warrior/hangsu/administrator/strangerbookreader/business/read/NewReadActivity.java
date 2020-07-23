@@ -12,23 +12,20 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.TTSActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
-import com.warrior.hangsu.administrator.strangerbookreader.bean.YoudaoResponse;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.BaseReadView;
 import com.warrior.hangsu.administrator.strangerbookreader.business.readview.OverlappedWidget;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsBean;
-import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEditResultListener;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnFreeTTSListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadDialogClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnReadStateChangeListener;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnSearchResultListener;
@@ -38,27 +35,30 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipList
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.Logger;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ScreenUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
-import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
-import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ReadDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.SingleLoadBarUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TranslateDialog;
+import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.TranslateResultDialog;
+import com.youdao.sdk.app.LanguageUtils;
+import com.youdao.sdk.ydonlinetranslate.Translator;
+import com.youdao.sdk.ydtranslate.Translate;
+import com.youdao.sdk.ydtranslate.TranslateErrorCode;
+import com.youdao.sdk.ydtranslate.TranslateListener;
+import com.youdao.sdk.ydtranslate.TranslateParameters;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -89,6 +89,11 @@ public class NewReadActivity extends TTSActivity implements
     private Receiver receiver = new Receiver();
     private IntentFilter intentFilter = new IntentFilter();
     private TranslateDialog translateResultDialog;
+    private TranslateParameters tps = new TranslateParameters.Builder()
+            .source("MangaReader")
+            .from(LanguageUtils.getLangByName("中文"))
+            .to(LanguageUtils.getLangByName("英文"))
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +185,6 @@ public class NewReadActivity extends TTSActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
-        text2Speech(word);
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();
@@ -192,40 +196,52 @@ public class NewReadActivity extends TTSActivity implements
                 (this, ShareKeys.CLOSE_TRANSLATE, false)) {
             return;
         }
-        String url = Globle.YOUDAO + word;
-        HashMap<String, String> params = new HashMap<String, String>();
-        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
+        //使用SDK查词
+        Translator.getInstance(tps).lookup(word, "requestId", new TranslateListener() {
 
             @Override
-            public void loadSucceed(YoudaoResponse result) {
-                if (null != result && result.getErrorCode() == 0) {
-                    YoudaoResponse.BasicBean item = result.getBasic();
-                    String t = "";
-                    if (null != item) {
-                        for (int i = 0; i < item.getExplains().size(); i++) {
-                            t = t + item.getExplains().get(i) + ";";
-                        }
-                        showTranslateResultDialog(word, result.getQuery() + " [" + item.getPhonetic() +
-                                "]: " + "\n" + t);
-                    } else {
-                        ToastUtil.tipShort(NewReadActivity.this, "没查到该词" + word);
+            public void onError(TranslateErrorCode code, String s) {
+                Logger.d("error" + s);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast("网络连接失败");
                     }
-                } else {
-                    ToastUtil.tipShort(NewReadActivity.this, "网络连接失败");
-                }
+                });
             }
 
             @Override
-            public void loadFailed(VolleyError error) {
-                ToastUtil.tipShort(NewReadActivity.this, "error" + error);
+            public void onResult(final Translate translate, final String s, String s1) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+                            showTranslateDialog(translate);
+                        } else {
+                            ToastUtils.showToast("没查到该词");
+                        }
+                    }
+                });
             }
-        };
-        VolleyTool.getInstance(this).requestData(Request.Method.GET,
-                NewReadActivity.this, url, params,
-                YoudaoResponse.class, callback);
 
+            @Override
+            public void onResult(List<Translate> list, List<String> list1, List<TranslateErrorCode> list2, String s) {
+                Logger.d(s);
+            }
+        });
     }
 
+    private void showTranslateDialog(Translate translate) {
+        TranslateResultDialog dialog = new TranslateResultDialog(this);
+        dialog.setOnFreeTTSListener(new OnFreeTTSListener() {
+            @Override
+            public void onTTS(String word) {
+                text2Speech(word);
+            }
+        });
+        dialog.show();
+        dialog.setTranslate(translate);
+    }
 
     private void updateStatisctics() {
         //初始记录

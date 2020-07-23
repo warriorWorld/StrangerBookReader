@@ -2,7 +2,6 @@ package com.warrior.hangsu.administrator.strangerbookreader.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.StrictMode;
 
@@ -21,7 +20,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.imageloader.AuthImageDownloader;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.AppUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtil;
-import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.youdao.sdk.app.YouDaoApplication;
 
 /**
  * Created by Administrator on 2016/4/3.
@@ -43,7 +42,12 @@ public class MyApplication extends Application {
         dealFileUriExposedException();
         initLeanCloud();
         initUserInfo();
+        initYouDao();
 //        initUmeng();
+    }
+
+    private void initYouDao() {
+        YouDaoApplication.init(this, "4f3bead77ac0b2b7");
     }
 
     private void initUmeng() {

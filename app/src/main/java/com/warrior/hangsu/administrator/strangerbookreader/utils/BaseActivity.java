@@ -20,8 +20,11 @@ import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public abstract class BaseActivity extends Activity {
     protected TopBar baseTopBar;
+    public CompositeDisposable mObserver = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,6 @@ public abstract class BaseActivity extends Activity {
         // 每次必须取消订阅
         EventBus.getDefault().unregister(this);
         ActivityPoor.finishSingleActivity(this);
+        mObserver.dispose();
     }
-
 }

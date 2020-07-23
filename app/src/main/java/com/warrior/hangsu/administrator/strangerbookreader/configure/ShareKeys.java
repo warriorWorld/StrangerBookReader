@@ -22,4 +22,5 @@ public class ShareKeys {
     public static final String ONLINE_BOOK_READ_CHAPTER_POSITION="online_book_read_chapter_position";
     public static final String LAST_PAGE_POSITION = "last_page_position";
     public static final String LAST_PAGE_OFFSET = "last_page_offset";
+    public static final String OPEN_PREMIUM_KEY = "open_premium_key";
 }

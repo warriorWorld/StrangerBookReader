@@ -81,6 +81,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
     private TextView ttsPitchTv;
     private RelativeLayout clean_cache_rl;
     private TextView cache_size_tv;
+    private CheckBox openPremiumCb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,17 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         closeTTSCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TTS_KEY, false));
+        openPremiumCb = (CheckBox) findViewById(R.id.open_premium_cb);
+        openPremiumCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.OPEN_PREMIUM_KEY, isChecked);
+            }
+        });
+        openPremiumCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
+                        ShareKeys.OPEN_PREMIUM_KEY, false));
         backgroundStyleRl = (RelativeLayout) findViewById(R.id.background_style_rl);
         backgroundStyleTv = (TextView) findViewById(R.id.background_style_tv);
         translateWayRl = (RelativeLayout) findViewById(R.id.translate_way_rl);
@@ -401,7 +413,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
             @Override
             public void onOkClick() {
                 try {
-                    FileUtils.deleteFile(new File(Globle.CACHE_PATH+"/"));
+                    FileUtils.deleteFile(new File(Globle.CACHE_PATH + "/"));
                     ToastUtils.showSingleToast("清理完成");
                     refreshUI();
                 } catch (IOException e) {
