@@ -382,6 +382,7 @@ public class NewReadActivity extends TTSActivity implements
     private void toggleDayNight() {
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(NewReadActivity.this,
                 ShareKeys.ISNIGHT, false)) {
+            SettingManager.getInstance().saveReadTheme(ThemeManager.NIGHT);
             mPageWidget.setTheme(ThemeManager.NIGHT);
             mPageWidget.setTextColor(getResources().getColor(R.color.chapter_content_night),
                     getResources().getColor(R.color.chapter_title_night));
@@ -415,6 +416,10 @@ public class NewReadActivity extends TTSActivity implements
                     toggleDayNight();
                     return;
                 }
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (NewReadActivity.this, ShareKeys.ISNIGHT,
+                                false);
+                toggleDayNight();
                 mPageWidget.setTheme(position);
             }
         });

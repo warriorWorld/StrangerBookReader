@@ -271,8 +271,6 @@ public class OverlappedWidget extends BaseReadView {
                 postInvalidate();
             }
         }
-        if (theme < 5) {
-            SettingManager.getInstance().saveReadTheme(theme);
-        }
+        SettingManager.getInstance().saveReadTheme(theme);
     }
 }
