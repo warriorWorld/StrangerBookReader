@@ -13,17 +13,33 @@ public class FileBean implements Parcelable {
      */
     public int iconId;
     public String name;
+    public long modifiedDate;
 
-    public FileBean(String path, String name, int iconId) {
+    public FileBean(String path, String name, int iconId, long modifiedDate) {
         this.path = path;
         this.name = name;
         this.iconId = iconId;
+        this.modifiedDate = modifiedDate;
     }
 
     protected FileBean(Parcel in) {
         path = in.readString();
         iconId = in.readInt();
         name = in.readString();
+        modifiedDate = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(path);
+        dest.writeInt(iconId);
+        dest.writeString(name);
+        dest.writeLong(modifiedDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FileBean> CREATOR = new Creator<FileBean>() {
@@ -37,16 +53,4 @@ public class FileBean implements Parcelable {
             return new FileBean[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(path);
-        dest.writeInt(iconId);
-        dest.writeString(name);
-    }
 }

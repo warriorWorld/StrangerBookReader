@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
+import com.warrior.hangsu.administrator.strangerbookreader.sort.FileComparatorByTime;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -41,6 +42,7 @@ import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -718,23 +720,32 @@ public class FileUtils {
         // 扫描files文件库
         Cursor c = null;
         try {
-            c = context.getContentResolver().query(MediaStore.Files.getContentUri("external"), new String[]{"_id", "_data", "_size", "_display_name"}, null, null, null);
+            c = context.getContentResolver().query(MediaStore.Files.getContentUri("external"),
+                    new String[]{"_id", MediaStore.Files.FileColumns.DATA,
+                            MediaStore.Files.FileColumns.SIZE,
+                            MediaStore.Files.FileColumns.DATE_MODIFIED,
+                            MediaStore.Files.FileColumns.DISPLAY_NAME}, null, null, null);
             int dataindex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+            int modifiedDateIndex = c.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED);
             int sizeindex = c.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
             int nameindex = c.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
 
             while (c.moveToNext()) {
                 String path = c.getString(dataindex);
                 String name = c.getString(nameindex);
+                long modifiedDate = c.getLong(modifiedDateIndex);
                 if (FileUtils.getFileType(path) == fileType) {
                     if (!FileUtils.isExists(path)) {
                         continue;
                     }
                     long size = c.getLong(sizeindex);
-                    FileBean fileBean = new FileBean(path, StringUtil.cutString(path, '/', '.'), FileUtils.getFileIconByPath(path));
+                    FileBean fileBean = new FileBean(path, StringUtil.cutString(path, '/', '.'),
+                            FileUtils.getFileIconByPath(path), modifiedDate * 1000);
+
                     files.add(fileBean);
                 }
             }
+            Collections.sort(files, new FileComparatorByTime());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -3,32 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_rl"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:layout_height="50dp"
+    android:orientation="vertical">
 
 
     <CheckBox
         android:id="@+id/item_cb"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></CheckBox>
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"></CheckBox>
 
     <ImageView
         android:id="@+id/item_icon"
-        android:layout_toRightOf="@+id/item_cb"
         android:layout_width="30dp"
-        android:src="@drawable/ic_unknown"
-        android:layout_height="30dp"></ImageView>
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/item_cb"
+        android:src="@drawable/ic_unknown"></ImageView>
 
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="6dp"
         android:layout_toRightOf="@+id/item_icon"
         android:includeFontPadding="false"
+        android:singleLine="true"
         android:text="标题"
         android:textColor="@color/main_text_color"
         android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="2dp"
+        android:text="2020-8-7"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="11sp" />
 </RelativeLayout>

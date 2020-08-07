@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRecyclerAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +63,8 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
         final FileBean item = list.get(position);
         ((NormalViewHolder) viewHolder).titleTv.setText(item.name);
         ((NormalViewHolder) viewHolder).iconIv.setImageResource(item.iconId);
+        ((NormalViewHolder) viewHolder).dateTv.setText(StringUtil.getDateToString(item.modifiedDate,
+                "yyyy-MM-dd HH:mm:ss"));
         ((NormalViewHolder) viewHolder).itemCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -114,6 +117,7 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
         public TextView titleTv;
         public CheckBox itemCb;
         public ImageView iconIv;
+        public TextView dateTv;
 
         public NormalViewHolder(View view) {
             super(view);
@@ -121,6 +125,7 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
             iconIv= (ImageView) view.findViewById(R.id.item_icon);
             titleTv = (TextView) view.findViewById(R.id.title_tv);
             itemCb = (CheckBox) view.findViewById(R.id.item_cb);
+            dateTv= (TextView) view.findViewById(R.id.date_tv);
         }
     }
 }

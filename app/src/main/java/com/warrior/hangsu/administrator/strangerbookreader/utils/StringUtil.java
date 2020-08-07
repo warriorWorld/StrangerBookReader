@@ -7,7 +7,9 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -152,5 +154,11 @@ public class StringUtil {
             }
         }
         return spannableString;
+    }
+
+    public static String getDateToString(long milSecond, String pattern) {
+        Date date = new Date(milSecond);
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(date);
     }
 }
