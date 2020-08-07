@@ -11,6 +11,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.adapter.BookListRecyc
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRefreshListFragment;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.BookBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileChooseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.pdf.PdfActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.db.DbAdapter;
@@ -95,7 +96,8 @@ public class BooksTableFragment extends BaseRefreshListFragment {
                 adapter.setOnEmptyBtnListener(new OnEmptyBtnListener() {
                     @Override
                     public void onEmptyBtnClick() {
-                        showFileChooser();
+                        Intent intent = new Intent(getActivity(), FileChooseActivity.class);
+                        startActivityForResult(intent, 2);
                     }
                 });
                 refreshRcv.setAdapter(adapter);
