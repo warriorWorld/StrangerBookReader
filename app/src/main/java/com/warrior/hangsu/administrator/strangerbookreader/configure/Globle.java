@@ -11,12 +11,14 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.imageloader.AuthImageDownloader;
 
 public class Globle {
-    public static final boolean isTest=false;
+    public static final boolean isTest = false;
     //数据库版本号
     public static final int DB_VERSION = 1;
     //版本号
     public static final String YOUDAO = "http://fanyi.youdao.com/openapi.do?keyfrom=" +
             "strangerbookreader&key=1903646178&type=data&doctype=json&version=1.1&q=";
+    final public static String BOOK_PATH = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/" + "Book";
     final public static String DOWNLOAD_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + "english_book_reader";
     final public static String CACHE_PATH = Environment

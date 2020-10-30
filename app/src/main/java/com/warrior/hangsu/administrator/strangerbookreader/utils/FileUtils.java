@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
@@ -712,10 +713,14 @@ public class FileUtils {
         return null;
     }
 
+    public static ArrayList<FileBean> getFilesByType(Context context, int fileType) {
+        return getFilesByType(context, "", fileType);
+    }
+
     /**
      * 通过文件类型得到相应文件的集合
      **/
-    public static ArrayList<FileBean> getFilesByType(Context context, int fileType) {
+    public static ArrayList<FileBean> getFilesByType(Context context, String folderPath, int fileType) {
         ArrayList<FileBean> files = new ArrayList<FileBean>();
         // 扫描files文件库
         Cursor c = null;
@@ -732,6 +737,9 @@ public class FileUtils {
 
             while (c.moveToNext()) {
                 String path = c.getString(dataindex);
+                if (!TextUtils.isEmpty(folderPath)&&!path.startsWith(folderPath)) {
+                    continue;
+                }
                 String name = c.getString(nameindex);
                 long modifiedDate = c.getLong(modifiedDateIndex);
                 if (FileUtils.getFileType(path) == fileType) {

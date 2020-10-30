@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.FileChooseAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
+import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
@@ -101,7 +102,7 @@ public class FileChooseActivity extends BaseActivity implements View.OnClickList
     }
 
     private void doGetData() {
-        fileList = FileUtils.getFilesByType(this, FileUtils.TYPE_BOOK);
+        fileList = FileUtils.getFilesByType(this, Globle.BOOK_PATH, FileUtils.TYPE_BOOK);
         sizeTv.setText(fileList.size() + "");
         initRec();
     }
