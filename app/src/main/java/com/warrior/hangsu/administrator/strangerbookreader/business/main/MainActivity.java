@@ -27,6 +27,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileChooseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileManagerActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
@@ -260,7 +261,9 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
             @Override
             public void onRightClick() {
 //                booksTableFragment.showFileChooser();
-                Intent intent = new Intent(MainActivity.this, FileChooseActivity.class);
+//                Intent intent = new Intent(MainActivity.this, FileChooseActivity.class);
+//                startActivityForResult(intent, 2);
+                Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
                 startActivityForResult(intent, 2);
             }
 

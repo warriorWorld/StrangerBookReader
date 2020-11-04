@@ -3,6 +3,8 @@ package com.warrior.hangsu.administrator.strangerbookreader.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.warrior.hangsu.administrator.strangerbookreader.enums.FileType;
+
 public class FileBean implements Parcelable {
     /**
      * 文件的路径
@@ -14,12 +16,14 @@ public class FileBean implements Parcelable {
     public int iconId;
     public String name;
     public long modifiedDate;
+    public FileType fileType;
 
-    public FileBean(String path, String name, int iconId, long modifiedDate) {
+    public FileBean(String path, String name, int iconId, long modifiedDate,FileType fileType) {
         this.path = path;
         this.name = name;
         this.iconId = iconId;
         this.modifiedDate = modifiedDate;
+        this.fileType=fileType;
     }
 
     protected FileBean(Parcel in) {

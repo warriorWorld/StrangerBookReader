@@ -109,6 +109,8 @@
         <activity
             android:name=".business.filechoose.FileChooseActivity"
             android:launchMode="standard"></activity>
+        <activity android:name=".business.filechoose.FileManagerActivity" />
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5af177b4a40fa346050000c9" />
