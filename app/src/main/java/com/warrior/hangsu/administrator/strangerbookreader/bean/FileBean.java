@@ -18,12 +18,16 @@ public class FileBean implements Parcelable {
     public long modifiedDate;
     public FileType fileType;
 
-    public FileBean(String path, String name, int iconId, long modifiedDate,FileType fileType) {
+    public FileBean(String path, String name, int iconId, long modifiedDate) {
+        this(path, name, iconId, modifiedDate, null);
+    }
+
+    public FileBean(String path, String name, int iconId, long modifiedDate, FileType fileType) {
         this.path = path;
         this.name = name;
         this.iconId = iconId;
         this.modifiedDate = modifiedDate;
-        this.fileType=fileType;
+        this.fileType = fileType;
     }
 
     protected FileBean(Parcel in) {

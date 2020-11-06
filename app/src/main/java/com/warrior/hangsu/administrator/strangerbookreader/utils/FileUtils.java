@@ -737,7 +737,7 @@ public class FileUtils {
 
             while (c.moveToNext()) {
                 String path = c.getString(dataindex);
-                if (!TextUtils.isEmpty(folderPath)&&!path.startsWith(folderPath)) {
+                if (!TextUtils.isEmpty(folderPath) && !path.startsWith(folderPath)) {
                     continue;
                 }
                 String name = c.getString(nameindex);
@@ -762,6 +762,20 @@ public class FileUtils {
             }
         }
         return files;
+    }
+
+    public static boolean isValidBookFile(String path) {
+        path = path.toLowerCase();
+        if (path.endsWith(".txt")) {
+            return true;
+        }
+        if (path.endsWith(".pdf")) {
+            return true;
+        }
+        if (path.endsWith(".epub")) {
+            return true;
+        }
+        return false;
     }
 
     /**
