@@ -101,7 +101,7 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
                         ((NormalViewHolder) viewHolder).itemCb.setChecked(!((NormalViewHolder) viewHolder).itemCb.isChecked());
                         break;
                     case FOLDER:
-                        if (null!=mOnFolderClickListener){
+                        if (null != mOnFolderClickListener) {
                             mOnFolderClickListener.onClick(item.path);
                         }
                         break;
@@ -136,6 +136,10 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
             }
         }
         return result;
+    }
+
+    public int getBookCount() {
+        return getAllBooks().size();
     }
 
     public void removeAllSelected() {

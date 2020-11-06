@@ -15,6 +15,10 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnFolderClic
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar.OnTopBarClickListener
 import kotlinx.android.synthetic.main.activity_file_chooser.*
+import kotlinx.android.synthetic.main.activity_file_chooser.file_rcv
+import kotlinx.android.synthetic.main.activity_file_chooser.file_size_tv
+import kotlinx.android.synthetic.main.activity_file_chooser.ok_btn
+import kotlinx.android.synthetic.main.activity_file_manager.*
 
 /**
  * Created by acorn on 2020/11/4.
@@ -49,6 +53,11 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
         file_rcv.isFocusable = false
         file_rcv.setHasFixedSize(true)
         file_rcv.adapter = mAdapter
+        path_rcv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        path_rcv.isFocusableInTouchMode = false
+        path_rcv.isFocusable = false
+        path_rcv.setHasFixedSize(true)
+
         ok_btn.setOnClickListener(this)
         baseTopBar.title = "选择书籍"
         baseTopBar.setRightText("全选")
@@ -87,6 +96,7 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
                     }
                 }
             })
+            file_size_tv.text = mAdapter?.bookCount.toString()
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -6,10 +6,16 @@
     tools:context=".business.filechoose.FileManagerActivity">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/path_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/file_rcv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ok_btn" />
+        android:layout_above="@+id/ok_btn"
+        android:layout_below="@+id/path_rcv" />
 
     <TextView
         android:id="@+id/file_size_tv"
