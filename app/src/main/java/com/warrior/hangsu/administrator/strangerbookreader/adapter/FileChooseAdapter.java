@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.base.BaseRecyclerAdapter;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
+import com.warrior.hangsu.administrator.strangerbookreader.enums.FileType;
+import com.warrior.hangsu.administrator.strangerbookreader.listener.OnFolderClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +28,7 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
     private ArrayList<FileBean> list = null;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
     private ArrayList<FileBean> selectedList = new ArrayList<>();
+    private OnFolderClickListener mOnFolderClickListener;
 
     public FileChooseAdapter(Context context) {
         super(context);
@@ -33,7 +36,7 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
 
     @Override
     protected String getEmptyText() {
-        return "没有本地视频";
+        return "没有本地书籍";
     }
 
     @Override
@@ -63,8 +66,20 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
         final FileBean item = list.get(position);
         ((NormalViewHolder) viewHolder).titleTv.setText(item.name);
         ((NormalViewHolder) viewHolder).iconIv.setImageResource(item.iconId);
-        ((NormalViewHolder) viewHolder).dateTv.setText(StringUtil.getDateToString(item.modifiedDate,
-                "yyyy-MM-dd HH:mm:ss"));
+        if (item.modifiedDate == 0) {
+            ((NormalViewHolder) viewHolder).dateTv.setVisibility(View.GONE);
+        } else {
+            ((NormalViewHolder) viewHolder).dateTv.setText(StringUtil.getDateToString(item.modifiedDate,
+                    "yyyy-MM-dd HH:mm:ss"));
+        }
+        switch (item.fileType) {
+            case BOOK:
+                ((NormalViewHolder) viewHolder).itemCb.setVisibility(View.VISIBLE);
+                break;
+            case FOLDER:
+                ((NormalViewHolder) viewHolder).itemCb.setVisibility(View.GONE);
+                break;
+        }
         ((NormalViewHolder) viewHolder).itemCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -81,7 +96,16 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
         ((NormalViewHolder) viewHolder).itemRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((NormalViewHolder) viewHolder).itemCb.setChecked(!((NormalViewHolder) viewHolder).itemCb.isChecked());
+                switch (item.fileType) {
+                    case BOOK:
+                        ((NormalViewHolder) viewHolder).itemCb.setChecked(!((NormalViewHolder) viewHolder).itemCb.isChecked());
+                        break;
+                    case FOLDER:
+                        if (null!=mOnFolderClickListener){
+                            mOnFolderClickListener.onClick(item.path);
+                        }
+                        break;
+                }
             }
         });
     }
@@ -100,8 +124,18 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
     }
 
     public void selectAll() {
-        selectedList = list;
+        selectedList = getAllBooks();
         notifyDataSetChanged();
+    }
+
+    private ArrayList<FileBean> getAllBooks() {
+        ArrayList<FileBean> result = new ArrayList<>();
+        for (FileBean item : list) {
+            if (item.fileType == FileType.BOOK) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     public void removeAllSelected() {
@@ -109,6 +143,10 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
 //        selectedList.clear();
         selectedList = new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public void setOnFolderClickListener(OnFolderClickListener onFolderClickListener) {
+        mOnFolderClickListener = onFolderClickListener;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
@@ -122,10 +160,10 @@ public class FileChooseAdapter extends BaseRecyclerAdapter {
         public NormalViewHolder(View view) {
             super(view);
             itemRl = (View) view.findViewById(R.id.item_rl);
-            iconIv= (ImageView) view.findViewById(R.id.item_icon);
+            iconIv = (ImageView) view.findViewById(R.id.item_icon);
             titleTv = (TextView) view.findViewById(R.id.title_tv);
             itemCb = (CheckBox) view.findViewById(R.id.item_cb);
-            dateTv= (TextView) view.findViewById(R.id.date_tv);
+            dateTv = (TextView) view.findViewById(R.id.date_tv);
         }
     }
 }
