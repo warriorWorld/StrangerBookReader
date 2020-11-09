@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.View
 import com.warrior.hangsu.administrator.strangerbookreader.R
 import com.warrior.hangsu.administrator.strangerbookreader.adapter.FileChooseAdapter
+import com.warrior.hangsu.administrator.strangerbookreader.adapter.PathHistoryAdapter
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean
 import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileChooseActivity.SelectAllState
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnFolderClickListener
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_file_manager.*
 class FileManagerActivity : BaseActivity(), View.OnClickListener {
     private lateinit var fileViewModel: FileViewModel
     private var mAdapter: FileChooseAdapter? = FileChooseAdapter(this)
+    private var mPathHistoryAdapter=PathHistoryAdapter(this)
     private var fileList: ArrayList<FileBean>? = null
     private var mSelectAllState = SelectAllState.CANCEL_ALL
 
