@@ -15,6 +15,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.R;
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnEmptyBtnListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/11/15.
@@ -144,7 +145,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
 
     protected abstract String getEmptyBtnText();
 
-    protected abstract <T> ArrayList<T> getDatas();
+    protected abstract <T> List<T> getDatas();
 
     protected abstract RecyclerView.ViewHolder getNormalViewHolder(ViewGroup viewGroup);
 

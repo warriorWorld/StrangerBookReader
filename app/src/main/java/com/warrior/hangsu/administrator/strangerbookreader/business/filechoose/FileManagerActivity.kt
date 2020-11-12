@@ -20,6 +20,9 @@ import kotlinx.android.synthetic.main.activity_file_chooser.file_rcv
 import kotlinx.android.synthetic.main.activity_file_chooser.file_size_tv
 import kotlinx.android.synthetic.main.activity_file_chooser.ok_btn
 import kotlinx.android.synthetic.main.activity_file_manager.*
+import java.io.File
+import java.lang.IndexOutOfBoundsException
+import java.lang.StringBuilder
 
 /**
  * Created by acorn on 2020/11/4.
@@ -27,7 +30,8 @@ import kotlinx.android.synthetic.main.activity_file_manager.*
 class FileManagerActivity : BaseActivity(), View.OnClickListener {
     private lateinit var fileViewModel: FileViewModel
     private var mAdapter: FileChooseAdapter? = FileChooseAdapter(this)
-    private var mPathHistoryAdapter=PathHistoryAdapter(this)
+    private var mPathHistoryAdapter = PathHistoryAdapter(this)
+    private var pathList: List<String>? = null
     private var fileList: ArrayList<FileBean>? = null
     private var mSelectAllState = SelectAllState.CANCEL_ALL
 
@@ -47,6 +51,10 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
                 initRec()
             }
         })
+        fileViewModel.getPathList().observe(this, { t ->
+            pathList = t
+            initPathRec()
+        })
     }
 
     private fun initUI() {
@@ -59,6 +67,7 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
         path_rcv.isFocusableInTouchMode = false
         path_rcv.isFocusable = false
         path_rcv.setHasFixedSize(true)
+        path_rcv.adapter = mPathHistoryAdapter
 
         ok_btn.setOnClickListener(this)
         baseTopBar.title = "选择书籍"
@@ -102,6 +111,45 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun initPathRec() {
+        try {
+            mPathHistoryAdapter.list = pathList
+            mPathHistoryAdapter.notifyDataSetChanged()
+            mPathHistoryAdapter.setOnRecycleItemClickListener {
+                fileViewModel.doGetFileList(assemblePath(it))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (pathList?.size!! > 1) {
+            fileViewModel.doGetFileList(assemblePath(pathList?.size!! - 2))
+            return
+        }
+        super.onBackPressed()
+    }
+
+    private fun assemblePath(index: Int): String {
+        if (index < 0) {
+            throw IndexOutOfBoundsException()
+        }
+        val result = StringBuilder()
+        result.append(Environment.getExternalStorageDirectory().absolutePath)
+        if (index == 0) {
+            return result.toString()
+        }
+        result.append(File.separator)
+        for (i in 1..index) {
+            result.append(pathList?.get(i))
+            if (i != index) {
+                result.append(File.separator)
+            }
+        }
+        return result.toString()
     }
 
     override fun getLayoutId(): Int {
