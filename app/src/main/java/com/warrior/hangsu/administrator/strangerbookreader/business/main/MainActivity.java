@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +42,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.ActivityPoor;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.Logger;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
@@ -169,6 +171,8 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
         if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
             Uri uri = mIntent.getData();
             String path = uri.getPath();
+            path=path.replaceFirst("/external_files", Environment.getExternalStorageDirectory().getAbsolutePath());
+            Logger.d("path:" + path+"\npath2:"+uri.getEncodedPath());
             String format = "";
             if (path.endsWith(".txt") || path.endsWith(".TXT")) {
                 format = "TXT";
@@ -183,7 +187,7 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
                 public void run() {
                     booksTableFragment.doGetData();
                 }
-            },500);
+            }, 500);
         }
     }
 
