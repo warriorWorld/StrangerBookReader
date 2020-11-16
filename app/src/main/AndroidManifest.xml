@@ -60,6 +60,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"></action>
+                <data android:mimeType="text/plain" />　　　　　　　　　　　　　　
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
         </activity>
         <activity
             android:name=".business.read.ReadActivity"

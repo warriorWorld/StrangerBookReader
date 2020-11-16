@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -40,6 +42,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseParameterUt
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.DownloadDialog;
@@ -160,21 +163,28 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
         navigationView.setUserName(LoginBean.getInstance().getUserName());
     }
 
-    /**
-     * 已弃用
-     */
     private void handleIntent() {
-//        Intent intent = getIntent();
-//
-//        String urlTitle = intent.getStringExtra("url_title");
-//        String url = intent.getStringExtra("url");
-//        ToastUtils.showSingleToast(url + urlTitle);
-//        if (!TextUtils.isEmpty(urlTitle) && !TextUtils.isEmpty(url)) {
-//            Intent intent1 = new Intent(this, NewReadActivity.class);
-//            intent1.putExtra("url_title", urlTitle);
-//            intent1.putExtra("url", url);
-//            startActivity(intent1);
-//        }
+        Intent mIntent = getIntent();
+        String action = mIntent.getAction();
+        if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
+            Uri uri = mIntent.getData();
+            String path = uri.getPath();
+            String format = "";
+            if (path.endsWith(".txt") || path.endsWith(".TXT")) {
+                format = "TXT";
+            } else if (path.endsWith(".pdf") || path.endsWith(".PDF")) {
+                format = "PDF";
+            } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
+                format = "EPUB";
+            }
+            db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, null);
+            new Handler(getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    booksTableFragment.doGetData();
+                }
+            },500);
+        }
     }
 
     private void initUI() {
