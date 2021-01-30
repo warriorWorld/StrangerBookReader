@@ -40,6 +40,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferenc
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyCallBack;
 import com.warrior.hangsu.administrator.strangerbookreader.volley.VolleyTool;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.bar.TopBar;
@@ -193,6 +194,7 @@ public class EpubActivity extends TTSActivity {
 
     private void translation(final String word) {
         clip.setText(word);
+        VibratorUtil.Vibrate(this, word.length() * 10);
         text2Speech(word);
         //记录查过的单词
         db.insertWordsBookTb(word);

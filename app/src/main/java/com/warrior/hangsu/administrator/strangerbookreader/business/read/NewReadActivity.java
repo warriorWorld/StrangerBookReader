@@ -43,6 +43,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferenc
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.StringUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.VibratorUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.ListDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaDialog;
 import com.warrior.hangsu.administrator.strangerbookreader.widget.dialog.MangaEditDialog;
@@ -185,6 +186,7 @@ public class NewReadActivity extends TTSActivity implements
 
     private void translation(final String word) {
         clip.setText(word);
+        VibratorUtil.Vibrate(this, word.length() * 10);
         //记录查过的单词
         db.insertWordsBookTb(word);
         updateStatisctics();

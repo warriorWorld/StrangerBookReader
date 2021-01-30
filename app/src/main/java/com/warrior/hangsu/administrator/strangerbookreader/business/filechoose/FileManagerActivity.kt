@@ -1,5 +1,6 @@
 package com.warrior.hangsu.administrator.strangerbookreader.business.filechoose
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -51,9 +52,11 @@ class FileManagerActivity : BaseActivity(), View.OnClickListener {
                 initRec()
             }
         })
-        fileViewModel.getPathList().observe(this, { t ->
-            pathList = t
-            initPathRec()
+        fileViewModel.getPathList().observe(this, object : android.arch.lifecycle.Observer<List<String>> {
+            override fun onChanged(t: List<String>?) {
+                pathList = t
+                initPathRec()
+            }
         })
     }
 
