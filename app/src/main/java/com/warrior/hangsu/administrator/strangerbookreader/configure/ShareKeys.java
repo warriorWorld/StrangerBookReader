@@ -23,4 +23,5 @@ public class ShareKeys {
     public static final String LAST_PAGE_POSITION = "last_page_position";
     public static final String LAST_PAGE_OFFSET = "last_page_offset";
     public static final String OPEN_PREMIUM_KEY = "open_premium_key";
+    public static final String OPEN_TTS_TRANSLATE_KEY = "open_tts_translate_key";
 }

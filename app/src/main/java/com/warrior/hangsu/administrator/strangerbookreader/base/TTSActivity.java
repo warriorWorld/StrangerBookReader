@@ -4,12 +4,15 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.text.TextUtils;
 
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.AudioMgr;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.VolumeUtil;
+import com.youdao.sdk.common.YouDaoLog;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -53,6 +56,23 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
             }
             tts.speak(text,
                     TextToSpeech.QUEUE_FLUSH, myHashAlarm);
+        }
+    }
+
+    protected synchronized void playVoice(String speakUrl) {
+        YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity click to playVoice speakUrl = " + speakUrl);
+        if (!TextUtils.isEmpty(speakUrl) && speakUrl.startsWith("http")) {
+            AudioMgr.startPlayVoice(speakUrl, new AudioMgr.SuccessListener() {
+                @Override
+                public void success() {
+                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playVoice success");
+                }
+
+                @Override
+                public void playover() {
+                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playover");
+                }
+            });
         }
     }
 

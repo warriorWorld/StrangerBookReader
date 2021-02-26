@@ -218,9 +218,26 @@ public class NewReadActivity extends TTSActivity implements
                     @Override
                     public void run() {
                         if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
-                            showTranslateDialog(translate);
+                            if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                    (NewReadActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, false)) {
+                                //通过语音播报翻译
+                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                        (NewReadActivity.this, ShareKeys.OPEN_PREMIUM_KEY, false)) {
+                                    playVoice(translate.getSpeakUrl());
+                                } else {
+                                    text2Speech(word);
+                                }
+                            } else {
+                                showTranslateDialog(translate);
+                            }
                         } else {
-                            ToastUtils.showToast("没查到该词");
+                            if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                    (NewReadActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, false)) {
+                                //通过语音播报翻译
+                                text2Speech("没查到该词");
+                            } else {
+                                ToastUtils.showToast("没查到该词");
+                            }
                         }
                     }
                 });
