@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -35,6 +36,7 @@ import com.warrior.hangsu.administrator.strangerbookreader.listener.OnUpFlipList
 import com.warrior.hangsu.administrator.strangerbookreader.listener.OnWordClickListener;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.SettingManager;
 import com.warrior.hangsu.administrator.strangerbookreader.manager.ThemeManager;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.AudioMgr;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LeanCloundUtil;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.LogUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.Logger;
@@ -95,6 +97,7 @@ public class NewReadActivity extends TTSActivity implements
             .from(LanguageUtils.getLangByName("中文"))
             .to(LanguageUtils.getLangByName("英文"))
             .build();
+    private Translate latestTranslate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,13 +223,7 @@ public class NewReadActivity extends TTSActivity implements
                         if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
                             if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                                     (NewReadActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, false)) {
-                                //通过语音播报翻译
-                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
-                                        (NewReadActivity.this, ShareKeys.OPEN_PREMIUM_KEY, false)) {
-                                    playVoice(translate.getSpeakUrl());
-                                } else {
-                                    text2Speech(word);
-                                }
+                                playWordAndTranslate(translate);
                             } else {
                                 showTranslateDialog(translate);
                             }
@@ -248,6 +245,46 @@ public class NewReadActivity extends TTSActivity implements
                 Logger.d(s);
             }
         });
+    }
+
+    private void playWordAndTranslate(Translate result) {
+        latestTranslate = result;
+        //通过语音播报翻译
+        final StringBuilder translateSb = new StringBuilder();
+        for (int i = 0; i < result.getExplains().size(); i++) {
+            translateSb.append(result.getExplains().get(i)).append(";");
+        }
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (NewReadActivity.this, ShareKeys.OPEN_PREMIUM_KEY, false)) {
+            playVoice(result.getSpeakUrl(), new AudioMgr.SuccessListener() {
+                @Override
+                public void success() {
+
+                }
+
+                @Override
+                public void playover() {
+                    text2Speech(translateSb.toString());
+                }
+            });
+        } else {
+            text2Speech(result.getQuery());
+        }
+    }
+
+    @Override
+    protected void onTTSFinish(String text) {
+        super.onTTSFinish(text);
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (NewReadActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, false)) {
+            if (null != latestTranslate && text.equals(latestTranslate.getQuery())) {
+                StringBuilder translateSb = new StringBuilder();
+                for (int i = 0; i < latestTranslate.getExplains().size(); i++) {
+                    translateSb.append(latestTranslate.getExplains().get(i)).append(";");
+                }
+                text2Speech(translateSb.toString());
+            }
+        }
     }
 
     private void showTranslateDialog(Translate translate) {

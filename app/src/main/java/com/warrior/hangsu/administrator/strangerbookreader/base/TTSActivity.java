@@ -4,11 +4,13 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.TextUtils;
 
 import com.warrior.hangsu.administrator.strangerbookreader.configure.ShareKeys;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.AudioMgr;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.BaseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.utils.Logger;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.SharedPreferencesUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.ToastUtils;
 import com.warrior.hangsu.administrator.strangerbookreader.utils.VolumeUtil;
@@ -47,6 +49,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
                     String.valueOf(AudioManager.STREAM_ALARM));
             myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_VOLUME,
                     VolumeUtil.getMusicVolumeRate(this) + "");
+            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
 
             if (VolumeUtil.getHeadPhoneStatus(this)) {
                 AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -60,19 +63,28 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     }
 
     protected synchronized void playVoice(String speakUrl) {
+        playVoice(speakUrl, null);
+    }
+
+    protected synchronized void playVoice(String speakUrl, AudioMgr.SuccessListener listener) {
         YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity click to playVoice speakUrl = " + speakUrl);
         if (!TextUtils.isEmpty(speakUrl) && speakUrl.startsWith("http")) {
-            AudioMgr.startPlayVoice(speakUrl, new AudioMgr.SuccessListener() {
-                @Override
-                public void success() {
-                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playVoice success");
-                }
+            AudioMgr.startPlayVoice(speakUrl, listener);
+        }
+    }
 
-                @Override
-                public void playover() {
-                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playover");
-                }
-            });
+    protected void stopSpeak() {
+        if (null != tts) {
+            tts.stop();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (tts.isSpeaking()) {
+            tts.stop();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -93,11 +105,36 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
+            tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                @Override
+                public void onStart(String utteranceId) {
+                    Logger.d("onStart:" + utteranceId);
+                }
+
+                @Override
+                public void onDone(String utteranceId) {
+                    Logger.d("onDone:" + utteranceId);
+                    onTTSFinish(utteranceId);
+                }
+
+                @Override
+                public void onError(String utteranceId) {
+                    Logger.d("onError:" + utteranceId);
+                    onTTSError(utteranceId);
+                }
+            });
             int result = tts.setLanguage(Locale.UK);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 ToastUtils.showSingleToast("数据丢失或不支持");
             }
         }
+    }
+
+    protected void onTTSFinish(String text) {
+
+    }
+
+    protected void onTTSError(String text) {
     }
 }

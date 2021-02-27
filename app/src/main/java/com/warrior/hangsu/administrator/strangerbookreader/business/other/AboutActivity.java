@@ -82,6 +82,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
     private RelativeLayout clean_cache_rl;
     private TextView cache_size_tv;
     private CheckBox openPremiumCb;
+    private CheckBox openTTSTranslateCb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +138,17 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
         openPremiumCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
                         ShareKeys.OPEN_PREMIUM_KEY, false));
+        openTTSTranslateCb = (CheckBox) findViewById(R.id.open_tts_translate_cb);
+        openTTSTranslateCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, isChecked);
+            }
+        });
+        openTTSTranslateCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
+                        ShareKeys.OPEN_TTS_TRANSLATE_KEY, false));
         backgroundStyleRl = (RelativeLayout) findViewById(R.id.background_style_rl);
         backgroundStyleTv = (TextView) findViewById(R.id.background_style_tv);
         translateWayRl = (RelativeLayout) findViewById(R.id.translate_way_rl);
