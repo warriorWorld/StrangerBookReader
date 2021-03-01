@@ -247,13 +247,9 @@ public class NewReadActivity extends TTSActivity implements
         });
     }
 
-    private void playWordAndTranslate(Translate result) {
+    private void playWordAndTranslate(final Translate result) {
         latestTranslate = result;
         //通过语音播报翻译
-        final StringBuilder translateSb = new StringBuilder();
-        for (int i = 0; i < result.getExplains().size(); i++) {
-            translateSb.append(result.getExplains().get(i)).append(";");
-        }
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (NewReadActivity.this, ShareKeys.OPEN_PREMIUM_KEY, false)) {
             playVoice(result.getSpeakUrl(), new AudioMgr.SuccessListener() {
@@ -264,7 +260,7 @@ public class NewReadActivity extends TTSActivity implements
 
                 @Override
                 public void playover() {
-                    text2Speech(translateSb.toString());
+                    text2Speech(handleTranslation(result));
                 }
             });
         } else {
@@ -278,13 +274,31 @@ public class NewReadActivity extends TTSActivity implements
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (NewReadActivity.this, ShareKeys.OPEN_TTS_TRANSLATE_KEY, false)) {
             if (null != latestTranslate && text.equals(latestTranslate.getQuery())) {
-                StringBuilder translateSb = new StringBuilder();
-                for (int i = 0; i < latestTranslate.getExplains().size(); i++) {
-                    translateSb.append(latestTranslate.getExplains().get(i)).append(";");
-                }
-                text2Speech(translateSb.toString());
+                text2Speech(handleTranslation(latestTranslate));
             }
         }
+    }
+
+    private String handleTranslation(Translate translate) {
+        StringBuilder translateSb = new StringBuilder();
+        for (int i = 0; i < translate.getExplains().size(); i++) {
+            translateSb.append(translate.getExplains().get(i)).append(";");
+        }
+        String result = translateSb.toString();
+        result = result.replaceAll("vt.", "作为及物动词时，");
+        result = result.replaceAll("vi.", "作为不及物动词时，");
+        result = result.replaceAll("adj.", "作为形容词时，");
+        result = result.replaceAll("n.", "作为名词时，");
+        result = result.replaceAll("pron.", "作为代词时，");
+        result = result.replaceAll("adv.", "作为副词时，");
+        result = result.replaceAll("v.", "作为动词时，");
+        result = result.replaceAll("prep.", "作为介词时，");
+        result = result.replaceAll("conj.", "作为连词时，");
+        result = result.replaceAll("art.", "作为冠词时，");
+        result = result.replaceAll("abbr.", "作为缩写时，");
+        result = result.replaceAll("num.", "作为数词时，");
+        result = result.replaceAll("int.", "作为叹词时，");
+        return result;
     }
 
     private void showTranslateDialog(Translate translate) {

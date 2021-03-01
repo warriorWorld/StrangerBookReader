@@ -52,6 +52,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
             myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
 
             if (VolumeUtil.getHeadPhoneStatus(this)) {
+                Logger.d("head phone on");
                 AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 //            mAudioManager.setStreamMute(AudioManager.STREAM_ALARM, true);
                 mAudioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_MUTE, 0);
