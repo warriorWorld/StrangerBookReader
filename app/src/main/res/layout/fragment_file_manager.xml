@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".business.main.FileManagerFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/path_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/file_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ok_btn"
+        android:layout_below="@+id/path_rcv" />
+
+    <TextView
+        android:id="@+id/file_size_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="60dp"
+        android:text="0"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="13sp" />
+</RelativeLayout>

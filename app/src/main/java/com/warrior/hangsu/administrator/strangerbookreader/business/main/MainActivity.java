@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -29,10 +28,12 @@ import com.warrior.hangsu.administrator.strangerbookreader.base.BaseMultiTabActi
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean;
 import com.warrior.hangsu.administrator.strangerbookreader.bean.LoginBean;
 import com.warrior.hangsu.administrator.strangerbookreader.business.ad.AdvertisingActivity;
-import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileChooseActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.epub.EpubActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.filechoose.FileManagerActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.login.LoginActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.other.AboutActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.pdf.PdfActivity;
+import com.warrior.hangsu.administrator.strangerbookreader.business.read.NewReadActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.statistic.StatisticsActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.business.wordsbook.WordsBookActivity;
 import com.warrior.hangsu.administrator.strangerbookreader.configure.Globle;
@@ -77,10 +78,8 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     private DownloadDialog downloadDialog;
     private String qrFilePath;
     private BooksTableFragment booksTableFragment;
-    private ClassifyFragment classifyFragment;
-    private CollectBooksTableFragment collectBooksTableFragment;
-    //    private RecommendFragment recommendFragment;
-    private String[] titleList = {"书城", "书架", "收藏"};
+    private FileManagerFragment mFileManagerFragment;
+    private final String[] titleList = {"书架", "目录"};
     private DbAdapter db;//数据库
 
     @Override
@@ -88,18 +87,13 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         initUI();
         db = new DbAdapter(this);
-        doGetVersionInfo();
         handleIntent();
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            ToastUtils.showSingleToast("登录后可以记录并查看看书的统计数据(未登录时不记录)");
-        }
     }
 
     @Override
     protected void initFragment() {
         booksTableFragment = new BooksTableFragment();
-        classifyFragment = new ClassifyFragment();
-        collectBooksTableFragment = new CollectBooksTableFragment();
+        mFileManagerFragment = new FileManagerFragment();
     }
 
     @Override
@@ -141,11 +135,9 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
     protected Fragment getFragmentByPosition(int position) {
         switch (position) {
             case 0:
-                return classifyFragment;
-            case 1:
                 return booksTableFragment;
-            case 2:
-                return collectBooksTableFragment;
+            case 1:
+                return mFileManagerFragment;
             default:
                 return null;
         }
@@ -171,8 +163,8 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
         if (TextUtils.equals(action, Intent.ACTION_VIEW)) {
             Uri uri = mIntent.getData();
             String path = uri.getPath();
-            path=path.replaceFirst("/external_files", Environment.getExternalStorageDirectory().getAbsolutePath());
-            Logger.d("path:" + path+"\npath2:"+uri.getEncodedPath());
+            path = path.replaceFirst("/external_files", Environment.getExternalStorageDirectory().getAbsolutePath());
+            Logger.d("path:" + path + "\npath2:" + uri.getEncodedPath());
             String format = "";
             if (path.endsWith(".txt") || path.endsWith(".TXT")) {
                 format = "TXT";
@@ -181,14 +173,31 @@ public class MainActivity extends BaseMultiTabActivity implements View.OnClickLi
             } else if (path.endsWith(".epub") || path.endsWith(".EPUB")) {
                 format = "EPUB";
             }
-            db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, null);
-            new Handler(getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    booksTableFragment.doGetData();
-                }
-            }, 500);
+            insertBookTable(path, format);
         }
+    }
+
+    private void openBook(String path, String format) {
+        Intent intent = new Intent(this, NewReadActivity.class);
+        if (format.equals("EPUB")) {
+            intent = new Intent(this, EpubActivity.class);
+        } else if (format.equals("PDF")) {
+            intent = new Intent(this, PdfActivity.class);
+        }
+        intent.putExtra("bookName", StringUtil.cutString(path, '/', '.'));
+        intent.putExtra("bookPath", path);
+        intent.putExtra("bookFormat", format);
+        startActivity(intent);
+    }
+
+    private void insertBookTable(String path, String format) {
+        db.insertBooksTableTb(path, StringUtil.cutString(path, '/', '.'), 0, format, null);
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                booksTableFragment.doGetData();
+            }
+        }, 500);
     }
 
     private void initUI() {
