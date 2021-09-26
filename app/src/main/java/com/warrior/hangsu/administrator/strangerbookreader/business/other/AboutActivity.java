@@ -94,7 +94,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
     protected void onResume() {
         super.onResume();
         refreshUI();
-        doGetVersionInfo();
+//        doGetVersionInfo();
     }
 
     private void initUI() {
@@ -192,6 +192,7 @@ public class AboutActivity extends TTSActivity implements View.OnClickListener,
             translateWayTv.setText("单击查词");
         }
         cache_size_tv.setText(NumberUtil.cutNum(FileSizeUtil.getFileOrFilesSize(Globle.CACHE_PATH, FileSizeUtil.SIZETYPE_MB)) + "MB");
+        versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this));
     }
 
     private void doGetVersionInfo() {

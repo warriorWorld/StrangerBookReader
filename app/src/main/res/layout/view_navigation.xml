@@ -7,12 +7,21 @@
     android:fitsSystemWindows="true"
     android:paddingBottom="32dp">
 
+    <ImageView
+        android:id="@+id/title_iv"
+        android:layout_width="match_parent"
+        android:layout_height="193dp"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerInside"
+        android:src="@drawable/head_icon" />
+
     <RelativeLayout
         android:id="@+id/drawer_head_rl"
         android:layout_width="match_parent"
         android:layout_height="193dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/side_nav_bar">
+        android:background="@drawable/side_nav_bar"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/login_btn"
@@ -56,7 +65,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/drawer_head_rl"
+        android:layout_below="@+id/title_iv"
         android:scrollbars="none">
 
         <LinearLayout
@@ -98,7 +107,8 @@
                 android:background="@drawable/seven_fourteen_default_click"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="31dp">
+                android:paddingLeft="31dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="18dp"
@@ -123,7 +133,8 @@
                 android:background="@drawable/seven_fourteen_default_click"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="31dp">
+                android:paddingLeft="31dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="18dp"
@@ -148,7 +159,8 @@
                 android:background="@drawable/seven_fourteen_default_click"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="31dp">
+                android:paddingLeft="31dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="18dp"

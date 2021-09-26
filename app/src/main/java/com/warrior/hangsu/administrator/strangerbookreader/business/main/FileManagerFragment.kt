@@ -127,7 +127,7 @@ class FileManagerFragment : BaseFragment() {
                 intent.putExtra("bookFormat", format)
                 startActivity(intent)
             }
-            file_size_tv.text = mAdapter?.bookCount.toString()
+            file_size_tv.text = "${SharedPreferencesUtils.getIntSharedPreferencesData(context, ShareKeys.LAST_READ_KEY)}/${mAdapter?.bookCount}"
         } catch (e: Exception) {
             e.printStackTrace()
         }
