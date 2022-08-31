@@ -11,8 +11,8 @@ import java.util.List;
 public class TOEFLComparator implements Comparator<FileBean> {
     @Override
     public int compare(FileBean o, FileBean t1) {
-        String[] list0 = o.name.split("-");
-        String[] list1 = t1.name.split("-");
+        String[] list0 = o.name.replaceAll(".txt", "").split("-");
+        String[] list1 = t1.name.replaceAll(".txt", "").split("-");
         if (list0.length <= 0 || list1.length <= 0 || list0.length != list1.length) {
             return 0;
         }
