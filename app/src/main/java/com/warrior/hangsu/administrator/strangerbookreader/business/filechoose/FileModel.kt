@@ -2,6 +2,7 @@ package com.warrior.hangsu.administrator.strangerbookreader.business.filechoose
 
 import com.warrior.hangsu.administrator.strangerbookreader.R
 import com.warrior.hangsu.administrator.strangerbookreader.bean.FileBean
+import com.warrior.hangsu.administrator.strangerbookreader.business.main.TOEFLComparator
 import com.warrior.hangsu.administrator.strangerbookreader.enums.FileType
 import com.warrior.hangsu.administrator.strangerbookreader.utils.FileUtils
 import java.io.File
@@ -36,7 +37,7 @@ class FileModel : IFileModel {
                 continue
             }
         }
-        result.sortBy { it.name }
+        result.sortWith(TOEFLComparator())
         return result
     }
 }
