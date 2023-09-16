@@ -1,16 +1,13 @@
 # StrangerBookReader
 StrangerBookReader是一款用于阅读英文读物的Android App。
 
-[点击下载](https://github.com/warriorWorld/StrangerBookReader/raw/master/app/release/app-release.apk "Android apk 安装包")
+You could download it [here](https://github.com/warriorWorld/StrangerBookReader/raw/master/app/release/app-release.apk "Android apk 安装包")
 
-通过爬虫获取阅读资源
+I developed this app for me to learn English(again) by you know, reading books. It supports TXT and PDF.
 
-![github](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/main.jpg)
+![ss](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/translate.jpg) ![ss](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/read.jpg) ![github](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/main.jpg)
 
-阅读页面
-
-![github](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/read.jpg)
-
-内置词典（有道）
+##### Technical detail(if you are not interested, just ignore this part)
+I write a view that can show texts on it, and when users click on a single word, I would get the letter by the coordinate position, and then I would use a regular expression to group a word, and finally, I would translate it and show it to users.
 
 ![github](https://github.com/warriorWorld/StrangerBookReader/blob/master/app/screenshot/translate.jpg)
