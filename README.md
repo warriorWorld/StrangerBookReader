@@ -1,5 +1,5 @@
 # StrangerBookReader
-StrangerBookReader是一款用于阅读英文读物的Android App。
+This is a book reader
 
 You could download it [here](https://github.com/warriorWorld/StrangerBookReader/raw/master/app/release/app-release.apk "Android apk 安装包")
 
